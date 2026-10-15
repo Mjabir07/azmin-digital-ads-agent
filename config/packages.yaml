@@ -1,0 +1,17 @@
+# Website packages and prices. OWNER-EDITED ONLY - the agent never invents prices.
+# Prices below are the PLAYBOOK ranges and still need Jabir's confirmation (used from Phase 3).
+confirmed: false
+currency: AED
+packages:
+  - name: Starter
+    includes: 5 pages, mobile-friendly, WhatsApp button, contact form, basic SEO, 1 year hosting + domain
+    price_from: 1499
+    price_to: 2499
+  - name: Business
+    includes: Up to 10 pages, Arabic + English, Google Business setup, speed optimisation
+    price_from: 3500
+    price_to: 5500
+  - name: E-commerce
+    includes: Online store, payment gateway, up to 50 products
+    price_from: 6000
+    price_to: 12000

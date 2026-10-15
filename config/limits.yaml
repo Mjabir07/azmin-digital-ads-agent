@@ -1,0 +1,7 @@
+# Budget safety limits (CLAUDE.md hard rules). Only Jabir edits this file.
+# Amounts are AED per day.
+adset_daily_budget_max: 150
+account_daily_budget_max: 300
+budget_step_max_pct: 20        # never raise a budget by more than this at once
+budget_cooldown_hours: 72      # wait this long between budget changes on one ad set
+learning_phase_hours: 72       # no edits in the first 72 hours after an ad set launches

@@ -1,0 +1,32 @@
+# Runs the Phase 1 daily report in the cloud every day at 09:00 Dubai time (05:00 UTC).
+# Secrets are set in GitHub: repo → Settings → Secrets and variables → Actions.
+name: daily-report
+
+on:
+  # Schedule is OFF until Phase 1 code exists. Claude Code: uncomment after the first successful manual run.
+  # schedule:
+  #   - cron: "0 5 * * *"
+  workflow_dispatch: {}   # lets you run it by hand from the Actions tab
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked
+      - run: uv run python -m agent.daily
+        env:
+          META_GRAPH_API_VERSION: ${{ vars.META_GRAPH_API_VERSION }}
+          META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+          META_AD_ACCOUNT_ID: ${{ secrets.META_AD_ACCOUNT_ID }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}   # optional, adds appsecret_proof
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          GOOGLE_SHEET_ID: ${{ secrets.GOOGLE_SHEET_ID }}
+          # Phase 1 is read-only. DRY_RUN guards Meta write calls (Phase 2+); keep it "true" until Jabir says otherwise.
+          DRY_RUN: "true"
+          TIMEZONE: Asia/Dubai

@@ -1,0 +1,361 @@
+{
+ "_note": "Made-up sample data in Meta Graph API format. Dates are placeholders replaced at load time.",
+ "insights": {
+  "yesterday": {
+   "ad": [
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000011",
+     "adset_name": "UAE | Broad | 25-55",
+     "ad_id": "120200000000000101",
+     "ad_name": "Price-Carousel",
+     "spend": "21.40",
+     "impressions": "1050",
+     "cpm": "20.380952",
+     "inline_link_click_ctr": "1.428571",
+     "frequency": "1.100000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "15"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "2"
+      }
+     ]
+    },
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000011",
+     "adset_name": "UAE | Broad | 25-55",
+     "ad_id": "120200000000000102",
+     "ad_name": "Pain-Reel",
+     "spend": "9.10",
+     "impressions": "430",
+     "cpm": "21.162791",
+     "inline_link_click_ctr": "0.465116",
+     "frequency": "1.000000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "2"
+      }
+     ]
+    },
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000012",
+     "adset_name": "UAE | Interests | SME owners",
+     "ad_id": "120200000000000103",
+     "ad_name": "Audit-Static",
+     "spend": "13.80",
+     "impressions": "560",
+     "cpm": "24.642857",
+     "inline_link_click_ctr": "0.714286",
+     "frequency": "1.200000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "4"
+      }
+     ]
+    },
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000012",
+     "adset_name": "UAE | Interests | SME owners",
+     "ad_id": "120200000000000104",
+     "ad_name": "NewBiz-Static",
+     "spend": "23.20",
+     "impressions": "940",
+     "cpm": "24.680851",
+     "inline_link_click_ctr": "1.276596",
+     "frequency": "1.200000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "12"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "2"
+      }
+     ]
+    }
+   ],
+   "adset": [
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000011",
+     "adset_name": "UAE | Broad | 25-55",
+     "spend": "30.50",
+     "impressions": "1480",
+     "cpm": "20.608108",
+     "inline_link_click_ctr": "1.148649",
+     "frequency": "1.080000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "17"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "2"
+      }
+     ]
+    },
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000012",
+     "adset_name": "UAE | Interests | SME owners",
+     "spend": "37.00",
+     "impressions": "1500",
+     "cpm": "24.666667",
+     "inline_link_click_ctr": "1.066667",
+     "frequency": "1.150000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "16"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "2"
+      }
+     ]
+    }
+   ],
+   "campaign": [
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "spend": "67.50",
+     "impressions": "2980",
+     "cpm": "22.651007",
+     "inline_link_click_ctr": "1.107383",
+     "frequency": "1.120000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "33"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "4"
+      }
+     ]
+    }
+   ]
+  },
+  "last_7d": {
+   "ad": [
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000011",
+     "adset_name": "UAE | Broad | 25-55",
+     "ad_id": "120200000000000101",
+     "ad_name": "Price-Carousel",
+     "spend": "140.00",
+     "impressions": "7000",
+     "cpm": "20.000000",
+     "inline_link_click_ctr": "1.400000",
+     "frequency": "1.600000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "98"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "9"
+      }
+     ]
+    },
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000011",
+     "adset_name": "UAE | Broad | 25-55",
+     "ad_id": "120200000000000102",
+     "ad_name": "Pain-Reel",
+     "spend": "65.00",
+     "impressions": "3100",
+     "cpm": "20.967742",
+     "inline_link_click_ctr": "0.612903",
+     "frequency": "1.400000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "19"
+      }
+     ]
+    },
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000012",
+     "adset_name": "UAE | Interests | SME owners",
+     "ad_id": "120200000000000103",
+     "ad_name": "Audit-Static",
+     "spend": "95.00",
+     "impressions": "4000",
+     "cpm": "23.750000",
+     "inline_link_click_ctr": "0.750000",
+     "frequency": "2.900000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "30"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "2"
+      }
+     ]
+    },
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000012",
+     "adset_name": "UAE | Interests | SME owners",
+     "ad_id": "120200000000000104",
+     "ad_name": "NewBiz-Static",
+     "spend": "160.00",
+     "impressions": "6500",
+     "cpm": "24.615385",
+     "inline_link_click_ctr": "1.307692",
+     "frequency": "3.100000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "85"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "10"
+      }
+     ]
+    }
+   ],
+   "adset": [
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000011",
+     "adset_name": "UAE | Broad | 25-55",
+     "spend": "205.00",
+     "impressions": "10100",
+     "cpm": "20.297030",
+     "inline_link_click_ctr": "1.158416",
+     "frequency": "1.900000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "117"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "9"
+      }
+     ]
+    },
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "adset_id": "120200000000000012",
+     "adset_name": "UAE | Interests | SME owners",
+     "spend": "255.00",
+     "impressions": "10500",
+     "cpm": "24.285714",
+     "inline_link_click_ctr": "1.095238",
+     "frequency": "3.400000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "115"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "12"
+      }
+     ]
+    }
+   ],
+   "campaign": [
+    {
+     "campaign_id": "120200000000000001",
+     "campaign_name": "AZD | UAE | WhatsApp Leads | Website Design",
+     "spend": "460.00",
+     "impressions": "20600",
+     "cpm": "22.330097",
+     "inline_link_click_ctr": "1.126214",
+     "frequency": "2.400000",
+     "date_start": "{since}",
+     "date_stop": "{until}",
+     "actions": [
+      {
+       "action_type": "link_click",
+       "value": "232"
+      },
+      {
+       "action_type": "onsite_conversion.messaging_conversation_started_7d",
+       "value": "21"
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "adsets": [
+  {
+   "id": "120200000000000011",
+   "name": "UAE | Broad | 25-55",
+   "campaign_id": "120200000000000001",
+   "effective_status": "ACTIVE",
+   "daily_budget": "3750",
+   "start_days_ago": 10
+  },
+  {
+   "id": "120200000000000012",
+   "name": "UAE | Interests | SME owners",
+   "campaign_id": "120200000000000001",
+   "effective_status": "ACTIVE",
+   "daily_budget": "3750",
+   "start_days_ago": 10
+  }
+ ]
+}
