@@ -133,5 +133,5 @@ h1 { font-weight: 800; line-height: 1.05; letter-spacing: -1px; }
 .story .main { margin-top: 50px; }
 .nb:not(.story) .cta { font-size: 34px; padding: 22px 36px; }
 
-.status-bar { height: 52px; background: #fff; flex: none; }
+.status-bar { height: 52px; background: #000; flex: none; }
 .screen img.shot { width: 100%; flex: 1; object-fit: cover; object-position: top; display: block; min-height: 0; }

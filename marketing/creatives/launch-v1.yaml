@@ -87,6 +87,8 @@ creatives:
 
   # ---- Ad 4: NewBiz-Static ----
   - id: ad4-newbiz-portrait
+    phone_screenshot: brand/portfolio/graceitme-mobile.png
+    sample_note: "Our work: graceitme.com"
     template: newbiz
     size: portrait
     kicker: New business in the UAE? 🎉
@@ -95,6 +97,8 @@ creatives:
     cta: Chat on WhatsApp
     footnote: Fixed price · No surprises
   - id: ad4-newbiz-story
+    phone_screenshot: brand/portfolio/graceitme-mobile.png
+    sample_note: "Our work: graceitme.com"
     template: newbiz
     size: story
     kicker: New business in the UAE? 🎉
