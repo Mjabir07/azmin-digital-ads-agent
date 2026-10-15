@@ -128,7 +128,7 @@ def t_feature(c: dict, lang: str, size: str) -> str:
 <div class="canvas light"><div class="shape s1"></div><div class="shape s2"></div>
   {brand(False)}
   <div class="main" style="max-width:{width}">
-    <div class="icon-tile">{icon(c['icon'], 84)}</div>
+    <div class="icon-tile{' small' if c.get('icon_size') == 'small' else ''}">{icon(c['icon'], 60 if c.get('icon_size') == 'small' else 84)}</div>
     <h1 style="font-size:{c.get('title_size', 76)}px; margin-top:40px">{esc(c['title'])}</h1>
     <div class="sub muted" style="margin-top:22px; font-weight:400">{esc(c['text'])}</div>
     {visual if kind != 'phone' else ''}

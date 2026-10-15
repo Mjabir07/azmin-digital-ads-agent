@@ -23,7 +23,7 @@ A `.ae` domain needs a UAE trade licence.
 - Be clear about **what happens in year 2** (the renewal price). Guides warn buyers about hidden renewal
   costs, so being upfront about it helps build trust. → *Jabir to confirm the renewal price.*
 - The cheaper freelancers (AED 299–399) compete on price alone. Beat them on **local team, Arabic +
-  English, after-launch support, 7-day delivery**. This matches the playbook's answer to the "Fiverr" objection.
+  English, after-launch support, fast delivery (as little as 1 day)**. This matches the playbook's answer to the "Fiverr" objection.
 
 ## 3. What small-business owners struggle with
 
@@ -41,8 +41,8 @@ Older but still useful findings (no 2026 survey found):
 - **No "personal attributes":** don't write copy that says or hints at who the viewer is (for example
   "Are you struggling with money?"). Talk about the **product's benefits** instead.
   Asking "Starting a new business?" is about a situation, not a protected attribute, but keep it neutral.
-- **No guaranteed results.** Avoid "guaranteed more customers" or "100% more sales". "Live in 7 days" is fine
-  only if we always deliver in 7 days.
+- **No guaranteed results.** Avoid "guaranteed more customers" or "100% more sales". "As little as 1 day" is honest
+  because it describes the fastest case; a flat "live in 24 hours" would have to be true every time.
 - Prices in ads must match what we actually charge (AED 999 combo).
 
 ## Sources

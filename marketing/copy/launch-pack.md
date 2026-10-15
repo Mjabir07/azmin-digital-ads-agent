@@ -2,7 +2,7 @@
 
 Campaign: `AZD | UAE | WhatsApp Leads | Website Design` · Button: **Send WhatsApp message**
 Price used: **AED 999 Starter Combo, domain + 1 year hosting free** (confirmed by Jabir 2026-10-15).
-Approved by Jabir 2026-10-15 (English ads). "Live in 7 days" confirmed by Jabir.
+Approved by Jabir 2026-10-15 (English ads). Delivery claim approved by Jabir: "Ready in as little as 1 day".
 **Ad 5 (Arabic) is ON HOLD** until a native Arabic speaker has checked it.
 Page count and renewal price are not in the ads; Jabir answers them in WhatsApp.
 
@@ -29,7 +29,7 @@ Tap below to chat with us on WhatsApp.
 | 1 | **AED 999** Professional website for your business · Domain & hosting FREE for 1 year | All-in-one website offer |
 | 2 | Looks great on every phone | Mobile-first design |
 | 3 | One-tap WhatsApp button | Get enquiries directly |
-| 4 | Live in 7 days | Fast launch |
+| 4 | Ready in as little as 1 day | Fast launch |
 | 5 | Chat with us now → | Get your website today |
 
 ---
@@ -48,7 +48,7 @@ AED 999 including domain + 1 year hosting. Chat with us on WhatsApp 👇
 | --- | --- |
 | 0–3 | "Customers Google you first." (phone search animation) |
 | 3–7 | "No website? They choose someone else." |
-| 7–12 | Website mockup appears on a phone: "A professional site, live in days" |
+| 7–12 | Website mockup appears on a phone: "Ready in as little as 1 day" |
 | 12–16 | "AED 999 · Domain + 1 year hosting FREE" |
 | 16–20 | Logo + "Chat on WhatsApp" button |
 
@@ -98,7 +98,7 @@ Chat with us on WhatsApp 👇
 | 1 | **999 درهم** موقع لشركتك · النطاق والاستضافة مجاناً | عرض الموقع الشامل |
 | 2 | تصميم رائع على كل الجوالات | تصميم للجوال أولاً |
 | 3 | زر واتساب بلمسة واحدة | استفسارات مباشرة |
-| 4 | جاهز خلال 7 أيام | إطلاق سريع |
+| 4 | يمكن تسليمه خلال يوم واحد ("can be delivered within 1 day") | إطلاق سريع |
 | 5 | تواصل معنا الآن ← | احصل على موقعك اليوم |
 
 ---

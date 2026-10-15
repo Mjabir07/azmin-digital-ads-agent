@@ -5,7 +5,8 @@ packages:
   - name: Starter Combo
     confirmed: true
     includes: Business website + domain name + 1 year hosting free
-    delivery_days: 7          # confirmed by Jabir 2026-10-15: live within 7 days of receiving details
+    delivery_days_fastest: 1  # Jabir 2026-10-15: can deliver in 1 day. Ads say "as little as 1 day"
+                              # (domain setup or late customer content can add time).
     price_from: 999
     price_to: null
     # Page count and year-2 renewal price are NOT advertised. Jabir answers these himself when a

@@ -1,7 +1,7 @@
 # Launch creative pack v1 - matches marketing/copy/launch-pack.md.
 # Render: uv run --group creatives python -m agent.creatives.render marketing/creatives/launch-v1.yaml
 # Price comes from config/packages.yaml (Starter Combo, confirmed by Jabir).
-# "Live in 7 days" confirmed by Jabir 2026-10-15. Ad 5 (Arabic) on hold until native review.
+# "Ready in as little as 1 day" approved by Jabir 2026-10-15. Ad 5 (Arabic) on hold until native review.
 
 defaults:
   price: {currency: AED, amount: "999"}
@@ -43,8 +43,9 @@ creatives:
     icon: bolt
     sample_note: null
     visual: steps
-    title: "Live in **7 days**"
-    title_size: 100
+    title: "Ready in as little as\n**1 day**"
+    title_size: 80
+    icon_size: small
     text: Our UAE team handles everything.
     steps: [Share your business details, We design your website, You go live 🚀]
   - id: ad1-price-carousel-5
@@ -144,8 +145,9 @@ creatives:
     icon: bolt
     sample_note: null
     visual: steps
-    title: "جاهز خلال **7 أيام**"
-    title_size: 96
+    title: "يمكن تسليمه خلال\n**يوم واحد**"
+    title_size: 80
+    icon_size: small
     text: فريقنا في الإمارات يتولى كل شيء.
     steps: [شاركنا تفاصيل نشاطك, نصمم موقعك, موقعك جاهز 🚀]
   - id: ad5-price-carousel-ar-5
@@ -178,7 +180,7 @@ creatives:
     template: scene
     size: story
     scene: phone
-    title: A professional site, live in days
+    title: "Ready in as\nlittle as 1 day"
   - id: ad2-reel-scene-4
     template: scene
     size: story

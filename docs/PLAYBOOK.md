@@ -10,7 +10,7 @@ This file is a copy as of 2026-10-15. If they differ, ask Jabir which is current
 - Phases: Test (days 1–14, no edits first 72 h) → Optimise (days 15–30) → Scale (month 2, +20% every 3 days, add KSA + retargeting).
 
 ## 2. Offer
-Positioning: "Professional business websites for UAE companies — live in 7 days, fixed price, no hidden costs."
+Positioning: "Professional business websites for UAE companies — ready in as little as 1 day, fixed price, no hidden costs."
 
 | Package | Includes | Price AED (owner to confirm) |
 | --- | --- | --- |
