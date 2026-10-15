@@ -5,6 +5,5 @@ Used in WhatsApp replies (PLAYBOOK §6 step 3) and, with screenshots, in future 
 | Client | Link | Industry | Screenshots |
 | --- | --- | --- | --- |
 | MSJ Technical | https://www.msjtechnicaluae.com/ | Technical services | auto (portfolio-screenshots Action) |
-| Grace IT | https://www.graceitme.com/ | IT services | auto (portfolio-screenshots Action) |
 
 Rule: only real work goes here. Never show a sample design as client work, and never invent testimonials.
