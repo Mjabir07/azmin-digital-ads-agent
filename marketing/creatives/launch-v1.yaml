@@ -1,7 +1,7 @@
 # Launch creative pack v1 - matches marketing/copy/launch-pack.md.
 # Render: uv run --group creatives python -m agent.creatives.render marketing/creatives/launch-v1.yaml
 # Price comes from config/packages.yaml (Starter Combo, confirmed by Jabir).
-# "7 days" is the PLAYBOOK positioning - Jabir to confirm before launch.
+# "Live in 7 days" confirmed by Jabir 2026-10-15. Ad 5 (Arabic) on hold until native review.
 
 defaults:
   price: {currency: AED, amount: "999"}

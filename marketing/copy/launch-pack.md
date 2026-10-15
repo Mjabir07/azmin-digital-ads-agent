@@ -2,8 +2,9 @@
 
 Campaign: `AZD | UAE | WhatsApp Leads | Website Design` · Button: **Send WhatsApp message**
 Price used: **AED 999 Starter Combo, domain + 1 year hosting free** (confirmed by Jabir 2026-10-15).
-Lines marked **[confirm]** use details Jabir still needs to confirm.
-The Arabic copy should be checked by a native speaker before launch.
+Approved by Jabir 2026-10-15 (English ads). "Live in 7 days" confirmed by Jabir.
+**Ad 5 (Arabic) is ON HOLD** until a native Arabic speaker has checked it.
+Page count and renewal price are not in the ads; Jabir answers them in WhatsApp.
 
 WhatsApp pre-filled message: *"Hi! I'm interested in the AED 999 website offer."*
 Arabic: *"مرحباً! أنا مهتم بعرض الموقع الإلكتروني بـ 999 درهم."*
@@ -28,7 +29,7 @@ Tap below to chat with us on WhatsApp.
 | 1 | **AED 999** Professional website for your business · Domain & hosting FREE for 1 year | All-in-one website offer |
 | 2 | Looks great on every phone | Mobile-first design |
 | 3 | One-tap WhatsApp button | Get enquiries directly |
-| 4 | Live in 7 days **[confirm]** | Fast launch |
+| 4 | Live in 7 days | Fast launch |
 | 5 | Chat with us now → | Get your website today |
 
 ---
@@ -71,7 +72,7 @@ No obligation. Message us on WhatsApp to start.
 **Primary text**
 New business in the UAE? 🎉 Get online from day one.
 Professional website + domain + 1 year hosting, all for AED 999.
-Arabic & English available **[confirm]**. Fixed price, no surprises.
+Fixed price, no surprises.
 Chat with us on WhatsApp 👇
 
 **Headline:** New business? Website for AED 999
@@ -79,7 +80,7 @@ Chat with us on WhatsApp 👇
 
 ---
 
-## Ad 5 — Price-Carousel-AR (Arabic, 5 cards) · hook: Price
+## Ad 5 — Price-Carousel-AR (Arabic, 5 cards) · hook: Price · ⏸ ON HOLD (needs native review)
 
 **Primary text**
 موقع إلكتروني احترافي لشركتك بـ 999 درهم فقط 🚀
@@ -97,7 +98,7 @@ Chat with us on WhatsApp 👇
 | 1 | **999 درهم** موقع لشركتك · النطاق والاستضافة مجاناً | عرض الموقع الشامل |
 | 2 | تصميم رائع على كل الجوالات | تصميم للجوال أولاً |
 | 3 | زر واتساب بلمسة واحدة | استفسارات مباشرة |
-| 4 | جاهز خلال 7 أيام **[confirm]** | إطلاق سريع |
+| 4 | جاهز خلال 7 أيام | إطلاق سريع |
 | 5 | تواصل معنا الآن ← | احصل على موقعك اليوم |
 
 ---

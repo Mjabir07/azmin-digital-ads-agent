@@ -4,9 +4,12 @@ currency: AED
 packages:
   - name: Starter Combo
     confirmed: true
-    includes: Business website + domain name + 1 year hosting free   # page count etc. to confirm
+    includes: Business website + domain name + 1 year hosting free
+    delivery_days: 7          # confirmed by Jabir 2026-10-15: live within 7 days of receiving details
     price_from: 999
     price_to: null
+    # Page count and year-2 renewal price are NOT advertised. Jabir answers these himself when a
+    # lead asks - the agent / WhatsApp assistant must hand the question to Jabir, never guess.
   - name: Business
     confirmed: false
     includes: Up to 10 pages, Arabic + English, Google Business setup, speed optimisation
