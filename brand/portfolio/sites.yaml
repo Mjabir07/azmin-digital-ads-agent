@@ -1,0 +1,7 @@
+# Real client websites (Jabir's portfolio). A GitHub Action takes phone-size screenshots of
+# each one into this folder (<slug>-mobile.png) whenever this file changes.
+sites:
+  - slug: msjtechnicaluae
+    url: https://www.msjtechnicaluae.com/
+  - slug: graceitme
+    url: https://www.graceitme.com/
