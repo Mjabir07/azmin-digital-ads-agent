@@ -53,16 +53,21 @@ def brand(dark: bool) -> str:
     )
 
 
+_SCREENSHOT: str | None = None  # set per creative from the spec's `phone_screenshot`
+
+
 def phone(scale: float = 1.0, style: str = "") -> str:
-    return f"""
-<div class="phone" style="transform: scale({scale}); {style}"><div class="screen">
-  <div class="site-nav"><div class="site-logo">Al Noor <b>Trading</b></div><div class="burger"></div></div>
-  <div class="site-hero"><div class="t">Quality supplies<br>for UAE businesses</div><div class="s">Dubai · Sharjah · Abu Dhabi</div></div>
+    if _SCREENSHOT:
+        screen = f'<div class="status-bar"></div><img class="shot" src="{_SCREENSHOT}" alt="">'
+    else:  # generic sample site
+        screen = """
+  <div class="site-nav"><div class="site-logo">Your <b>Business</b></div><div class="burger"></div></div>
+  <div class="site-hero"><div class="t">Your business,<br>online in style</div><div class="s">Dubai · Sharjah · Abu Dhabi</div></div>
   <div class="site-btn">Chat on WhatsApp</div>
   <div class="site-grid"><div class="site-card"><i></i><u></u><u></u></div><div class="site-card"><i></i><u></u><u></u></div>
   <div class="site-card"><i></i><u></u><u></u></div><div class="site-card"><i></i><u></u><u></u></div></div>
-  <div class="site-line"></div><div class="site-line short"></div>
-</div></div>"""
+  <div class="site-line"></div><div class="site-line short"></div>"""
+    return f'<div class="phone" style="transform: scale({scale}); {style}"><div class="screen">{screen}</div></div>'
 
 
 def cta(c: dict, lang: str) -> str:
@@ -219,6 +224,11 @@ TEMPLATES = {"price": t_price, "feature": t_feature, "cta": t_cta, "list": t_lis
 
 
 def page(c: dict) -> str:
+    global _SCREENSHOT
+    shot = c.get("phone_screenshot")
+    _SCREENSHOT = (ROOT / shot).as_uri() if shot and (ROOT / shot).exists() else None
+    if shot and not _SCREENSHOT:
+        c = {**c, "sample_note": c.get("sample_note_fallback")}  # real screenshot missing: label as sample
     lang = c.get("lang", "en")
     w, h = SIZES[c["size"]]
     body = TEMPLATES[c["template"]](c, lang, c["size"])

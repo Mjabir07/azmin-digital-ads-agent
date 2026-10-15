@@ -5,7 +5,10 @@
 
 defaults:
   price: {currency: AED, amount: "999"}
-  sample_note: "Sample design for illustration"
+  # Real client work on the phone screen (screenshot taken by the portfolio-screenshots Action).
+  phone_screenshot: brand/portfolio/msjtechnicaluae-mobile.png
+  sample_note: "Our work: msjtechnicaluae.com"
+  sample_note_fallback: "Sample design for illustration"
 
 creatives:
   # ---- Ad 1: Price-Carousel (English) - 5 square cards ----
@@ -110,14 +113,16 @@ creatives:
     sub: موقع احترافي لشركتك
     badge: النطاق والاستضافة مجاناً لمدة سنة
     footnote: سعر ثابت · بدون رسوم مخفية
-    sample_note: تصميم توضيحي
+    sample_note: "من أعمالنا: msjtechnicaluae.com"
+    sample_note_fallback: تصميم توضيحي
   - id: ad5-price-carousel-ar-2
     template: feature
     size: square
     lang: ar
     icon: phone
     visual: phone
-    sample_note: تصميم توضيحي
+    sample_note: "من أعمالنا: msjtechnicaluae.com"
+    sample_note_fallback: تصميم توضيحي
     title: تصميم رائع على كل الجوالات
     text: تصميم احترافي يناسب الجوال ويُظهر شركتك بأفضل صورة.
   - id: ad5-price-carousel-ar-3
