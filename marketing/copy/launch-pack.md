@@ -25,7 +25,7 @@ Tap below to chat with us on WhatsApp.
 
 | Card | Image text | Card headline |
 | --- | --- | --- |
-| 1 | **AED 999** Business website · Domain + hosting free | All-in-one website offer |
+| 1 | **AED 999** Professional website for your business · Domain & hosting FREE for 1 year | All-in-one website offer |
 | 2 | Looks great on every phone | Mobile-first design |
 | 3 | One-tap WhatsApp button | Get enquiries directly |
 | 4 | Live in 7 days **[confirm]** | Fast launch |

@@ -13,6 +13,10 @@ dependencies = [
 ]
 
 [dependency-groups]
+creatives = [
+    "pillow>=12.3.0",
+    "playwright>=1.55",
+]
 dev = ["pytest"]
 
 [build-system]

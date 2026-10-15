@@ -21,3 +21,14 @@ Code: `agent/ads/fetch_insights.py` (Meta, read-only) → `agent/rules/engine.py
 → `agent/storage/sheets.py` (Google Sheet `metrics` + `actions_log`) → `agent/report/daily.py`
 (Claude writes the report; simple template if Claude is unavailable) → `agent/notify/telegram.py`.
 Limits and targets: `config/*.yaml`.
+
+## Ad creatives
+
+Posters and the reel are made from a spec file (text, sizes, languages):
+
+```
+uv run --group creatives python -m agent.creatives.render marketing/creatives/launch-v1.yaml
+```
+
+Output: `marketing/creatives/launch-v1/` (PNGs, `ad2-pain-reel.mp4`, `contact-sheet.png`).
+Brand assets: `brand/` (logo, OFL fonts). Copy: `marketing/copy/`. Research: `marketing/research/`.
