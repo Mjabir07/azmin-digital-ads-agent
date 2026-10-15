@@ -14,7 +14,7 @@ Positioning: "Professional business websites for UAE companies — live in 7 day
 
 | Package | Includes | Price AED (owner to confirm) |
 | --- | --- | --- |
-| Starter | 5 pages, mobile, WhatsApp button, form, basic SEO, 1 yr hosting + domain | 1,499–2,499 |
+| Starter Combo | Business website + domain + 1 yr hosting free (other inclusions to confirm) | **from 999 (confirmed by Jabir 2026-10-15)** |
 | Business | Up to 10 pages, Arabic + English, Google Business setup, speed optimisation | 3,500–5,500 |
 | E-commerce | Store, payment gateway, up to 50 products | 6,000–12,000 |
 
