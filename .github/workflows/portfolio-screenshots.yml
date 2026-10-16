@@ -1,0 +1,33 @@
+# Takes phone-size screenshots of Jabir's portfolio sites (brand/portfolio/sites.yaml)
+# and commits them to brand/portfolio/ so the ad creatives can show real work.
+name: portfolio-screenshots
+
+on:
+  push:
+    paths:
+      - brand/portfolio/sites.yaml
+      - agent/creatives/screenshot.py
+      - .github/workflows/portfolio-screenshots.yml
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  screenshots:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked --group creatives
+      - run: uv run playwright install --with-deps chromium
+      - run: uv run python -m agent.creatives.screenshot
+      - name: Commit screenshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add brand/portfolio/*.png
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "Update portfolio screenshots"
+          git push

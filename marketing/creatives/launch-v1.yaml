@@ -1,0 +1,202 @@
+# Launch creative pack v1 - matches marketing/copy/launch-pack.md.
+# Render: uv run --group creatives python -m agent.creatives.render marketing/creatives/launch-v1.yaml
+# Price comes from config/packages.yaml (Starter Combo, confirmed by Jabir).
+# "Ready in as little as 1 day" approved by Jabir 2026-10-15. Ad 5 (Arabic) on hold until native review.
+
+defaults:
+  price: {currency: AED, amount: "999"}
+  # Real client work on the phone screen (screenshot taken by the portfolio-screenshots Action).
+  phone_screenshot: brand/portfolio/msjtechnicaluae-mobile.png
+  sample_note: "Our work: msjtechnicaluae.com"
+  sample_note_fallback: "Sample design for illustration"
+
+creatives:
+  # ---- Ad 1: Price-Carousel (English) - 5 square cards ----
+  - id: ad1-price-carousel-1
+    template: price
+    size: square
+    kicker: Business website offer
+    sub: Professional website for your business
+    badge: Domain & hosting FREE for 1 year
+    footnote: Fixed price · No hidden costs
+  - id: ad1-price-carousel-2
+    template: feature
+    size: square
+    icon: phone
+    visual: phone
+    title: Looks great on every phone
+    text: Mobile-first design that makes your business look professional.
+  - id: ad1-price-carousel-3
+    template: feature
+    size: square
+    icon: chat
+    visual: chat
+    sample_note: null
+    title: One-tap WhatsApp button
+    text: Customers message you straight from your website.
+    chat:
+      - {side: in, text: "Hi! Do you deliver to Sharjah? 📦"}
+      - {side: out, text: "Yes! Same day. Shall I send the price list?"}
+  - id: ad1-price-carousel-4
+    template: feature
+    size: square
+    icon: bolt
+    sample_note: null
+    visual: steps
+    title: "Ready in as little as\n**1 day**"
+    title_size: 80
+    icon_size: small
+    text: Our UAE team handles everything.
+    steps: [Share your business details, We design your website, You go live 🚀]
+  - id: ad1-price-carousel-5
+    template: cta
+    size: square
+    title: Get your website today
+    text: AED 999 · Domain + 1 year hosting included
+    perks: [Mobile-friendly, WhatsApp button, Fixed price]
+    cta: Chat with us on WhatsApp
+    footnote: AZMIN DIGITAL · UAE
+
+  # ---- Ad 1 hero as Story / Reels placement ----
+  - id: ad1-price-story
+    template: price
+    size: story
+    kicker: Business website offer
+    sub: Professional website for your business
+    badge: Domain & hosting FREE for 1 year
+    footnote: Fixed price · No hidden costs · Tap to chat on WhatsApp
+
+  # ---- Ad 3: Audit-Static ----
+  - id: ad3-audit-portrait
+    template: list
+    size: portrait
+    kicker: Free · No obligation
+    title: Free website check-up
+    text: We review your site and send you 3 simple fixes.
+    items: [Speed, Looks right on phones, Found on Google, WhatsApp & contact buttons]
+    cta: Get my free audit
+    footnote: For UAE businesses that already have a website
+  - id: ad3-audit-story
+    template: list
+    size: story
+    kicker: Free · No obligation
+    title: Free website check-up
+    text: We review your site and send you 3 simple fixes.
+    items: [Speed, Looks right on phones, Found on Google, WhatsApp & contact buttons]
+    cta: Get my free audit
+    footnote: For UAE businesses that already have a website
+
+  # ---- Ad 4: NewBiz-Static ----
+  - id: ad4-newbiz-portrait
+    template: newbiz
+    size: portrait
+    kicker: New business in the UAE? 🎉
+    title: Get online from day one
+    sub: Website + domain + 1 year hosting
+    cta: Chat on WhatsApp
+    footnote: Fixed price · No surprises
+  - id: ad4-newbiz-story
+    template: newbiz
+    size: story
+    kicker: New business in the UAE? 🎉
+    title: Get online from day one
+    sub: Website + domain + 1 year hosting
+    cta: Chat on WhatsApp
+    footnote: Fixed price · No surprises
+
+  # ---- Ad 5: Price-Carousel-AR (Arabic) - 5 square cards ----
+  - id: ad5-price-carousel-ar-1
+    template: price
+    size: square
+    lang: ar
+    price: {currency: درهم, amount: "999"}
+    kicker: عرض الموقع الإلكتروني للشركات
+    sub: موقع احترافي لشركتك
+    badge: النطاق والاستضافة مجاناً لمدة سنة
+    footnote: سعر ثابت · بدون رسوم مخفية
+    sample_note: "من أعمالنا: msjtechnicaluae.com"
+    sample_note_fallback: تصميم توضيحي
+  - id: ad5-price-carousel-ar-2
+    template: feature
+    size: square
+    lang: ar
+    icon: phone
+    visual: phone
+    sample_note: "من أعمالنا: msjtechnicaluae.com"
+    sample_note_fallback: تصميم توضيحي
+    title: تصميم رائع على كل الجوالات
+    text: تصميم احترافي يناسب الجوال ويُظهر شركتك بأفضل صورة.
+  - id: ad5-price-carousel-ar-3
+    template: feature
+    size: square
+    lang: ar
+    icon: chat
+    visual: chat
+    sample_note: null
+    title: زر واتساب بلمسة واحدة
+    text: يتواصل معك العملاء مباشرة من موقعك.
+    chat:
+      - {side: in, text: "مرحباً! هل توصلون إلى الشارقة؟ 📦"}
+      - {side: out, text: "نعم! في نفس اليوم. هل أرسل لك قائمة الأسعار؟"}
+  - id: ad5-price-carousel-ar-4
+    template: feature
+    size: square
+    lang: ar
+    icon: bolt
+    sample_note: null
+    visual: steps
+    title: "يمكن تسليمه خلال\n**يوم واحد**"
+    title_size: 80
+    icon_size: small
+    text: فريقنا في الإمارات يتولى كل شيء.
+    steps: [شاركنا تفاصيل نشاطك, نصمم موقعك, موقعك جاهز 🚀]
+  - id: ad5-price-carousel-ar-5
+    template: cta
+    size: square
+    lang: ar
+    title: احصل على موقعك اليوم
+    text: 999 درهم · النطاق والاستضافة لسنة مشمولة
+    perks: [متوافق مع الجوال, زر واتساب, سعر ثابت]
+    cta: تواصل معنا عبر واتساب
+    footnote: أزمين ديجيتال · الإمارات
+
+  # ---- Ad 2: Pain-Reel scenes (story size) ----
+  - id: ad2-reel-scene-1
+    template: scene
+    size: story
+    sample_note: null
+    scene: search
+    title: Customers Google you first.
+    query: website designer near me
+    result: Your Business — Official Website
+  - id: ad2-reel-scene-2
+    template: scene
+    size: story
+    sample_note: null
+    scene: text
+    title_size: 120
+    title: "No website?\nThey choose someone else."
+  - id: ad2-reel-scene-3
+    template: scene
+    size: story
+    scene: phone
+    title: "Ready in as\nlittle as 1 day"
+  - id: ad2-reel-scene-4
+    template: scene
+    size: story
+    sample_note: null
+    scene: price
+    title: All-in-one offer
+    badge: Domain + 1 year hosting FREE
+  - id: ad2-reel-scene-5
+    template: scene
+    size: story
+    sample_note: null
+    scene: cta
+    title: Get your website today
+    cta: Chat on WhatsApp
+
+reels:
+  - id: ad2-pain-reel
+    seconds_per_scene: 4
+    scenes: [ad2-reel-scene-1, ad2-reel-scene-2, ad2-reel-scene-3, ad2-reel-scene-4, ad2-reel-scene-5]

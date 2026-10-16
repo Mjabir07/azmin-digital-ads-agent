@@ -1,0 +1,24 @@
+# KPI targets from docs/PLAYBOOK.md section 8. Amounts in AED.
+currency: AED
+target_cost_per_conversation: 25
+
+# Rule thresholds (CLAUDE.md "Optimisation rules")
+pause_min_spend_no_conversations: 60      # ad spent >= this with 0 conversations -> pause
+pause_cost_multiple_of_adset: 2.0         # ad cost/conv >= 2x its ad set average ...
+pause_cost_multiple_min_spend: 80         # ... after at least this much spend -> pause
+max_frequency_7d: 3                       # ad set frequency above this -> new creatives
+budget_increase_min_days_running: 7       # ad set must run this long before +20%
+
+# Funnel checks (need lead data - used from Phase 2)
+min_conversations_for_funnel_check: 20    # "many chats"
+min_qualification_rate: 0.15              # below this -> offer/targeting problem
+min_close_rate: 0.05                      # below this -> sales process problem
+
+# Report colour bands (PLAYBOOK section 8)
+kpi:
+  link_ctr_good: 1.2
+  link_ctr_poor: 0.7
+  cpm_good_max: 35
+  cpm_poor: 50
+  cost_per_conversation_good_max: 25
+  cost_per_conversation_poor: 40

@@ -1,0 +1,23 @@
+# Website packages and prices. OWNER-EDITED ONLY - the agent never invents prices.
+# Starter price confirmed by Jabir on 2026-10-15. Business / E-commerce are still PLAYBOOK ranges.
+currency: AED
+packages:
+  - name: Starter Combo
+    confirmed: true
+    includes: Business website + domain name + 1 year hosting free
+    delivery_days_fastest: 1  # Jabir 2026-10-15: can deliver in 1 day. Ads say "as little as 1 day"
+                              # (domain setup or late customer content can add time).
+    price_from: 999
+    price_to: null
+    # Page count and year-2 renewal price are NOT advertised. Jabir answers these himself when a
+    # lead asks - the agent / WhatsApp assistant must hand the question to Jabir, never guess.
+  - name: Business
+    confirmed: false
+    includes: Up to 10 pages, Arabic + English, Google Business setup, speed optimisation
+    price_from: 3500
+    price_to: 5500
+  - name: E-commerce
+    confirmed: false
+    includes: Online store, payment gateway, up to 50 products
+    price_from: 6000
+    price_to: 12000
