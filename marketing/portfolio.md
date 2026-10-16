@@ -7,3 +7,5 @@ Used in WhatsApp replies (PLAYBOOK §6 step 3) and, with screenshots, in future 
 | MSJ Technical | https://www.msjtechnicaluae.com/ | Technical services | auto (portfolio-screenshots Action) |
 
 Rule: only real work goes here. Never show a sample design as client work, and never invent testimonials.
+
+Agency website: https://azmindigital.com (services: Website Design, AI Automation, Digital Marketing, Business Email Setup).

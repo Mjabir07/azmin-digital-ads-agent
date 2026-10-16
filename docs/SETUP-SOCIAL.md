@@ -15,7 +15,8 @@ All texts to copy are in `marketing/social/profile-text.md` and `marketing/socia
 4. Business name: **AZMIN DIGITAL**. Category: **Professional Services**. Profile photo: `profile-picture.png`.
 5. Tap **⋮ (or Settings) → Business tools → Business profile** → paste the **Description**.
 6. **Business tools → Greeting message** → turn on → paste the greeting → Save.
-7. **Business tools → Quick replies** → add each shortcut from the table (`/q1`, `/q2`, `/q3`, `/price`, `/work`, `/how`, `/audit`, `/call`).
+7. **Business tools → Quick replies** → add each shortcut from the table (`/q1`, `/q2`, `/q3`, `/price`, `/work`, `/services`, `/how`, `/audit`, `/call`).
+8. **Business profile → Website** → `https://azmindigital.com`; **About** → paste the About line.
 ✅ Test: from your personal WhatsApp, send "Hi" to the new number. You should get the greeting.
 
 ## Step 2 — Make Facebook and Instagram look professional (about 10 min)

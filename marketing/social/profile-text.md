@@ -3,9 +3,18 @@
 ## WhatsApp Business (new number)
 - **Business name:** AZMIN DIGITAL
 - **Category:** Professional Services (or "IT Services" if it is in the list)
-- **Description** (max 512 characters):
-  > Professional websites for UAE businesses. AED 999 including domain + 1 year hosting. Mobile-friendly design, WhatsApp button, fixed price, no hidden costs. Ready in as little as 1 day. Serving Dubai, Sharjah, Abu Dhabi & Ajman.
-- **Address:** leave empty (or your city) · **Email / website:** add later when you have them
+- **About** (short line under your name, max 139 characters):
+  > Websites · AI Automation · Digital Marketing · Business Email | Dubai, UAE
+- **Description** (max 512 characters — 414 used):
+  > AZMIN DIGITAL – digital agency in Dubai for growing businesses.
+  > 🌐 Website Design – fast, mobile-friendly, SEO-ready
+  > 🤖 AI Automation – WhatsApp & website chatbots, lead follow-up
+  > 📈 Digital Marketing – Google & Meta ads, SEO, social media
+  > 📧 Business Email – Google Workspace, Microsoft 365, Zoho
+  > Websites from AED 999 incl. domain + 1 year hosting.
+  > Clear quote before we start · Support after launch
+  > azmindigital.com
+- **Website:** https://azmindigital.com · **Address:** Dubai, UAE · **Email:** your business email (as on the website)
 - **Hours:** Always open (you'll get chats from ads at any time; reply as soon as you can)
 
 ### Greeting message (sent automatically to new chats)
@@ -21,7 +30,8 @@
 | `/q2` | 2️⃣ What is the main goal: more enquiries, online sales, or a professional image? |
 | `/q3` | 3️⃣ When would you like to launch, and what budget do you have in mind? |
 | `/price` | Our Starter Combo is **AED 999** — a professional website including domain + 1 year hosting, mobile-friendly, with a WhatsApp button. Fixed price, no hidden costs. |
-| `/work` | Here's a recent project: https://www.msjtechnicaluae.com/ 🙂 |
+| `/work` | Here's a recent project: https://www.msjtechnicaluae.com/ 🙂 You can see more of our work at https://azmindigital.com |
+| `/services` | We help businesses with 4 things: 🌐 websites, 🤖 AI automation (WhatsApp & website chatbots), 📈 digital marketing (Google & Meta ads, SEO) and 📧 business email (Google Workspace, Microsoft 365, Zoho). Which one are you interested in? |
 | `/how` | How it works: 1) you share your business details (logo, text, photos), 2) we design your website, 3) you go live — in as little as 1 day. |
 | `/audit` | Happy to do a free check-up! Please send your website link and we'll reply with 3 simple fixes. |
 | `/call` | Would a quick 10-minute call help? Tell me a good time and I'll call you. |
@@ -29,10 +39,11 @@
 Rule: page count, renewal price and custom work → you answer yourself; never guess.
 
 ## Instagram bio (max 150 characters)
-> Professional websites for UAE businesses 🇦🇪
-> AED 999 · Domain + hosting included
-> Ready in as little as 1 day ⚡
+> Websites · AI Automation · Marketing · Business Email 🇦🇪
+> Websites from AED 999 incl. domain + hosting
+> ⚡ Ready in as little as 1 day
 > 👇 Chat on WhatsApp
+- **Website / link:** https://azmindigital.com
 
 - **Name field:** AZMIN DIGITAL | Websites UAE  (the name field is searchable — this helps people find you)
 - **Category:** Web Designer
@@ -40,7 +51,8 @@ Rule: page count, renewal price and custom work → you answer yourself; never g
 
 ## Facebook Page
 - **Intro / Bio** (max 101 characters):
-  > Professional websites for UAE businesses. AED 999 incl. domain + hosting. Ready in as little as 1 day.
+  > Websites, AI automation, digital marketing & business email for UAE businesses. From AED 999.
+- **Website:** https://azmindigital.com
 - **Category:** Web Designer
 - **Action button:** Send WhatsApp message → your new business number
 - **Profile picture:** `marketing/social/kit-v1/profile-picture.png`
