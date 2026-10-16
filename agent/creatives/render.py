@@ -22,7 +22,7 @@ import yaml
 from agent.config import ROOT
 
 HERE = Path(__file__).resolve().parent
-SIZES = {"square": (1080, 1080), "portrait": (1080, 1350), "story": (1080, 1920)}
+SIZES = {"square": (1080, 1080), "portrait": (1080, 1350), "story": (1080, 1920), "cover": (1640, 624)}
 
 # Simple line icons (drawn for this project).
 ICONS = {
@@ -31,6 +31,8 @@ ICONS = {
     "chat": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.4 7.6L3.5 20.5l1.4-4.4A8.5 8.5 0 1 1 20.5 11.5z"/><path d="M8.5 10.5h7M8.5 13.5h4.5"/></svg>',
     "bolt": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2.5L4.5 13.5H12l-1 8 8.5-11H12l1-8z"/></svg>',
     "search": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#5B6B85" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5l5 5"/></svg>',
+    "tag": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4.5a1 1 0 0 1 1-1h8l8 8-9 9-8-8z"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>',
+    "star": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
     "arrow": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     "arrow_left": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
 }
@@ -220,7 +222,35 @@ def t_scene(c: dict, lang: str, size: str) -> str:
 </div>"""
 
 
-TEMPLATES = {"price": t_price, "feature": t_feature, "cta": t_cta, "list": t_list, "newbiz": t_newbiz, "scene": t_scene}
+def t_profile(c: dict, lang: str, size: str) -> str:
+    """Profile picture: logo centred so it survives Instagram's circle crop."""
+    return f"""<div class="canvas" style="background:#fff; display:grid; place-items:center; padding:0">
+  <img src="{(ROOT / 'brand/logo.png').as_uri()}" style="width:62%; height:62%; object-fit:contain" alt=""></div>"""
+
+
+def t_cover(c: dict, lang: str, size: str) -> str:
+    """Facebook cover (1640x624). Key content stays in the centre ~1200px that mobile shows."""
+    perks = "".join(f'<span class="perk">{esc(p)}</span>' for p in c.get("perks", []))
+    return f"""
+<div class="canvas dark" style="padding:0 220px; justify-content:center"><div class="shape s1"></div><div class="shape s2"></div>
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:40px; position:relative; z-index:2">
+    <div style="max-width:760px">
+      {brand(True)}
+      <h1 style="font-size:64px; margin-top:28px">{esc(c['title'])}</h1>
+      <div class="perks" style="margin-top:26px">{perks}</div>
+    </div>
+    <div style="height:520px; width:300px; position:relative">{phone(0.7, "position:absolute; right:0; top:10px; transform-origin: top right;")}</div>
+  </div>
+</div>"""
+
+
+def t_highlight(c: dict, lang: str, size: str) -> str:
+    """Instagram highlight cover: one icon, centred (shown in a small circle)."""
+    return f"""<div class="canvas" style="background:linear-gradient(135deg, var(--blue), var(--cyan)); display:grid; place-items:center; padding:0">
+  {icon(c['icon'], 420)}</div>"""
+
+
+TEMPLATES = {"profile": t_profile, "cover": t_cover, "highlight": t_highlight, "price": t_price, "feature": t_feature, "cta": t_cta, "list": t_list, "newbiz": t_newbiz, "scene": t_scene}
 
 
 def page(c: dict) -> str:

@@ -1,0 +1,81 @@
+# Social profile kit: profile picture, Facebook cover, Instagram highlight covers, 6 starter posts.
+# Render: uv run --group creatives python -m agent.creatives.render marketing/social/kit-v1.yaml
+# Captions and profile texts: marketing/social/profile-text.md and marketing/social/starter-posts.md
+
+defaults:
+  price: {currency: AED, amount: "999"}
+  phone_screenshot: brand/portfolio/msjtechnicaluae-mobile.png
+  sample_note: "Our work: msjtechnicaluae.com"
+  sample_note_fallback: "Sample design for illustration"
+
+creatives:
+  - id: profile-picture
+    template: profile
+    size: square
+  - id: facebook-cover
+    template: cover
+    size: cover
+    title: Professional websites for UAE businesses
+    perks: [AED 999, Domain + hosting included, Ready in as little as 1 day]
+  - {id: highlight-offer, template: highlight, size: story, icon: tag}
+  - {id: highlight-work, template: highlight, size: story, icon: star}
+  - {id: highlight-how, template: highlight, size: story, icon: bolt}
+  - {id: highlight-contact, template: highlight, size: story, icon: chat}
+
+  # ---- Starter posts (4:5 portrait). Post them in this order: 1 first, 6 last. ----
+  - id: post-1-hello
+    template: cta
+    size: portrait
+    title: "Hello UAE 👋\nWe're AZMIN DIGITAL"
+    text: We build professional websites for small businesses.
+    perks: [Mobile-friendly, WhatsApp button, Fixed price]
+    cta: Chat with us on WhatsApp
+    footnote: Dubai · Sharjah · Abu Dhabi · Ajman
+  - id: post-2-offer
+    template: price
+    size: portrait
+    kicker: Business website offer
+    sub: Professional website for your business
+    badge: Domain & hosting FREE for 1 year
+    footnote: Fixed price · No hidden costs
+  - id: post-3-our-work
+    template: feature
+    size: portrait
+    icon: star
+    visual: phone
+    title: "Recent project:\nMSJ Technical"
+    title_size: 62
+    text: A clean, mobile-friendly website for a Dubai fit-out contractor.
+  - id: post-4-how-it-works
+    template: feature
+    size: portrait
+    icon: bolt
+    visual: steps
+    sample_note: null
+    title: "Ready in as little as\n**1 day**"
+    title_size: 84
+    text: How it works
+    steps: [Share your business details, We design your website, You go live 🚀]
+  - id: post-5-signs
+    template: list
+    size: portrait
+    kicker: Quick check
+    title: Does your business need a website?
+    title_size: 88
+    text: "If you said yes to any of these, it does:"
+    items:
+      - "Customers ask: do you have a website?"
+      - You only have an Instagram page
+      - "People can't find you on Google"
+      - Your old site looks bad on phones
+    cta: Chat on WhatsApp
+    footnote: AED 999 · Domain + 1 year hosting included
+  - id: post-6-audit
+    template: list
+    size: portrait
+    kicker: Free · No obligation
+    title: Free website check-up
+    text: Already have a website? We review it and send you 3 simple fixes.
+    items: [Speed, Looks right on phones, Found on Google, WhatsApp & contact buttons]
+    cta: Get my free audit
+    footnote: Message us "AUDIT" on WhatsApp
