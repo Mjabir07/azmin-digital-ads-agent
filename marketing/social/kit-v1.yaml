@@ -14,7 +14,7 @@ creatives:
     size: square
   - id: facebook-cover
     template: cover_agency
-    size: cover
+    size: fbcover   # 1640x924: fits the Facebook phone app (16:9) and computer (centre strip)
     title: "Websites, automation and growth, built to work."
     sub: Digital agency for growing businesses · azmindigital.com
     services:

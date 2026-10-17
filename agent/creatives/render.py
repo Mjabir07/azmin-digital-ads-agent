@@ -22,7 +22,7 @@ import yaml
 from agent.config import ROOT
 
 HERE = Path(__file__).resolve().parent
-SIZES = {"square": (1080, 1080), "portrait": (1080, 1350), "story": (1080, 1920), "cover": (1640, 624)}
+SIZES = {"square": (1080, 1080), "portrait": (1080, 1350), "story": (1080, 1920), "cover": (1640, 624), "fbcover": (1640, 924)}
 
 # Simple line icons (drawn for this project).
 ICONS = {
@@ -256,9 +256,9 @@ def t_cover_agency(c: dict, lang: str, size: str) -> str:
         for sv in c["services"]
     )
     return f"""
-<div class="canvas dark" style="padding:0 200px; justify-content:center"><div class="shape s1"></div><div class="shape s2"></div>
+<div class="canvas dark" style="padding:{'190px 130px 0' if size == 'fbcover' else '0 200px'}; justify-content:{'flex-start' if size == 'fbcover' else 'center'}"><div class="shape s1"></div><div class="shape s2"></div>
   <div style="display:flex; align-items:center; justify-content:space-between; gap:56px; position:relative; z-index:2">
-    <div style="max-width:560px">
+    <div style="max-width:{'640px' if size == 'fbcover' else '560px'}">
       {brand(True)}
       <h1 style="font-size:58px; margin-top:26px">{esc(c['title'])}</h1>
       <div class="sub" style="margin-top:16px; font-size:28px; color:var(--cyan)">{esc(c['sub'])}</div>
