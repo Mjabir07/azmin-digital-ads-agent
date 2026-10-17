@@ -9,6 +9,30 @@ report — and Jabir monitors, approves with one tap, and handles leads.*
 - **Approval:** weekly batch — one Telegram tap approves the week. Revisit full auto after 2–3 good weeks.
 - **LinkedIn:** apply for LinkedIn's Community Management API (free). Facebook + Instagram go live first; LinkedIn joins when approved.
 - **Reels:** fully AI-made (motion graphics, AI b-roll, AI voice) — no founder filming.
+- **Budget: FREE tools only.** Only costs: Claude Pro subscription + Meta ad budget. Every paid tool below is
+  replaced by the free stack in §0.
+
+## 0. The free stack (replaces all paid tools — decision 2026-10-17)
+
+| Need | Free tool | Notes |
+| --- | --- | --- |
+| Agent "brain" (planning, writing, reviewing) | **Claude Code with your Claude Pro plan**, run as scheduled routines | No paid API key. Weekly content batch is created in a Claude session |
+| Daily report text | Built-in template report (already works without a Claude API key) | Claude-written version only if you add a paid API key later |
+| Scheduling / running jobs | **GitHub Actions** | Free minutes (private repo: 2,000 min/month — enough) |
+| Posting to Facebook + Instagram | **Meta Graph API** | Free, already connected ✅ |
+| Posting to LinkedIn | LinkedIn Community Management API | Free; waiting for approval |
+| Designs | Our brand renderer (HTML/CSS → PNG) | Free, already built ✅ |
+| Photos & b-roll video clips | **Pexels / Pixabay** free APIs | Free for commercial use, no attribution required |
+| Motion graphics reels | **Remotion** + ffmpeg | Remotion is free for individuals/companies up to 3 people |
+| Voiceover | **Kokoro TTS** (open-source, Apache-2.0) | Runs inside GitHub Actions, natural English voices |
+| Captions | **faster-whisper** (open-source) | Word-timed animated captions |
+| Music | **YouTube Audio Library / Pixabay Music** | Royalty-free, commercial use allowed |
+| Public links for Instagram reels | A separate **public** GitHub repo for published media | Instagram's API needs a public video URL; only already-public content goes there |
+| Approvals & reports | Telegram bot | Free ✅ |
+| Content calendar, leads | Google Sheets | Free |
+
+Paid tools mentioned later in this document (fal.ai, ElevenLabs, posting services, Claude API) are **optional
+upgrades only** — not used unless Jabir decides otherwise.
 
 ## 1. The idea in one picture
 
@@ -139,14 +163,12 @@ Proof-driven, premium look, UAE-local, English first (Arabic once a native revie
 
 ## 8. Monthly running cost (approximate — check current prices)
 
-| Item | Approx. |
+| Item | Cost |
 | --- | --- |
-| Claude API (planning, writing, reports) | $20–60 |
-| AI images + video clips (fal.ai, pay-per-use) | $30–120 |
-| ElevenLabs voice | $5–22 |
-| LinkedIn posting service (if option 2) | $20–50 |
-| GitHub Actions, Meta API, Google Sheets | Free tiers |
+| Claude Pro (you already have it) | Your existing subscription |
+| All tools in §0 | **Free** |
 | **Ads budget (separate)** | AED 75/day to start = ~AED 2,250/month |
+| *Optional later upgrades* (Claude API, fal.ai, ElevenLabs) | Only if you choose |
 
 ## 9. Safety rules that never change
 - No money moves without your approval; budget ceilings stay in `config/limits.yaml`.
