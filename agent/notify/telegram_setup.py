@@ -24,7 +24,16 @@ def main() -> int:
             print("Token rejected by Telegram - check the TELEGRAM_BOT_TOKEN secret.")
             return 1
         print(f"Bot: @{me['result']['username']}")
-        updates = http.get(f"{base}/getUpdates").json().get("result", [])
+        hook = http.get(f"{base}/getWebhookInfo").json().get("result", {})
+        if hook.get("url"):
+            print("A webhook is set on this bot, so messages are not kept for us. Removing it.")
+            http.post(f"{base}/deleteWebhook")
+        resp = http.get(f"{base}/getUpdates").json()
+        if not resp.get("ok"):
+            print(f"Telegram error: {resp.get('description')}")
+            return 1
+        updates = resp.get("result", [])
+        print(f"Messages waiting: {len(updates)}")
         chats = {}
         for u in updates:
             msg = u.get("message") or u.get("edited_message") or {}
