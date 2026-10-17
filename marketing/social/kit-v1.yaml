@@ -13,10 +13,11 @@ creatives:
     template: profile
     size: square
   - id: facebook-cover
-    template: cover_agency
+    template: cover_center
     size: fbcover   # 1640x924: fits the Facebook phone app (16:9) and computer (centre strip)
-    title: "Websites, automation and growth, built to work."
-    sub: Digital agency for growing businesses · azmindigital.com
+    title: "Digital agency for\ngrowing businesses"
+    left: azmindigital.com
+    right: Dubai, UAE
     services:
       - {icon: globe, title: Website Design, text: "Fast, mobile-first, SEO-ready"}
       - {icon: bot, title: AI Automation, text: "WhatsApp & website chatbots"}

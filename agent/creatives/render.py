@@ -268,13 +268,29 @@ def t_cover_agency(c: dict, lang: str, size: str) -> str:
 </div>"""
 
 
+def t_cover_center(c: dict, lang: str, size: str) -> str:
+    """Facebook cover (1640x924) laid out for the phone app: everything centred, corners left empty
+    (Facebook's buttons sit there) and the bottom centre left empty (profile picture)."""
+    chips = "".join(f'<span class="cchip">{icon(sv["icon"], 30)}{esc(sv["title"])}</span>' for sv in c["services"])
+    return f"""
+<div class="canvas dark" style="padding:0; align-items:center; text-align:center"><div class="shape s1"></div><div class="shape s2"></div>
+  <div style="position:absolute; top:165px; left:0; right:0; display:flex; flex-direction:column; align-items:center; z-index:2">
+    <div style="display:flex; justify-content:center">{brand(True)}</div>
+    <h1 style="font-size:40px; margin-top:24px; line-height:1.15">{esc(c['title'])}</h1>
+    <div class="cchips">{chips}</div>
+  </div>
+  <div class="footnote" style="position:absolute; left:210px; bottom:215px; color:var(--cyan); font-size:30px; z-index:2">{esc(c['left'])}</div>
+  <div class="footnote" style="position:absolute; right:210px; bottom:215px; color:#B9C8E6; font-size:30px; z-index:2">{esc(c['right'])}</div>
+</div>"""
+
+
 def t_highlight(c: dict, lang: str, size: str) -> str:
     """Instagram highlight cover: one icon, centred (shown in a small circle)."""
     return f"""<div class="canvas" style="background:linear-gradient(135deg, var(--blue), var(--cyan)); display:grid; place-items:center; padding:0">
   {icon(c['icon'], 420)}</div>"""
 
 
-TEMPLATES = {"profile": t_profile, "cover": t_cover, "cover_agency": t_cover_agency, "highlight": t_highlight, "price": t_price, "feature": t_feature, "cta": t_cta, "list": t_list, "newbiz": t_newbiz, "scene": t_scene}
+TEMPLATES = {"profile": t_profile, "cover": t_cover, "cover_agency": t_cover_agency, "cover_center": t_cover_center, "highlight": t_highlight, "price": t_price, "feature": t_feature, "cta": t_cta, "list": t_list, "newbiz": t_newbiz, "scene": t_scene}
 
 
 def page(c: dict) -> str:
