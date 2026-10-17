@@ -6,7 +6,7 @@ Same face, outfit style and voice every time, so people recognise the brand.
 ## Who she is
 - **Name:** Yara (only used inside our team / Flow; on screen she just presents — never claims to be a
   real employee, customer or reviewer).
-- **Look:** young Arab woman, looks 22–25, bright youthful face, big warm smile, fresh dewy make-up, soft-brown eyes.
+- **Look:** young Arab woman, looks 20–22, small slim delicate face (soft V-shaped jawline, small nose), smooth youthful skin, bright youthful face, big warm smile, fresh dewy make-up, soft-brown eyes.
 - **Style (modest, modern, trendy):** loosely draped satin hijab in a soft modern colour (sky blue, blush or
   cream), oversized cropped cream or light-blue blazer over a fitted white top, delicate gold layered necklace,
   smartwatch, no logos on clothes. Feels like a young Dubai creator / tech founder, not a corporate banker.
@@ -24,7 +24,8 @@ Same face, outfit style and voice every time, so people recognise the brand.
 - Same description pasted into every prompt so the voice and look stay consistent.
 
 ## Character reference prompt (for creating her once in Flow)
-"Photorealistic portrait of a young Arab woman, 23 years old, bright youthful face, big warm natural smile,
+"Photorealistic portrait of a young Arab woman, 21 years old, small slim delicate face with a soft V-shaped jawline, small nose,
+smooth youthful skin, bright youthful features, warm natural smile,
 fresh dewy make-up, soft-brown eyes, wearing a loosely draped satin hijab in soft sky blue, an oversized
 cream blazer over a fitted white top, a delicate gold layered necklace and a smartwatch, trendy modern Dubai
 creator style, waist-up, looking straight at the camera, stylish bright co-working space with plants, warm
