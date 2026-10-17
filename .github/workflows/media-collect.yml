@@ -1,0 +1,38 @@
+# Collects clips sent to the Telegram bot into media/inbox/ and (optionally) tests the Gemini image key.
+name: media-collect
+
+on:
+  push:
+    paths:
+      - ops/media-collect.trigger
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked
+      - name: Collect clips from Telegram
+        run: uv run python -m agent.media.collect
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      - name: Test free Gemini image key
+        continue-on-error: true
+        run: uv run python -m agent.media.gemini_check
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: Commit collected media
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add media/inbox
+          git diff --cached --quiet && echo "Nothing new" && exit 0
+          git commit -m "Collect media from Telegram"
+          git push
