@@ -1,0 +1,13 @@
+# Connected accounts (IDs are not secret; the access token lives only in GitHub Secrets).
+# Verified by the read-only meta-check workflow on 2026-10-17.
+meta:
+  app: AZMIN Digital Portal            # app id 3632507626887125 (development mode, own assets only)
+  business_portfolio: Azmin Digital    # business id 2125841332148096
+  system_user: AZMIN_DIGITAL
+  facebook_page_id: "1289218264267511"
+  instagram_account_id: "17841444179729405"
+  instagram_username: azmin_digital
+linkedin:
+  status: api-application-pending      # Community Management API (decision 2026-10-17)
+telegram:
+  bot: azmin_digital_bot
