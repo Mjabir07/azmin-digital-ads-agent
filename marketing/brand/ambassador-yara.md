@@ -1,10 +1,10 @@
-# AZMIN DIGITAL brand ambassador — "Layla"
+# AZMIN DIGITAL brand ambassador — "Yara"
 
 An AI-generated presenter (made in Google Flow) who speaks for AZMIN DIGITAL in every reel.
 Same face, outfit style and voice every time, so people recognise the brand.
 
 ## Who she is
-- **Name:** Layla (only used inside our team / Flow; on screen she just presents — never claims to be a
+- **Name:** Yara (only used inside our team / Flow; on screen she just presents — never claims to be a
   real employee, customer or reviewer).
 - **Look:** Arab woman, looks 27–32, warm natural smile, light make-up, soft-brown eyes.
 - **Style (modest, professional):** neutral beige or soft-white hijab, tailored navy blazer over a plain white
@@ -29,6 +29,6 @@ stud earrings, waist-up, looking straight at the camera, bright modern Dubai off
 soft daylight in the background, professional commercial photography, sharp focus, natural skin texture,
 vertical 9:16, no text, no logos."
 
-## Standard suffix for every Layla video prompt
-"Layla speaks clearly in English to camera with a calm, confident, friendly voice and a light Arabic accent,
+## Standard suffix for every Yara video prompt
+"Yara speaks clearly in English to camera with a calm, confident, friendly voice and a light Arabic accent,
 natural lip sync, waist-up framing, no background music, no subtitles, no text on screen, vertical 9:16."

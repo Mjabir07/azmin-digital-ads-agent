@@ -21,7 +21,7 @@ You are helping AZMIN DIGITAL create this week's video clips in Google Flow.
 3. Create a new Flow project named exactly as the "Project name" line in the shot list.
 4. For EACH row in the shot list table, in order:
    - If the shot list has a "Step 0", do it first and wait for my choice where it says STOP.
-   - If the row's "Character" column names a character (e.g. "Layla AZMIN"), add that saved character
+   - If the row's "Character" column names a character (e.g. "Yara AZMIN"), add that saved character
      (Characters / Ingredients) to the prompt before generating — check it is the right one. Otherwise use none.
    - Agent mode OFF. Model: Veo 3.1 – Fast. Aspect ratio: 9:16 (or as the row says). Outputs: x1. Length: 8s.
    - Paste the row's prompt exactly and generate.
@@ -44,5 +44,5 @@ You are helping AZMIN DIGITAL create this week's video clips in Google Flow.
 ## Rules the shot list always follows
 - 9:16 vertical, 8 s, Veo 3.1 Fast, 720p, x1 → ~20 credits per clip.
 - Weekly budget: ~200 credits (≈10 clips) so the 1,050 monthly credits last the month with room for retries.
-- Prompts: no text, no logos, no real brand names, no real people's likeness (our AI ambassador Layla is fine — see marketing/brand/ambassador-layla.md); cinematic, UAE-relevant scenes.
+- Prompts: no text, no logos, no real brand names, no real people's likeness (our AI ambassador Yara is fine — see marketing/brand/ambassador-yara.md); cinematic, UAE-relevant scenes.
 - Phone/laptop screens: Veo adds fake text on screens — we cover screens with our real designs in Remotion.
