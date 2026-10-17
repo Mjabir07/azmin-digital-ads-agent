@@ -38,3 +38,13 @@ def send_message(token: str, chat_id: str, text: str) -> None:
                 except ValueError:
                     desc = ""
                 raise RuntimeError(f"Telegram error {resp.status_code}: {desc}")
+
+
+if __name__ == "__main__":
+    # Test: python -m agent.notify.telegram "message"
+    import os
+    import sys
+
+    text = " ".join(sys.argv[1:]) or "Test message from AZMIN Marketing OS"
+    send_message(os.environ.get("TELEGRAM_BOT_TOKEN", ""), os.environ.get("TELEGRAM_CHAT_ID", ""), text)
+    print("Sent.")
