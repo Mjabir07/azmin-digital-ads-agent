@@ -47,7 +47,7 @@ Rule: page count, renewal price and custom work → you answer yourself; never g
 (No price in the bio — keyword-friendly, covers all services. Prices go in ads and WhatsApp.)
 - **Website / link:** https://azmindigital.com
 
-- **Name field:** Azmin Digital | Web Design Dubai  (the name field is searchable — "web design dubai" is what people type)
+- **Name field:** Azmin Digital | Digital Agency Dubai  (searchable; covers all services. Alternative: "Azmin Digital | Web, AI & Marketing")
 - **Category:** Web Designer
 - **Contact button:** WhatsApp → your new business number
 
