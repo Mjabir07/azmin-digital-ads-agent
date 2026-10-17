@@ -17,6 +17,9 @@ Same face, outfit style and voice every time, so people recognise the brand.
 - **Body language:** looks straight into camera, natural hand gestures, holds a phone/laptop when
   showing work, points down when the WhatsApp number appears.
 
+## Chosen reference
+`brand/ambassador/yara.jpg` (option 2 of the final round, picked 2026-10-17). In Flow it is the Character "Yara AZMIN".
+
 ## Rules
 - Speaks ONLY scripts we write (prices only from `config/packages.yaml`).
 - Never presented as a client testimonial or a real person giving a review.
