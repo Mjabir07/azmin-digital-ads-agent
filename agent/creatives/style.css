@@ -137,3 +137,11 @@ h1 { font-weight: 800; line-height: 1.05; letter-spacing: -1px; }
 .screen img.shot { width: 100%; flex: 1; object-fit: cover; object-position: top; display: block; min-height: 0; }
 .icon-tile.small { width: 110px; height: 110px; border-radius: 30px; }
 .canvas:not(.story) .main { margin-top: 24px; }
+
+.svc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; width: 640px; }
+.svc { display: flex; gap: 16px; align-items: flex-start; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.14);
+  border-radius: 24px; padding: 20px 22px; }
+.svc-icon { width: 64px; height: 64px; border-radius: 18px; flex: none; display: grid; place-items: center;
+  background: linear-gradient(135deg, var(--blue), var(--cyan)); }
+.svc-t { font-weight: 700; font-size: 25px; line-height: 1.15; }
+.svc-d { font-size: 18px; color: #B9C8E6; margin-top: 6px; line-height: 1.3; }

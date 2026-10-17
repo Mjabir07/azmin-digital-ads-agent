@@ -8,9 +8,12 @@ Hashtags to paste at the end of each caption:
 
 ---
 **Post 1 — `post-1-hello.png`**
-Hello UAE 👋 We're AZMIN DIGITAL.
-We build professional, mobile-friendly websites for small businesses in Dubai, Sharjah, Abu Dhabi and Ajman — with a WhatsApp button so customers can reach you in one tap.
-Fixed price. No hidden costs. 💬 Message us on WhatsApp to get started.
+Hello UAE 👋 We're AZMIN DIGITAL — a digital agency for growing businesses.
+🌐 Website Design – fast, mobile-first, SEO-ready
+🤖 AI Automation – WhatsApp & website chatbots, lead follow-up
+📈 Digital Marketing – Google & Meta ads, SEO, social content
+📧 Business Email – Google Workspace, Microsoft 365, Zoho
+One team, one plan, measurable results. 💬 Message us on WhatsApp or visit azmindigital.com
 
 **Post 2 — `post-2-offer.png`**
 Your business website for AED 999 🚀

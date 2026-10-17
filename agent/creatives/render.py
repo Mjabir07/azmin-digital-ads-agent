@@ -33,6 +33,10 @@ ICONS = {
     "search": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#5B6B85" stroke-width="2.4" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5l5 5"/></svg>',
     "tag": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4.5a1 1 0 0 1 1-1h8l8 8-9 9-8-8z"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>',
     "star": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="2" stroke-linejoin="round"><path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/></svg>',
+    "globe": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>',
+    "bot": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 8V4.5M9 13.5h.01M15 13.5h.01M9.5 17h5"/><circle cx="12" cy="3.5" r="1"/></svg>',
+    "chart": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M6 16l4-5 3 3 5-7"/><path d="M14 7h4v4"/></svg>',
+    "mail": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 6.5l8.5 6.5 8.5-6.5"/></svg>',
     "arrow": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
     "arrow_left": '<svg viewBox="0 0 24 24" width="{s}" height="{s}" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>',
 }
@@ -244,13 +248,33 @@ def t_cover(c: dict, lang: str, size: str) -> str:
 </div>"""
 
 
+def t_cover_agency(c: dict, lang: str, size: str) -> str:
+    """Facebook cover for the whole agency: headline + the 4 services from azmindigital.com."""
+    tiles = "".join(
+        f'<div class="svc"><div class="svc-icon">{icon(sv["icon"], 46)}</div>'
+        f'<div><div class="svc-t">{esc(sv["title"])}</div><div class="svc-d">{esc(sv["text"])}</div></div></div>'
+        for sv in c["services"]
+    )
+    return f"""
+<div class="canvas dark" style="padding:0 200px; justify-content:center"><div class="shape s1"></div><div class="shape s2"></div>
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:56px; position:relative; z-index:2">
+    <div style="max-width:560px">
+      {brand(True)}
+      <h1 style="font-size:58px; margin-top:26px">{esc(c['title'])}</h1>
+      <div class="sub" style="margin-top:16px; font-size:28px; color:var(--cyan)">{esc(c['sub'])}</div>
+    </div>
+    <div class="svc-grid">{tiles}</div>
+  </div>
+</div>"""
+
+
 def t_highlight(c: dict, lang: str, size: str) -> str:
     """Instagram highlight cover: one icon, centred (shown in a small circle)."""
     return f"""<div class="canvas" style="background:linear-gradient(135deg, var(--blue), var(--cyan)); display:grid; place-items:center; padding:0">
   {icon(c['icon'], 420)}</div>"""
 
 
-TEMPLATES = {"profile": t_profile, "cover": t_cover, "highlight": t_highlight, "price": t_price, "feature": t_feature, "cta": t_cta, "list": t_list, "newbiz": t_newbiz, "scene": t_scene}
+TEMPLATES = {"profile": t_profile, "cover": t_cover, "cover_agency": t_cover_agency, "highlight": t_highlight, "price": t_price, "feature": t_feature, "cta": t_cta, "list": t_list, "newbiz": t_newbiz, "scene": t_scene}
 
 
 def page(c: dict) -> str:

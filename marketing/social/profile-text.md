@@ -56,7 +56,7 @@ Rule: page count, renewal price and custom work → you answer yourself; never g
 - **Category:** Web Designer
 - **Action button:** Send WhatsApp message → your new business number
 - **Profile picture:** `marketing/social/kit-v1/profile-picture.png`
-- **Cover photo:** `marketing/social/kit-v1/facebook-cover.png`
+- **Cover photo:** `marketing/social/kit-v1/facebook-cover.png` (agency cover: all 4 services)
 
 ## Instagram highlights (after you post stories)
 | Highlight name | Cover image | Put these stories in it |

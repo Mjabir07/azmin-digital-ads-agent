@@ -13,10 +13,15 @@ creatives:
     template: profile
     size: square
   - id: facebook-cover
-    template: cover
+    template: cover_agency
     size: cover
-    title: Professional websites for UAE businesses
-    perks: [AED 999, Domain + hosting included, Ready in as little as 1 day]
+    title: "Websites, automation and growth, built to work."
+    sub: Digital agency for growing businesses · azmindigital.com
+    services:
+      - {icon: globe, title: Website Design, text: "Fast, mobile-first, SEO-ready"}
+      - {icon: bot, title: AI Automation, text: "WhatsApp & website chatbots"}
+      - {icon: chart, title: Digital Marketing, text: "Google & Meta ads, SEO"}
+      - {icon: mail, title: Business Email, text: "Google Workspace, Microsoft 365, Zoho"}
   - {id: highlight-offer, template: highlight, size: story, icon: tag}
   - {id: highlight-work, template: highlight, size: story, icon: star}
   - {id: highlight-how, template: highlight, size: story, icon: bolt}
@@ -27,8 +32,8 @@ creatives:
     template: cta
     size: portrait
     title: "Hello UAE 👋\nWe're AZMIN DIGITAL"
-    text: We build professional websites for small businesses.
-    perks: [Mobile-friendly, WhatsApp button, Fixed price]
+    text: Websites, AI automation, digital marketing and business email for growing businesses.
+    perks: [Website Design, AI Automation, Digital Marketing, Business Email]
     cta: Chat with us on WhatsApp
     footnote: Dubai · Sharjah · Abu Dhabi · Ajman
   - id: post-2-offer
