@@ -23,8 +23,10 @@ report — and Jabir monitors, approves with one tap, and handles leads.*
 | Posting to LinkedIn | LinkedIn Community Management API | Free; waiting for approval |
 | Designs | Our brand renderer (HTML/CSS → PNG) | Free, already built ✅ |
 | Photos & b-roll video clips | **Pexels / Pixabay** free APIs | Free for commercial use, no attribution required |
+| **Premium AI video clips** | **Google Flow (Veo)** — included in Jabir's Gemini Pro (~1,050 credits/month) | No API: agent writes the weekly shot list → Jabir generates clips in Flow (~10–15 min/week, Fast mode, watermark off) → sends them to the Telegram bot → agent edits them into reels |
 | Motion graphics reels | **Remotion** + ffmpeg | Remotion is free for individuals/companies up to 3 people |
 | Voiceover | **Kokoro TTS** (open-source, Apache-2.0) | Runs inside GitHub Actions, natural English voices |
+| *(not used)* ElevenLabs free plan | — | Free plan is non-commercial and needs attribution, so not suitable for business reels |
 | Captions | **faster-whisper** (open-source) | Word-timed animated captions |
 | Music | **YouTube Audio Library / Pixabay Music** | Royalty-free, commercial use allowed |
 | Public links for Instagram reels | A separate **public** GitHub repo for published media | Instagram's API needs a public video URL; only already-public content goes there |
