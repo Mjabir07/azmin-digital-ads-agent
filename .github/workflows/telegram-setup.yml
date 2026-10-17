@@ -1,0 +1,21 @@
+# One-time helper: sends Jabir his TELEGRAM_CHAT_ID in Telegram.
+# Runs when ops/telegram-setup.trigger changes (or manually from the Actions tab).
+name: telegram-setup
+
+on:
+  push:
+    paths:
+      - ops/telegram-setup.trigger
+  workflow_dispatch: {}
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked
+      - run: uv run python -m agent.notify.telegram_setup
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
