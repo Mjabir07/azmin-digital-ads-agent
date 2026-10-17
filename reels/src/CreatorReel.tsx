@@ -11,12 +11,12 @@ import { WhatsAppIcon } from "./WhatsAppIcon";
  * sans/serif-italic type mix, cuts on the music's bars. Music: "Emerge" by Alex Beroza (CC BY 3.0).
  */
 
-const fonts = `
+export const fonts = `
 @font-face { font-family: Inter Tight; font-weight: 100 900; src: url(${staticFile("InterTight.woff2")}); }
 @font-face { font-family: Serif; font-style: italic; src: url(${staticFile("InstrumentSerif-400i.woff2")}); }
 `;
-const P = { paper: "#F4F1EA", ink: "#0B0B0C", muted: "#6B6A66", line: "rgba(11,11,12,.08)" };
-const PHONE = "+971 56 724 7597";
+export const P = { paper: "#F4F1EA", ink: "#0B0B0C", muted: "#6B6A66", line: "rgba(11,11,12,.08)" };
+export const PHONE = "+971 56 724 7597";
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const outExpo = Easing.bezier(0.16, 1, 0.3, 1);
 const BAR = 60.6; // one bar of the track (4 beats at ~118.8 bpm) in frames
@@ -112,7 +112,7 @@ const Avatar: React.FC = () => {
 
 /* ---------- 2. What you get (2 bars) ---------- */
 
-const Paper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+export const Paper: React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <AbsoluteFill style={{ background: P.paper,
     backgroundImage: `linear-gradient(${P.line} 2px, transparent 2px), linear-gradient(90deg, ${P.line} 2px, transparent 2px)`,
     backgroundSize: "120px 120px", backgroundPosition: "-2px -2px" }}>{children}</AbsoluteFill>
@@ -170,7 +170,7 @@ const Price: React.FC = () => {
 
 /* ---------- 4. Contact end card (3 bars) ---------- */
 
-const EndCard: React.FC = () => {
+export const EndCard: React.FC<{ bubble?: string; bubbleFrom?: number; chrome?: boolean }> = ({ bubble = "w00-s2.mp4", bubbleFrom = 120, chrome = true }) => {
   const f = useCurrentFrame();
   const head = useSpring(0);
   const pill = useSpring(10, 12);
@@ -183,7 +183,7 @@ const EndCard: React.FC = () => {
       <AbsoluteFill style={{ alignItems: "center", paddingTop: 380 }}>
         <div style={{ position: "relative", width: 260, height: 260, transform: `scale(${head})` }}>
           <div style={{ width: 260, height: 260, borderRadius: 130, overflow: "hidden", border: "8px solid #fff", boxShadow: "0 20px 60px rgba(0,0,0,.2)" }}>
-            <OffthreadVideo src={staticFile("w00-s2.mp4")} muted startFrom={120} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 20%" }} />
+            <OffthreadVideo src={staticFile(bubble)} muted startFrom={bubbleFrom} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 20%" }} />
           </div>
           <div style={{ position: "absolute", right: 14, bottom: 14, width: 48, height: 48, borderRadius: 24, background: C.wa, border: "6px solid " + P.paper }} />
         </div>
@@ -207,13 +207,13 @@ const EndCard: React.FC = () => {
           tap <span style={{ fontFamily: "Serif", fontStyle: "italic", fontWeight: 400, fontSize: 46 }}>"Send message"</span> ↓
         </div>
       </AbsoluteFill>
-      <Chrome dark />
+      {chrome && <Chrome dark />}
     </Paper>
   );
 };
 
 /** Paper sheet that slides up over the previous scene (rounded top) — the "page turn" between scenes. */
-const SlideUp: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SlideUp: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const f = useCurrentFrame();
   const y = interpolate(f, [0, 12], [1920, 0], { ...clamp, easing: outExpo });
   const rad = interpolate(f, [0, 12], [80, 0], clamp);
