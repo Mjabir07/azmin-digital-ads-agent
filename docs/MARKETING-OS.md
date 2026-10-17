@@ -5,6 +5,11 @@ report — and Jabir monitors, approves with one tap, and handles leads.*
 
 ---
 
+## Decisions (Jabir, 2026-10-17)
+- **Approval:** weekly batch — one Telegram tap approves the week. Revisit full auto after 2–3 good weeks.
+- **LinkedIn:** apply for LinkedIn's Community Management API (free). Facebook + Instagram go live first; LinkedIn joins when approved.
+- **Reels:** fully AI-made (motion graphics, AI b-roll, AI voice) — no founder filming.
+
 ## 1. The idea in one picture
 
 ```
