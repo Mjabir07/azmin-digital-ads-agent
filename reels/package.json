@@ -1,0 +1,14 @@
+{
+  "name": "azmin-reels",
+  "private": true,
+  "description": "AZMIN DIGITAL premium reels (Remotion)",
+  "scripts": {
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.536",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "remotion": "4.0.536"
+  }
+}
