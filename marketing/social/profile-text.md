@@ -39,19 +39,21 @@
 Rule: page count, renewal price and custom work → you answer yourself; never guess.
 
 ## Instagram bio (max 150 characters)
-> Websites · AI Automation · Marketing · Business Email 🇦🇪
-> Websites from AED 999 incl. domain + hosting
-> ⚡ Ready in as little as 1 day
-> 👇 Chat on WhatsApp
+> Web Design & AI Automation | Dubai 🇦🇪
+> 🌐 Websites · 📱 Apps · 🤖 AI Chatbots
+> 📈 Marketing · ✉️ Business Email · ☁️ Hosting
+> 👇 Chat with us on WhatsApp
+
+(No price in the bio — keyword-friendly, covers all services. Prices go in ads and WhatsApp.)
 - **Website / link:** https://azmindigital.com
 
-- **Name field:** AZMIN DIGITAL | Websites UAE  (the name field is searchable — this helps people find you)
+- **Name field:** Azmin Digital | Web Design Dubai  (the name field is searchable — "web design dubai" is what people type)
 - **Category:** Web Designer
 - **Contact button:** WhatsApp → your new business number
 
 ## Facebook Page
 - **Intro / Bio** (max 101 characters):
-  > Websites, AI automation, digital marketing & business email for UAE businesses. From AED 999.
+  > Web design, AI automation, digital marketing & business email agency in Dubai, UAE.
 - **Website:** https://azmindigital.com
 - **Category:** Web Designer
 - **Action button:** Send WhatsApp message → your new business number
