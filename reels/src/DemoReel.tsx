@@ -4,6 +4,7 @@ import {
   useCurrentFrame, useVideoConfig,
 } from "remotion";
 import { C } from "./brand";
+import { WhatsAppIcon } from "./WhatsAppIcon";
 
 const fonts = `
 @font-face { font-family: Poppins; font-weight: 400; src: url(${staticFile("Poppins-400.woff2")}); }
@@ -190,8 +191,9 @@ const Outro: React.FC = () => {
           AZMIN <span style={{ color: C.cyan }}>DIGITAL</span>
         </div>
         <div style={{ transform: `scale(${cta * pulse})`, background: C.wa, color: C.white, fontSize: 52, fontWeight: 800,
-          padding: "32px 64px", borderRadius: 999, boxShadow: "0 24px 60px rgba(37,211,102,.4)" }}>
-          💬 Chat on WhatsApp
+          padding: "32px 64px", borderRadius: 999, boxShadow: "0 24px 60px rgba(37,211,102,.4)",
+          display: "flex", alignItems: "center", gap: 20 }}>
+          <WhatsAppIcon size={58} /> Chat on WhatsApp
         </div>
         <div style={{ color: "#B9C8E6", fontSize: 38, fontWeight: 600, opacity: cta }}>azmindigital.com</div>
       </AbsoluteFill>
