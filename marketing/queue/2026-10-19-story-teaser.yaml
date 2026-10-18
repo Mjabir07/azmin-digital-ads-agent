@@ -1,7 +1,10 @@
 id: d02-story-teaser
 type: story
 image: marketing/posts/d01-d02/d02-story.jpg
-platforms: [instagram, facebook]
-post_at: "2026-10-19 10:00"
-note: "Day 2 story: teaser for tonight's carousel."
-status: draft
+platforms:
+- instagram
+- facebook
+post_at: 2026-10-19 10:00
+note: 'Day 2 story: teaser for tonight''s carousel.'
+status: pending
+telegram_message_id: 42
