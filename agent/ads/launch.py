@@ -187,7 +187,7 @@ def main() -> int:
     if not args.build:
         print("\n(dry run — nothing created)")
         return 0
-    act = os.environ.get("META_AD_ACCOUNT_ID", "").strip()
+    act = (os.environ.get("META_AD_ACCOUNT_ID") or ACCOUNTS.get("ad_account_id") or "").strip()
     if not act.startswith("act_"):
         raise SystemExit("META_AD_ACCOUNT_ID (act_...) is not set")
     built = build(g, spec, ids, act)
