@@ -116,7 +116,20 @@ def k_story(d: dict, w: int, h: int) -> str:
     <div style="position:absolute;left:80px;right:80px;bottom:330px;font-size:44px;font-weight:700">{rich(d.get("cta", ""), False)}</div>"""
 
 
-KINDS = {"cover": k_cover, "point": k_point, "cta": k_cta, "offer": k_offer, "story": k_story}
+def k_work(d: dict, w: int, h: int) -> str:
+    img = "data:image/png;base64," + base64.b64encode((ROOT / d.get("image", "brand/portfolio/msjtechnicaluae-mobile.png")).read_bytes()).decode()
+    return f"""<div class="grid"></div>{head(d)}
+    <div style="position:absolute;left:80px;right:80px;top:200px">
+      <div class="chip">{html.escape(d.get("kicker", "OUR WORK"))}</div>
+      <div style="margin-top:30px;font-size:96px;font-weight:800;letter-spacing:-4px;line-height:1.04">{rich(d["title"])}</div>
+    </div>
+    <div style="position:absolute;left:50%;top:500px;width:450px;margin-left:-225px;height:920px;border-radius:64px;background:#0B1220;padding:18px;box-shadow:0 50px 100px rgba(0,0,0,.3);transform:rotate(-3deg)">
+      <div style="width:100%;height:100%;border-radius:54px;overflow:hidden;background:#fff"><img src="{img}" style="width:100%"></div>
+    </div>
+    <div style="position:absolute;left:80px;right:80px;bottom:360px;text-align:center;font-size:40px;font-weight:700">{rich(d.get("cta", ""), False)}</div>"""
+
+
+KINDS = {"cover": k_cover, "point": k_point, "cta": k_cta, "offer": k_offer, "story": k_story, "work": k_work}
 
 
 def render(spec_path: Path) -> list[Path]:
@@ -131,7 +144,7 @@ def render(spec_path: Path) -> list[Path]:
     with sync_playwright() as p:
         browser = _browser(p)
         for d in spec["designs"]:
-            w, h = SIZES[d.get("size", "story" if d["kind"] == "story" else "portrait")]
+            w, h = SIZES[d.get("size", "story" if d["kind"] in ("story", "work") else "portrait")]
             css = CSS % {"f": FONTS.as_uri(), "w": w, "h": h}
             page = browser.new_page(viewport={"width": w, "height": h})
             page.set_content(f'<html><head><style>{css}</style></head><body class="{d.get("theme", "paper")}">{KINDS[d["kind"]](d, w, h)}</body></html>')

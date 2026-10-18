@@ -1,0 +1,153 @@
+# Days 3-8 (Tue 20 – Sun 25 Oct). AZMIN Editorial theme.
+designs:
+  # Day 3 story (Tue) — feed is the Me vs Me reel
+  - name: d03-story
+    kind: story
+    kicker: QUICK QUIZ
+    title: "Do your customers *Google you* before they call?"
+    options: ["YES", "NOT SURE"]
+    cta: "Tonight 7:30 PM: a reel you'll relate to 👀"
+  # Day 4 story (Wed) — feed is the MSJ motion reel
+  - name: d04-story
+    kind: story
+    theme: navy
+    kicker: BEHIND THE SCENES
+    title: "How we build a website in *4 steps*"
+    body: "1. Clear quote before we start\n2. Design you approve\n3. Build with weekly progress\n4. Launch + support after"
+    cta: "Ready in as little as 1 day ⚡"
+  # Day 5 (Thu) carousel — business email
+  - name: d05-c1
+    kind: cover
+    kicker: BUSINESS EMAIL
+    title: "Gmail vs *business email*"
+    sub: "4 reasons customers trust you more with info@yourbusiness.com"
+  - name: d05-c2
+    kind: point
+    count: 02/06
+    num: "01"
+    title: "You look *established*"
+    body: "info@yourbusiness.com says real company. yourname123@gmail.com says side project."
+  - name: d05-c3
+    kind: point
+    count: 03/06
+    num: "02"
+    title: "Trust before the *first reply*"
+    body: "Customers decide in seconds whether to answer. A matching domain removes doubt."
+  - name: d05-c4
+    kind: point
+    count: 04/06
+    num: "03"
+    title: "The whole team *matches*"
+    body: "sales@, support@, ahmed@: every person and department under one brand."
+  - name: d05-c5
+    kind: point
+    count: 05/06
+    num: "04"
+    title: "Lands in the *inbox*"
+    body: "With SPF, DKIM and DMARC set up properly, your emails are far less likely to end up in spam."
+  - name: d05-c6
+    kind: cta
+    count: 06/06
+    theme: navy
+    title: "Get your *business email*"
+    body: "We set up Google Workspace, Microsoft 365 or Zoho, with DNS records done right and your old emails moved over."
+  - name: d05-story
+    kind: story
+    kicker: QUICK TIP
+    title: "Your email address is your *first impression*"
+    body: "Before anyone reads your message, they read where it came from."
+    cta: "Tonight: Gmail vs business email 📧"
+  # Day 6 (Fri) carousel — WhatsApp chatbot
+  - name: d06-c1
+    kind: cover
+    kicker: AI AUTOMATION
+    title: "What can a *WhatsApp chatbot* answer for you?"
+    sub: "5 jobs it does while you sleep."
+  - name: d06-c2
+    kind: point
+    count: 02/07
+    num: "01"
+    title: "Opening hours & *location*"
+    body: "The questions you answer ten times a day, answered instantly."
+  - name: d06-c3
+    kind: point
+    count: 03/07
+    num: "02"
+    title: "Services & *packages*"
+    body: "Shares your service list and package details in the words you approve."
+  - name: d06-c4
+    kind: point
+    count: 04/07
+    num: "03"
+    title: "Bookings & *appointments*"
+    body: "Collects name, date and time, then confirms. No missed bookings at 2 AM."
+  - name: d06-c5
+    kind: point
+    count: 05/07
+    num: "04"
+    title: "FAQs, *24/7*"
+    body: "Delivery, payment, warranty: whatever customers ask most."
+  - name: d06-c6
+    kind: point
+    count: 06/07
+    num: "05"
+    title: "Hands over to *you*"
+    body: "Custom quotes, complaints or a call request go straight to you."
+  - name: d06-c7
+    kind: cta
+    count: 07/07
+    theme: navy
+    title: "Want one for *your business?*"
+    body: "We set up your WhatsApp chatbot and train it on your business."
+  - name: d06-story
+    kind: work
+    title: "Real client, *real website*"
+    cta: "msjtechnicaluae.com · built by AZMIN DIGITAL"
+  # Day 7 (Sat) offer post
+  - name: d07-post
+    kind: offer
+    theme: blue
+    items: ["Business website", "Free domain name", "1 year hosting", "Ready in as little as 1 day"]
+  - name: d07-story
+    kind: story
+    theme: blue
+    kicker: STARTER COMBO
+    title: "Website + domain + hosting from *AED 999*"
+    body: "Ready in as little as 1 day."
+    cta: "Reply WEB and we'll send the details 💬"
+  # Day 8 (Sun) carousel — 3 signs
+  - name: d08-c1
+    kind: cover
+    kicker: QUICK CHECK
+    title: "3 signs your business is *losing customers* online"
+    sub: "If you see even one, it's time to fix it."
+  - name: d08-c2
+    kind: point
+    count: 02/05
+    num: "01"
+    title: "You only have an *Instagram page*"
+    body: "Many customers search Google first. Without a website, they find someone else."
+  - name: d08-c3
+    kind: point
+    count: 03/05
+    num: "02"
+    title: "Your site is hard to use on *phones*"
+    body: "Tiny text, slow pages, buttons you can't tap: visitors leave."
+  - name: d08-c4
+    kind: point
+    count: 04/05
+    num: "03"
+    title: "Customers can't *reach you* fast"
+    body: "No WhatsApp button, no clear number, no location. Every extra step loses a lead."
+  - name: d08-c5
+    kind: cta
+    count: 05/05
+    theme: navy
+    title: "We fix all *three*"
+    body: "Business website from AED 999 with domain + 1 year hosting. Ready in as little as 1 day."
+  - name: d08-story
+    kind: story
+    kicker: POLL
+    title: "Does your business have a *website?*"
+    options: ["YES", "NOT YET"]
+    cta: "DM us your answer 👇"
