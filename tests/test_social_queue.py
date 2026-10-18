@@ -41,3 +41,29 @@ def test_approve_and_reject(tmp_path, monkeypatch):
         again = approvals.handle_callback(http, "https://t", {"id": "2", "data": "reject:w02-x", "message": {"message_id": 5, "chat": {"id": 123}}}, "123")
         assert "Already approved" in again
     assert any(p.endswith("editMessageReplyMarkup") for p in calls)
+
+
+def test_collect_uses_forwarded_update(tmp_path, monkeypatch):
+    import json
+
+    from agent.media import collect
+
+    monkeypatch.setattr(queue, "QUEUE", tmp_path)
+    _item(tmp_path, "pending")
+    update = {"update_id": 1, "callback_query": {"id": "9", "data": "approve:w02-x", "message": {"message_id": 5, "chat": {"id": 123}}}}
+    monkeypatch.setenv("TELEGRAM_BOT_TOKEN", "t")
+    monkeypatch.setenv("TELEGRAM_CHAT_ID", "123")
+    monkeypatch.setenv("TELEGRAM_UPDATE", json.dumps(update))
+    seen = []
+
+    def handler(request):
+        seen.append(request.url.path)
+        return httpx.Response(200, json={"ok": True, "result": []})
+
+    real_client = httpx.Client
+    monkeypatch.setattr(collect.httpx, "Client", lambda **kw: real_client(transport=httpx.MockTransport(handler)))
+    monkeypatch.setattr(collect.telegram, "send_message", lambda *a: None)
+    monkeypatch.setattr(collect.sys, "argv", ["collect", "--quiet"])
+    assert collect.main() == 0
+    assert queue.load_all(tmp_path)[0].status == "approved"
+    assert not any(p.endswith("getUpdates") for p in seen)  # forwarded updates never poll

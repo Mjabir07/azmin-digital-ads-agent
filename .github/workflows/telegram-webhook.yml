@@ -1,0 +1,25 @@
+# Turn instant Telegram replies (Cloudflare worker webhook) on or off.
+# Edit ops/telegram-webhook.trigger: first line "set" (on) or "delete" (off).
+name: telegram-webhook
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ops/telegram-webhook.trigger
+  workflow_dispatch: {}
+
+jobs:
+  webhook:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked
+      - run: uv run python -m agent.notify.telegram_webhook "$(head -1 ops/telegram-webhook.trigger)"
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_WEBHOOK_URL: ${{ vars.TELEGRAM_WEBHOOK_URL }}
+          TELEGRAM_WEBHOOK_SECRET: ${{ secrets.TELEGRAM_WEBHOOK_SECRET }}

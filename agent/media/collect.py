@@ -7,6 +7,7 @@ Processed messages are confirmed so they are not collected twice.
 
 from __future__ import annotations
 
+import json
 import os
 import re
 import sys
@@ -34,7 +35,15 @@ def main() -> int:
     base = f"https://api.telegram.org/bot{token}"
     saved, skipped, decisions, last_id = [], [], [], None
     with httpx.Client(timeout=120) as http:
-        updates = http.get(f"{base}/getUpdates").json().get("result", [])
+        pushed = os.environ.get("TELEGRAM_UPDATE", "").strip()
+        if pushed and pushed != "null":  # instant mode: one update forwarded by the Cloudflare worker
+            updates, confirm = [json.loads(pushed)], False
+        else:
+            resp = http.get(f"{base}/getUpdates").json()
+            if not resp.get("ok"):  # a webhook is set: updates arrive through the worker instead
+                print(f"getUpdates unavailable ({resp.get('description', 'unknown')}); instant mode handles updates.")
+                return 0
+            updates, confirm = resp.get("result", []), True
         kinds = [next((k for k in ("video", "document", "photo", "text") if k in (u.get("message") or {})), "/".join(u)) for u in updates]
         print(f"{len(updates)} update(s) waiting: {kinds}")  # diagnostics only, no message contents
         for u in updates:
@@ -65,7 +74,7 @@ def main() -> int:
                 target = INBOX / f"{name}-{msg['message_id']}{ext}"
             target.write_bytes(http.get(f"https://api.telegram.org/file/bot{token}/{path}").content)
             saved.append(target.name)
-        if last_id is not None:
+        if confirm and last_id is not None:
             http.get(f"{base}/getUpdates", params={"offset": last_id + 1})  # confirm processed messages
     if decisions:
         print("Decisions: " + "; ".join(decisions))  # the button itself shows the result in Telegram

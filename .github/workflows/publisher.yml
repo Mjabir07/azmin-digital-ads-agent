@@ -10,6 +10,8 @@ on:
     paths:
       - marketing/queue/**
       - ops/publisher.trigger
+  repository_dispatch:
+    types: [telegram]        # instant: a button tap or clip forwarded by the Cloudflare worker
   workflow_dispatch: {}
 
 permissions:
@@ -31,6 +33,7 @@ jobs:
       META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
       META_GRAPH_API_VERSION: ${{ vars.META_GRAPH_API_VERSION }}
       PUBLISH_LIVE: ${{ vars.PUBLISH_LIVE }}
+      TELEGRAM_UPDATE: ${{ github.event_name == 'repository_dispatch' && toJson(github.event.client_payload.update) || '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
