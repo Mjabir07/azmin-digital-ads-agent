@@ -1,0 +1,37 @@
+# Instant inbox: every Telegram update forwarded by the Cloudflare worker (✅/❌ taps, clips) gets its own run,
+# so quick taps are never dropped. Posting itself stays in publisher.yml (one run at a time, no double posts).
+name: telegram-inbox
+
+on:
+  repository_dispatch:
+    types: [telegram]
+
+permissions:
+  contents: write
+
+jobs:
+  inbox:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked
+      - name: Apply the tap / save the clip
+        run: uv run python -m agent.media.collect --quiet
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_UPDATE: ${{ toJson(github.event.client_payload.update) }}
+      - name: Save (retries if another run saved at the same moment)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add marketing/queue media/inbox
+          git diff --cached --quiet && echo "Nothing changed" && exit 0
+          git commit -m "Telegram inbox: save tap/clip"
+          for i in 1 2 3 4 5 6; do
+            git pull --rebase origin main && git push origin HEAD:main && exit 0
+            sleep $((i * 3))
+          done
+          exit 1

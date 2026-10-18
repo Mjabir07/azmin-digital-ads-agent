@@ -1,6 +1,6 @@
 // AZMIN DIGITAL — Telegram instant-reply worker (Cloudflare Workers, free plan).
 // Telegram sends every bot update here (webhook). The worker:
-//   • answers ✅/❌ taps instantly and records them by starting the GitHub "publisher" workflow
+//   • answers ✅/❌ taps instantly and records them by starting the GitHub "telegram-inbox" workflow
 //   • forwards clips/photos Jabir sends so GitHub saves them to media/inbox
 // Secrets (Worker → Settings → Variables and Secrets): TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID,
 // WEBHOOK_SECRET, GH_TOKEN (fine-grained token: this repo, Contents read/write). Plain variable: GH_REPO.
