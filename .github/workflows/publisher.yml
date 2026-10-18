@@ -1,0 +1,50 @@
+# Content publisher: reads ✅/❌ taps + clips from Telegram, sends new drafts for approval,
+# and posts APPROVED items to Instagram + Facebook when their time comes.
+# Live posting needs the repo variable PUBLISH_LIVE=true; until then it only reports (dry run).
+name: publisher
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # schedules run on the default branch only
+  push:
+    paths:
+      - marketing/queue/**
+      - ops/publisher.trigger
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: telegram-inbox
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+      META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+      META_GRAPH_API_VERSION: ${{ vars.META_GRAPH_API_VERSION }}
+      PUBLISH_LIVE: ${{ vars.PUBLISH_LIVE }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked
+      - name: Read Telegram (button taps + clips)
+        run: uv run python -m agent.media.collect --quiet
+      - name: Send new drafts for approval
+        run: uv run python -m agent.social.approvals
+      - name: Publish approved posts that are due
+        run: uv run python -m agent.social.publish
+      - name: Save queue state
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add marketing/queue media/inbox
+          git diff --cached --quiet && echo "Nothing changed" && exit 0
+          git commit -m "Publisher: update queue"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push

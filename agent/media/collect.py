@@ -1,4 +1,4 @@
-"""Collect videos/photos Jabir sends to the Telegram bot into media/inbox/.
+"""Single Telegram inbox reader: collects videos/photos Jabir sends to the Telegram bot into media/inbox/.
 
 The caption becomes the file name (e.g. "W00-S1" -> media/inbox/W00-S1.mp4).
 Telegram bots can download files up to 20 MB (a Veo 8 s 720p clip is well under that).
@@ -16,6 +16,7 @@ import httpx
 
 from agent.config import ROOT
 from agent.notify import telegram
+from agent.social import approvals
 
 INBOX = ROOT / "media/inbox"
 
@@ -31,13 +32,18 @@ def main() -> int:
         print("Telegram secrets missing.")
         return 1
     base = f"https://api.telegram.org/bot{token}"
-    saved, skipped, last_id = [], [], None
+    saved, skipped, decisions, last_id = [], [], [], None
     with httpx.Client(timeout=120) as http:
         updates = http.get(f"{base}/getUpdates").json().get("result", [])
         kinds = [next((k for k in ("video", "document", "photo", "text") if k in (u.get("message") or {})), "/".join(u)) for u in updates]
         print(f"{len(updates)} update(s) waiting: {kinds}")  # diagnostics only, no message contents
         for u in updates:
             last_id = u["update_id"]
+            if "callback_query" in u:  # ✅ / ❌ taps on queue previews
+                line = approvals.handle_callback(http, base, u["callback_query"], chat_id)
+                if line:
+                    decisions.append(line)
+                continue
             msg = u.get("message") or {}
             if str(msg.get("chat", {}).get("id")) != chat_id:
                 continue  # only accept files from Jabir's own chat
@@ -61,6 +67,11 @@ def main() -> int:
             saved.append(target.name)
         if last_id is not None:
             http.get(f"{base}/getUpdates", params={"offset": last_id + 1})  # confirm processed messages
+    if decisions:
+        print("Decisions: " + "; ".join(decisions))  # the button itself shows the result in Telegram
+    if not saved and not skipped and "--quiet" in sys.argv:
+        print("No new clips found.")
+        return 0  # scheduled runs stay silent when there is nothing to report
     report = "📥 Clip collector\n"
     report += ("Saved: " + ", ".join(saved)) if saved else "No new clips found."
     if skipped:
