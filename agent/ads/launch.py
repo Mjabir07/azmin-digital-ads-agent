@@ -140,7 +140,23 @@ def plan_text(spec: dict, ids: dict | None, total: float) -> str:
     return "\n".join(lines)
 
 
+def remove_empty_duplicates(g: Graph, act: str, name: str) -> None:
+    """Delete paused campaigns with the same name that have no ads (left over from a failed build)."""
+    for c in g.call("GET", f"{act}/campaigns", fields="name,effective_status,ads.limit(1){id}", limit=50).get("data", []):
+        if c.get("name") == name and c.get("effective_status") == "PAUSED" and not c.get("ads", {}).get("data"):
+            g.call("DELETE", c["id"])
+
+
 def build(g: Graph, spec: dict, ids: dict, act: str) -> dict:
+    remove_empty_duplicates(g, act, spec["campaign"]["name"])
+    try:
+        return _build(g, spec, ids, act)
+    except Exception:
+        remove_empty_duplicates(g, act, spec["campaign"]["name"])  # never leave half-built campaigns behind
+        raise
+
+
+def _build(g: Graph, spec: dict, ids: dict, act: str) -> dict:
     page, ig = ACCOUNTS["facebook_page_id"], ACCOUNTS["instagram_account_id"]
     cta = {"type": "WHATSAPP_MESSAGE", "value": {"app_destination": "WHATSAPP"}}
     camp = g.call("POST", f"{act}/campaigns", name=spec["campaign"]["name"], objective=spec["campaign"]["objective"],
