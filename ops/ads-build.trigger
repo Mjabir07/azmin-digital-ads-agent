@@ -1,2 +1,3 @@
 marketing/ads/2026-10-uae-website-leads.yaml
 --replace
+# website only: remove Yara ad, add filter buttons
