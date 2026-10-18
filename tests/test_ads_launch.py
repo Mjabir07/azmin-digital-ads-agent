@@ -11,9 +11,15 @@ def test_limits_accept_launch_plan():
     assert launch.check_limits(_spec(50)) == 50
 
 
-def test_spend_cap_minimum():
+def test_lifetime_budget_counts_as_daily():
+    spec = {"adsets": [{"name": "x", "lifetime_budget_aed": 200, "start": "2026-10-19 08:00", "end": "2026-10-23 08:00"}]}
+    assert launch.check_limits(spec) == 50
+
+
+def test_lifetime_budget_too_fast_rejected():
+    spec = {"adsets": [{"name": "x", "lifetime_budget_aed": 200, "start": "2026-10-19 08:00", "end": "2026-10-20 07:00"}]}
     with pytest.raises(launch.LimitError):
-        launch.check_limits({**_spec(50), "campaign": {"spend_cap_aed": 50}})
+        launch.check_limits(spec)
 
 
 def test_limits_reject_adset_over_150():

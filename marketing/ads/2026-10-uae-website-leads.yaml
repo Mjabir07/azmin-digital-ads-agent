@@ -4,7 +4,6 @@
 campaign:
   name: "AZD | UAE | WhatsApp Leads | Website Design"
   objective: OUTCOME_ENGAGEMENT
-  spend_cap_aed: 200        # Meta stops the whole campaign at AED 200 total
 prefill_message: "Hi! I have a business and I'm interested in the AED 999 website."
 targeting_base:
   cities: ["Dubai", "Sharjah", "Abu Dhabi", "Ajman"]
@@ -21,7 +20,9 @@ owner_signals:
   interests: ["Entrepreneurship", "Small business", "Startup company", "E-commerce", "Digital marketing", "Online advertising"]
 adsets:
   - name: "Owners strict | 27-55"
-    daily_budget_aed: 50
+    lifetime_budget_aed: 200       # hard total: Meta never spends more than this (about AED 50/day)
+    start: "2026-10-19 08:00"      # Dubai time; ads only run between start and end
+    end: "2026-10-23 08:00"
     advantage_audience: false
 ads:
   - name: "Yara-Offer-Reel"

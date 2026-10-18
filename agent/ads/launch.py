@@ -33,19 +33,31 @@ class LimitError(ValueError):
     pass
 
 
+def daily_equivalent(a: dict) -> float:
+    """AED/day of an ad set: its daily budget, or lifetime budget spread over its days."""
+    if "lifetime_budget_aed" in a:
+        days = (dubai(a["end"]) - dubai(a["start"])).total_seconds() / 86400
+        if days < 1:
+            raise LimitError(f"Ad set '{a['name']}' must run at least 1 day")
+        return float(a["lifetime_budget_aed"]) / days
+    return float(a["daily_budget_aed"])
+
+
+def dubai(text: str):
+    import datetime as dt
+    return dt.datetime.strptime(text, "%Y-%m-%d %H:%M").replace(tzinfo=queue.DUBAI)
+
+
 def check_limits(spec: dict) -> float:
     """Raise if any ad set or the account total would exceed config/limits.yaml. Returns total AED/day."""
     total = 0.0
     for a in spec["adsets"]:
-        b = float(a["daily_budget_aed"])
+        b = daily_equivalent(a)
         if b <= 0 or b > LIMITS["adset_daily_budget_max"]:
             raise LimitError(f"Ad set '{a['name']}' budget AED {b} is outside 0–{LIMITS['adset_daily_budget_max']}")
         total += b
     if total > LIMITS["account_daily_budget_max"]:
         raise LimitError(f"Total AED {total}/day is above the account limit AED {LIMITS['account_daily_budget_max']}")
-    cap = spec.get("campaign", {}).get("spend_cap_aed")
-    if cap is not None and float(cap) < 100:
-        raise LimitError("Meta's minimum campaign spend cap is AED 100")
     return total
 
 
@@ -112,13 +124,15 @@ def welcome(prefill: str) -> str:
 
 
 def plan_text(spec: dict, ids: dict | None, total: float) -> str:
-    cap = spec["campaign"].get("spend_cap_aed")
+    lifetime = sum(float(a.get("lifetime_budget_aed", 0)) for a in spec["adsets"])
     lines = [f"📣 Ad plan: {spec['campaign']['name']}",
-             f"Objective: WhatsApp conversations · AED {total:g}/day" + (f" · stops automatically at AED {cap:g} total" if cap else ""),
+             f"Objective: WhatsApp conversations · about AED {total:.0f}/day" + (f" · hard total AED {lifetime:g}" if lifetime else ""),
              f"Where: {', '.join(spec['targeting_base']['cities'])} (people living there) · Age {spec['targeting_base']['age_min']}–{spec['targeting_base']['age_max']}",
              "Placements: Facebook + Instagram feed, stories, reels (no Audience Network)"]
     for a in spec["adsets"]:
-        lines.append(f"• {a['name']}: AED {a['daily_budget_aed']:g}/day · {'Advantage+ with owner hints' if a['advantage_audience'] else 'business-owner signals only'}")
+        money = (f"AED {a['lifetime_budget_aed']:g} total, {a['start']} → {a['end']} Dubai" if "lifetime_budget_aed" in a
+                 else f"AED {a['daily_budget_aed']:g}/day")
+        lines.append(f"• {a['name']}: {money} · {'Advantage+ with owner hints' if a['advantage_audience'] else 'business-owner signals only'}")
     if ids:
         lines.append("Owner signals: " + ", ".join(x["name"] for x in ids["behaviors"] + ids["interests"]))
     lines.append("Ads: " + ", ".join(ad["name"] for ad in spec["ads"]))
@@ -130,8 +144,7 @@ def build(g: Graph, spec: dict, ids: dict, act: str) -> dict:
     page, ig = ACCOUNTS["facebook_page_id"], ACCOUNTS["instagram_account_id"]
     cta = {"type": "WHATSAPP_MESSAGE", "value": {"app_destination": "WHATSAPP"}}
     camp = g.call("POST", f"{act}/campaigns", name=spec["campaign"]["name"], objective=spec["campaign"]["objective"],
-                  status="PAUSED", special_ad_categories=[], is_adset_budget_sharing_enabled="false",
-                  **({"spend_cap": int(float(spec["campaign"]["spend_cap_aed"]) * 100)} if spec["campaign"].get("spend_cap_aed") else {}))["id"]
+                  status="PAUSED", special_ad_categories=[], is_adset_budget_sharing_enabled="false")["id"]
     built = {"campaign_id": camp, "adsets": [], "ads": []}
     creatives = []
     for ad in spec["ads"]:
@@ -165,8 +178,10 @@ def build(g: Graph, spec: dict, ids: dict, act: str) -> dict:
         cr = g.call("POST", f"{act}/adcreatives", name=ad["name"], object_story_spec=story)["id"]
         creatives.append((ad["name"], cr))
     for a in spec["adsets"]:
-        aset = g.call("POST", f"{act}/adsets", name=a["name"], campaign_id=camp, status="PAUSED",
-                      daily_budget=int(round(float(a["daily_budget_aed"]) * 100)), billing_event="IMPRESSIONS",
+        budget = ({"lifetime_budget": int(round(float(a["lifetime_budget_aed"]) * 100)),
+                   "start_time": dubai(a["start"]).isoformat(), "end_time": dubai(a["end"]).isoformat()}
+                  if "lifetime_budget_aed" in a else {"daily_budget": int(round(float(a["daily_budget_aed"]) * 100))})
+        aset = g.call("POST", f"{act}/adsets", name=a["name"], campaign_id=camp, status="PAUSED", **budget, billing_event="IMPRESSIONS",
                       optimization_goal="CONVERSATIONS", destination_type="WHATSAPP", bid_strategy="LOWEST_COST_WITHOUT_CAP",
                       promoted_object={"page_id": page}, targeting=targeting(spec, ids, a["advantage_audience"]))["id"]
         built["adsets"].append({"name": a["name"], "id": aset})

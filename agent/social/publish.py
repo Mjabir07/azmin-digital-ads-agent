@@ -120,7 +120,15 @@ def activate_ads(meta: Meta, item: queue.Item, live: bool) -> str:
     """Jabir tapped ✅ Activate: re-check budgets against config/limits.yaml, then set everything ACTIVE."""
     limits = yaml.safe_load((ROOT / "config/limits.yaml").read_text())
     built = yaml.safe_load((ROOT / item.data["built"]).read_text())
-    budgets = [int(meta.call("GET", a["id"], fields="daily_budget")["daily_budget"]) / 100 for a in built["adsets"]]
+    budgets = []
+    for a in built["adsets"]:
+        info = meta.call("GET", a["id"], fields="daily_budget,lifetime_budget,start_time,end_time")
+        if int(info.get("lifetime_budget") or 0):
+            import datetime as dt
+            days = (dt.datetime.fromisoformat(info["end_time"]) - dt.datetime.fromisoformat(info["start_time"])).total_seconds() / 86400
+            budgets.append(int(info["lifetime_budget"]) / 100 / max(days, 1))
+        else:
+            budgets.append(int(info["daily_budget"]) / 100)
     if any(b > limits["adset_daily_budget_max"] for b in budgets) or sum(budgets) > limits["account_daily_budget_max"]:
         item.data["status"] = "failed"
         item.save()
@@ -132,7 +140,7 @@ def activate_ads(meta: Meta, item: queue.Item, live: bool) -> str:
     item.data["status"] = "posted"
     item.data["activated_at"] = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())
     item.save()
-    return (f"🚀 Ads ACTIVE: {item.id} · AED {sum(budgets):g}/day\n"
+    return (f"🚀 Ads ACTIVE: {item.id} · about AED {sum(budgets):.0f}/day\n"
             "Meta reviews ads first (minutes to a few hours). Learning phase: no edits for 72 h.")
 
 
