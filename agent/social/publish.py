@@ -22,9 +22,26 @@ from agent.social import queue
 
 
 def media_url(rel_path: str) -> str:
+    """Public URL Meta downloads from. Videos via jsDelivr (correct video/mp4 type); images via GitHub raw
+    (image/jpeg, available the moment the commit exists). Pinned to the commit SHA."""
     repo = os.environ.get("GITHUB_REPOSITORY", "Mjabir07/azmin-digital-ads-agent")
     ref = os.environ.get("GITHUB_SHA") or "main"
-    return f"https://cdn.jsdelivr.net/gh/{repo}@{ref}/{rel_path}"
+    if rel_path.lower().endswith((".mp4", ".mov")):
+        return f"https://cdn.jsdelivr.net/gh/{repo}@{ref}/{rel_path}"
+    return f"https://raw.githubusercontent.com/{repo}/{ref}/{rel_path}"
+
+
+def reachable(url: str, tries: int = 4) -> bool:
+    """Make sure Meta will be able to download the file before asking it to."""
+    for i in range(tries):
+        try:
+            r = httpx.head(url, timeout=30, follow_redirects=True)
+            if r.status_code == 200 and r.headers.get("content-type", "").startswith(("image/", "video/")):
+                return True
+        except httpx.HTTPError:
+            pass
+        time.sleep(5 * (i + 1))
+    return False
 
 
 class Meta:
@@ -123,6 +140,10 @@ def main() -> int:
             lines.append(f"🧪 DRY RUN — would post {kind} {item.id} to {', '.join(item.data['platforms'])} now ({urls[0]})")
             continue
         posted, errors = dict(item.data.get("posted") or {}), []
+        bad = [u for u in urls if not reachable(u)]
+        if bad:
+            lines.append(f"⏳ {item.id}: media not downloadable yet ({bad[0]}) — will retry next run")
+            continue
         for platform in item.data["platforms"]:
             if platform in posted:
                 continue
@@ -141,7 +162,8 @@ def main() -> int:
         item.data["posted"] = posted
         item.data["status"] = "failed" if errors and not posted else "posted"
         item.save()
-        lines.append(f"✅ Posted {item.id}\n" + "\n".join(f"• {k}: {v}" for k, v in posted.items())
+        head = f"✅ Posted {item.id}" if posted and not errors else f"⚠️ Partly posted {item.id}" if posted else f"❌ Failed {item.id}"
+        lines.append(head + ("\n" if posted else "") + "\n".join(f"• {k}: {v}" for k, v in posted.items())
                      + ("\n⚠️ " + "; ".join(errors) if errors else ""))
     report = "\n\n".join(lines)
     print(report)

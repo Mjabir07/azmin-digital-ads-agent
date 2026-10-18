@@ -4,8 +4,21 @@
 //   • forwards clips/photos Jabir sends so GitHub saves them to media/inbox
 // Secrets (Worker → Settings → Variables and Secrets): TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID,
 // WEBHOOK_SECRET, GH_TOKEN (fine-grained token: this repo, Contents read/write). Plain variable: GH_REPO.
+// Cron Trigger (Worker → Settings → Triggers → Cron Triggers): "*/5 * * * *" starts the publisher every
+// 5 minutes, so scheduled posts go out on time even when GitHub's own timer is late.
 
 export default {
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(fetch(`https://api.github.com/repos/${env.GH_REPO}/dispatches`, {
+      method: "POST",
+      headers: {
+        authorization: `Bearer ${env.GH_TOKEN}`, accept: "application/vnd.github+json",
+        "user-agent": "azmin-telegram-worker", "content-type": "application/json",
+      },
+      body: JSON.stringify({ event_type: "publish" }),
+    }));
+  },
+
   async fetch(request, env) {
     if (request.method !== "POST") return new Response("AZMIN Telegram worker is running.");
     if (request.headers.get("X-Telegram-Bot-Api-Secret-Token") !== env.WEBHOOK_SECRET) {

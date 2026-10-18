@@ -10,6 +10,8 @@ on:
     paths:
       - marketing/queue/**
       - ops/publisher.trigger
+  repository_dispatch:
+    types: [publish]         # every 5 min from the Cloudflare worker's cron (reliable timer)
   workflow_dispatch: {}
 
 permissions:
