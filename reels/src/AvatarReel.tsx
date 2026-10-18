@@ -17,53 +17,74 @@ const FPS = 30;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const outExpo = Easing.bezier(0.16, 1, 0.3, 1);
 type Word = [string, number, number];
-type ClipId = "W01-A1" | "W01-A2" | "W01-A3";
 
-/** Kept parts of each clip (seconds) — pauses are cut out. */
-const CUTS: { clip: ClipId; src: string; from: number; to: number }[] = [
-  { clip: "W01-A1", src: "w01-a1.mp4", from: 0, to: 3.55 },
-  { clip: "W01-A1", src: "w01-a1.mp4", from: 4.25, to: 5.15 },
-  { clip: "W01-A1", src: "w01-a1.mp4", from: 5.8, to: 7.15 },
-  { clip: "W01-A2", src: "w01-a2.mp4", from: 0, to: 2.98 },
-  { clip: "W01-A2", src: "w01-a2.mp4", from: 2.98, to: 7.5 },
-  { clip: "W01-A3", src: "w01-a3.mp4", from: 0, to: 3.6 },
-  { clip: "W01-A3", src: "w01-a3.mp4", from: 4.6, to: 5.75 },
-];
+type Cut = { clip: string; src: string; from: number; to: number };
+export type ReelSet = { cuts: Cut[]; bubble: string; bubbleFrom: number };
+
+/** Kept parts of each clip (seconds) — pauses are cut out. One set per presenter. */
+export const SETS: Record<string, ReelSet> = {
+  jabir: {
+    cuts: [
+      { clip: "W01-A1", src: "w01-a1.mp4", from: 0, to: 3.55 },
+      { clip: "W01-A1", src: "w01-a1.mp4", from: 4.25, to: 5.15 },
+      { clip: "W01-A1", src: "w01-a1.mp4", from: 5.8, to: 7.15 },
+      { clip: "W01-A2", src: "w01-a2.mp4", from: 0, to: 2.98 },
+      { clip: "W01-A2", src: "w01-a2.mp4", from: 2.98, to: 7.5 },
+      { clip: "W01-A3", src: "w01-a3.mp4", from: 0, to: 3.6 },
+      { clip: "W01-A3", src: "w01-a3.mp4", from: 4.6, to: 5.75 },
+    ],
+    bubble: "w01-a3.mp4", bubbleFrom: 140,
+  },
+  yara: {
+    cuts: [
+      { clip: "W01-Y1", src: "w01-y1.mp4", from: 0.05, to: 2.62 },
+      { clip: "W01-Y1", src: "w01-y1.mp4", from: 2.95, to: 3.95 },
+      { clip: "W01-Y1", src: "w01-y1.mp4", from: 4.5, to: 5.38 },
+      { clip: "W01-Y1", src: "w01-y1.mp4", from: 5.9, to: 7.25 },
+      { clip: "W01-Y2", src: "w01-y2.mp4", from: 0, to: 3.0 },
+      { clip: "W01-Y2", src: "w01-y2.mp4", from: 3.12, to: 7.45 },
+      { clip: "W01-Y3", src: "w01-y3.mp4", from: 0.78, to: 3.85 },
+      { clip: "W01-Y3", src: "w01-y3.mp4", from: 4.5, to: 5.65 },
+    ],
+    bubble: "w01-y3.mp4", bubbleFrom: 120,
+  },
+};
 const END_CARD = 105;
 /** Words that get the serif-italic + blue marker treatment. */
 const HOT = new Set(["google", "competitor", "one", "day", "999", "whatsapp", "yours"]);
 
-// Lay the cuts out on the reel timeline (frames).
-let at = 0;
-const LAYOUT = CUTS.map((c) => {
-  const len = Math.round((c.to - c.from) * FPS);
-  const item = { ...c, start: at, len };
-  at += len;
-  return item;
-});
-export const AVATAR_REEL_FRAMES = at + END_CARD;
-const TALK_END = at;
+/** Lay the cuts out on the reel timeline (frames) and group the spoken words into caption lines. */
+const timeline = (set: ReelSet) => {
+  let at = 0;
+  const layout = set.cuts.map((c) => {
+    const len = Math.round((c.to - c.from) * FPS);
+    const item = { ...c, start: at, len };
+    at += len;
+    return item;
+  });
+  const timed = layout.flatMap((c) =>
+    (words as Record<string, Word[]>)[c.clip]
+      .filter(([, s]) => s >= c.from - 0.05 && s < c.to)
+      .map(([w, s, e]) => ({ w, s: c.start + Math.round((s - c.from) * FPS), e: c.start + Math.round((Math.min(e, c.to) - c.from) * FPS) })),
+  );
+  const groups: { words: typeof timed; start: number; end: number }[] = [];
+  for (const t of timed) {
+    const g = groups[groups.length - 1];
+    const prevEndsPhrase = g && /[.,?!]$/.test(g.words[g.words.length - 1].w);
+    if (!g || g.words.length >= 3 || prevEndsPhrase || t.s - g.end > 12) groups.push({ words: [t], start: t.s, end: t.e });
+    else { g.words.push(t); g.end = t.e; }
+  }
+  groups.forEach((g, i) => { g.end = i + 1 < groups.length ? Math.min(groups[i + 1].start, g.end + 20) : g.end + 15; });
+  const wordAt = (w: string) => timed.find((t) => t.w.toLowerCase().replace(/[^a-z0-9]/g, "") === w)?.s ?? 0;
+  return { layout, groups, wordAt, talkEnd: at, total: at + END_CARD };
+};
+type TL = ReturnType<typeof timeline>;
+export const avatarReelFrames = (set: keyof typeof SETS) => timeline(SETS[set]).total;
 
-/** All words mapped to reel frames, then grouped into short caption lines (max 3 words / punctuation). */
-const TIMED = LAYOUT.flatMap((c) =>
-  (words as Record<string, Word[]>)[c.clip]
-    .filter(([, s]) => s >= c.from - 0.05 && s < c.to)
-    .map(([w, s, e]) => ({ w, s: c.start + Math.round((s - c.from) * FPS), e: c.start + Math.round((Math.min(e, c.to) - c.from) * FPS) })),
-);
-const GROUPS: { words: typeof TIMED; start: number; end: number }[] = [];
-for (const t of TIMED) {
-  const g = GROUPS[GROUPS.length - 1];
-  const prevEndsPhrase = g && /[.,?!]$/.test(g.words[g.words.length - 1].w);
-  if (!g || g.words.length >= 3 || prevEndsPhrase || t.s - g.end > 12) GROUPS.push({ words: [t], start: t.s, end: t.e });
-  else { g.words.push(t); g.end = t.e; }
-}
-GROUPS.forEach((g, i) => { g.end = i + 1 < GROUPS.length ? Math.min(GROUPS[i + 1].start, g.end + 20) : g.end + 15; });
-const wordAt = (w: string) => TIMED.find((t) => t.w.toLowerCase().replace(/[^a-z0-9]/g, "") === w)?.s ?? 0;
-
-const Karaoke: React.FC = () => {
+const Karaoke: React.FC<{ tl: TL }> = ({ tl }) => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const g = GROUPS.find((x) => f >= x.start && f < x.end);
+  const g = tl.groups.find((x) => f >= x.start && f < x.end);
   if (!g) return null;
   const pop = spring({ frame: f - g.start, fps, config: { damping: 13, mass: 0.5, stiffness: 220 } });
   return (
@@ -125,7 +146,7 @@ const SitePop: React.FC = () => {
 };
 
 /** Price sticker + included chips, each landing on the spoken word. */
-const PricePop: React.FC<{ t0: number }> = ({ t0 }) => {
+const PricePop: React.FC<{ t0: number; wordAt: TL["wordAt"] }> = ({ t0, wordAt }) => {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
   const sp = (at: number) => spring({ frame: f - (at - t0), fps, config: { damping: 11, mass: 0.5, stiffness: 200 } });
@@ -172,10 +193,10 @@ const NumberPop: React.FC = () => {
 };
 
 /** Story-style progress bar + handle, across the whole reel. */
-const TopBar: React.FC = () => {
+const TopBar: React.FC<{ talkEnd: number }> = ({ talkEnd }) => {
   const f = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
-  const dark = f >= TALK_END + 6;
+  const dark = f >= talkEnd + 6;
   const col = dark ? P.ink : C.white;
   return (
     <>
@@ -192,26 +213,28 @@ const TopBar: React.FC = () => {
   );
 };
 
-export const AvatarReel: React.FC = () => {
+export const AvatarReel: React.FC<{ set: keyof typeof SETS }> = ({ set }) => {
   const { durationInFrames } = useVideoConfig();
-  const a2 = LAYOUT.filter((c) => c.clip === "W01-A2");
-  const a3 = LAYOUT.find((c) => c.clip === "W01-A3")!;
+  const tl = timeline(SETS[set]);
+  const { layout, talkEnd } = tl;
+  const a2 = layout.filter((c) => c.clip.endsWith("2"));
+  const a3 = layout.find((c) => c.clip.endsWith("3"))!;
   const musicVol = (f: number) =>
-    f < TALK_END ? 0.11 : interpolate(f, [TALK_END, TALK_END + 10, durationInFrames - 20, durationInFrames - 1], [0.11, 0.6, 0.6, 0], clamp);
+    f < talkEnd ? 0.11 : interpolate(f, [talkEnd, talkEnd + 10, durationInFrames - 20, durationInFrames - 1], [0.11, 0.6, 0.6, 0], clamp);
   return (
     <AbsoluteFill style={{ fontFamily: "Inter Tight, sans-serif", backgroundColor: P.ink }}>
       <style>{fonts}</style>
       <Audio src={staticFile("music-emerge.mp3")} startFrom={Math.round(40.04 * FPS)} volume={musicVol} />
-      {LAYOUT.map((c, i) => (
+      {layout.map((c, i) => (
         <Sequence key={i} from={c.start} durationInFrames={c.len}><Cut src={c.src} from={c.from} idx={i} /></Sequence>
       ))}
       <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(0,0,0,.35), transparent 20%, transparent 55%, rgba(0,0,0,.6))" }} />
       <Sequence from={a2[0].start} durationInFrames={a2[0].len + 6}><SitePop /></Sequence>
-      <Sequence from={a2[1].start} durationInFrames={a2[1].len}><PricePop t0={a2[1].start} /></Sequence>
-      <Sequence from={a3.start} durationInFrames={TALK_END - a3.start}><NumberPop /></Sequence>
-      <Karaoke />
-      <Sequence from={TALK_END}><SlideUp><EndCard bubble="w01-a3.mp4" bubbleFrom={140} chrome={false} /></SlideUp></Sequence>
-      <TopBar />
+      <Sequence from={a2[1].start} durationInFrames={a2[1].len}><PricePop t0={a2[1].start} wordAt={tl.wordAt} /></Sequence>
+      <Sequence from={a3.start} durationInFrames={talkEnd - a3.start}><NumberPop /></Sequence>
+      <Karaoke tl={tl} />
+      <Sequence from={talkEnd}><SlideUp><EndCard bubble={SETS[set].bubble} bubbleFrom={SETS[set].bubbleFrom} chrome={false} /></SlideUp></Sequence>
+      <TopBar talkEnd={talkEnd} />
     </AbsoluteFill>
   );
 };
