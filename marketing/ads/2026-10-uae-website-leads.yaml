@@ -25,18 +25,16 @@ adsets:
     end: "2026-10-23 08:00"
     advantage_audience: false
 ads:
-  - name: "Yara-Offer-Reel"
-    video: marketing/reels/yara-reel-w01.mp4
+  - name: "Yara-AI-Chatbot-Reel"
+    replaces: "Yara-Offer-Reel"          # Jabir 2026-10-18: use the reel already posted on Instagram
+    video: marketing/reels/yara-ai-chatbot-w02.mp4
+    prefill_message: "Hi! I have a business and I'm interested in an AI WhatsApp chatbot."
     primary_text: |
-      For UAE business owners 👋 Your customers Google you before they call.
+      For UAE business owners 👋 Missing customer messages at night?
 
-      Get a professional business website, ready in as little as 1 day:
-      ✅ Mobile-friendly design
-      ✅ Free domain + 1 year hosting
-      ✅ WhatsApp button & Google-ready
-
-      Starter Combo from AED 999. Tap to chat with us on WhatsApp.
-    headline: "Business website from AED 999"
+      An AI chatbot on your WhatsApp answers customers instantly, even at 2 AM: hours, services, bookings, FAQs.
+      We set it up and train it on your business. Tap to chat with us.
+    headline: "AI chatbot for your WhatsApp"
   - name: "MeVsMe-Reel"
     video: marketing/reels/yara-me-vs-me-w02.mp4
     primary_text: |

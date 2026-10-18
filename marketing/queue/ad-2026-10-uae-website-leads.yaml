@@ -17,8 +17,10 @@ caption: '📣 Ad plan: AZD | UAE | WhatsApp Leads | Website Design
 
   Owner signals: Small business owners, Facebook Page admins, Entrepreneurship, Small business, Startup company, E-commerce, Digital marketing, Online advertising
 
-  Ads: Yara-Offer-Reel, MeVsMe-Reel, Offer-Image
+  Ads: Yara-AI-Chatbot-Reel, MeVsMe-Reel, Offer-Image
 
-  Pre-filled WhatsApp message: "Hi! I have a business and I''m interested in the AED 999 website."'
-status: pending
+  Pre-filled WhatsApp message: "Hi! I have a business and I''m interested in the AED 999 website."
+
+  AI chatbot ad pre-filled message: "Hi! I have a business and I''m interested in an AI WhatsApp chatbot."'
+status: draft
 telegram_message_id: 119

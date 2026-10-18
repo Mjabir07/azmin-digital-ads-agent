@@ -150,6 +150,55 @@ def plan_text(spec: dict, ids: dict | None, total: float) -> str:
     return "\n".join(lines)
 
 
+def make_creative(g: Graph, spec: dict, ad: dict, act: str) -> str:
+    """Upload the ad's media and create its Click-to-WhatsApp creative. Returns the creative ID."""
+    page, ig = ACCOUNTS["facebook_page_id"], ACCOUNTS["instagram_account_id"]
+    cta = {"type": "WHATSAPP_MESSAGE", "value": {"app_destination": "WHATSAPP"}}
+    prefill = ad.get("prefill_message", spec["prefill_message"])
+    if ad.get("video"):
+        url = media_url(ad["video"])
+        if not reachable(url):
+            raise RuntimeError(f"Video not downloadable: {url}")
+        vid = g.call("POST", f"{act}/advideos", file_url=url, name=ad["name"])["id"]
+        for _ in range(60):
+            st = g.call("GET", vid, fields="status,picture")
+            if st.get("status", {}).get("video_status") == "ready":
+                break
+            time.sleep(10)
+        story = {"page_id": page, "instagram_user_id": ig, "video_data": {
+            "video_id": vid, "image_url": st.get("picture"), "message": ad["primary_text"], "title": ad["headline"],
+            "call_to_action": cta, "page_welcome_message": welcome(prefill)}}
+    else:
+        files = ad.get("images") or [ad["image"]]
+        hashes = [g.upload_image(act, ROOT / f) for f in files]
+        link = {"link": "https://api.whatsapp.com/send", "message": ad["primary_text"], "name": ad["headline"],
+                "call_to_action": cta, "page_welcome_message": welcome(prefill)}
+        if len(hashes) == 1:
+            link["image_hash"] = hashes[0]
+        else:
+            link["child_attachments"] = [{"image_hash": h, "link": "https://api.whatsapp.com/send", "name": ad["headline"],
+                                          "call_to_action": cta} for h in hashes]
+        story = {"page_id": page, "instagram_user_id": ig, "link_data": link}
+    return g.call("POST", f"{act}/adcreatives", name=ad["name"], object_story_spec=story)["id"]
+
+
+def replace_ads(g: Graph, spec: dict, built_path: Path, act: str) -> list[str]:
+    """Swap the creative of already-built (paused) ads for spec ads marked `replaces: <old name>`."""
+    built = yaml.safe_load(built_path.read_text())
+    done = []
+    for ad in [a for a in spec["ads"] if a.get("replaces")]:
+        targets = [b for b in built["ads"] if b["name"].endswith(f"/ {ad['replaces']}")]
+        if not targets:
+            continue
+        cr = make_creative(g, spec, ad, act)
+        for b in targets:
+            g.call("POST", b["id"], creative={"creative_id": cr}, name=ad["name"])
+            b["name"] = b["name"].rsplit("/ ", 1)[0] + f"/ {ad['name']}"
+            done.append(b["name"])
+    built_path.write_text(yaml.safe_dump(built, sort_keys=False))
+    return done
+
+
 def remove_empty_duplicates(g: Graph, act: str, name: str) -> None:
     """Delete paused campaigns with the same name that have no ads (left over from a failed build)."""
     for c in g.call("GET", f"{act}/campaigns", fields="name,effective_status,ads.limit(1){id}", limit=50).get("data", []):
@@ -172,34 +221,7 @@ def _build(g: Graph, spec: dict, ids: dict, act: str) -> dict:
     camp = g.call("POST", f"{act}/campaigns", name=spec["campaign"]["name"], objective=spec["campaign"]["objective"],
                   status="PAUSED", special_ad_categories=[], is_adset_budget_sharing_enabled="false")["id"]
     built = {"campaign_id": camp, "adsets": [], "ads": []}
-    creatives = []
-    for ad in spec["ads"]:
-        if ad.get("video"):
-            url = media_url(ad["video"])
-            if not reachable(url):
-                raise RuntimeError(f"Video not downloadable: {url}")
-            vid = g.call("POST", f"{act}/advideos", file_url=url, name=ad["name"])["id"]
-            for _ in range(60):
-                st = g.call("GET", vid, fields="status,picture")
-                if st.get("status", {}).get("video_status") == "ready":
-                    break
-                time.sleep(10)
-            story = {"page_id": page, "instagram_user_id": ig, "video_data": {
-                "video_id": vid, "image_url": st.get("picture"), "message": ad["primary_text"], "title": ad["headline"],
-                "call_to_action": cta, "page_welcome_message": welcome(spec["prefill_message"])}}
-        else:
-            files = ad.get("images") or [ad["image"]]
-            hashes = [g.upload_image(act, ROOT / f) for f in files]
-            link = {"link": "https://api.whatsapp.com/send", "message": ad["primary_text"], "name": ad["headline"],
-                    "call_to_action": cta, "page_welcome_message": welcome(spec["prefill_message"])}
-            if len(hashes) == 1:
-                link["image_hash"] = hashes[0]
-            else:
-                link["child_attachments"] = [{"image_hash": h, "link": "https://api.whatsapp.com/send", "name": ad["headline"],
-                                              "call_to_action": cta} for h in hashes]
-            story = {"page_id": page, "instagram_user_id": ig, "link_data": link}
-        cr = g.call("POST", f"{act}/adcreatives", name=ad["name"], object_story_spec=story)["id"]
-        creatives.append((ad["name"], cr))
+    creatives = [(ad["name"], make_creative(g, spec, ad, act)) for ad in spec["ads"]]
     for a in spec["adsets"]:
         budget = ({"lifetime_budget": int(round(float(a["lifetime_budget_aed"]) * 100)),
                    "start_time": dubai(a["start"]).isoformat(), "end_time": dubai(a["end"]).isoformat()}
@@ -219,11 +241,18 @@ def main() -> int:
     ap.add_argument("spec")
     ap.add_argument("--resolve", action="store_true")
     ap.add_argument("--build", action="store_true")
+    ap.add_argument("--replace", action="store_true", help="swap creatives of built paused ads (spec `replaces:`)")
     args = ap.parse_args()
     spec_path = Path(args.spec).resolve()
     spec = yaml.safe_load(spec_path.read_text())
     total = check_limits(spec)
     ids = None
+    if args.replace:
+        g = Graph(os.environ["META_ACCESS_TOKEN"].strip(), (os.environ.get("META_GRAPH_API_VERSION") or DEFAULT_GRAPH_API_VERSION).strip())
+        act = (os.environ.get("META_AD_ACCOUNT_ID") or ACCOUNTS.get("ad_account_id") or "").strip()
+        done = replace_ads(g, spec, spec_path.with_suffix(".built.yaml"), act)
+        print("Replaced: " + (", ".join(done) or "nothing (no `replaces:` match)"))
+        return 0
     if args.resolve or args.build:
         g = Graph(os.environ["META_ACCESS_TOKEN"].strip(), (os.environ.get("META_GRAPH_API_VERSION") or DEFAULT_GRAPH_API_VERSION).strip())
         ids = resolve(g, spec)
