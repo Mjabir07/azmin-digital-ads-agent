@@ -21,8 +21,11 @@ TG_VIDEO_LIMIT = 50 * 1024 * 1024  # bots can upload up to 50 MB
 
 
 def _preview(item: queue.Item) -> str:
-    caption = item.data.get("caption", "").strip()
-    head = f"🗓 {item.id} — {item.data.get('type', 'post')} for {', '.join(item.data.get('platforms', []))}\n⏰ Posts {queue.when(item)} after approval\n\n"
+    caption = (item.data.get("caption") or "(stories have no caption)").strip()
+    head = f"🗓 {item.id} — {item.data.get('type', 'post')} for {', '.join(item.data.get('platforms', []))}\n⏰ Posts {queue.when(item)} after approval\n"
+    if item.data.get("note"):
+        head += f"📝 {item.data['note']}\n"
+    head += "\n"
     room = 1024 - len(head) - 3  # Telegram media captions max 1024 chars
     return head + (caption if len(caption) <= room else caption[:room] + "…")
 
@@ -51,19 +54,28 @@ def send_drafts(token: str, chat_id: str) -> list[str]:
         for item in queue.load_all():
             if item.status != "draft":
                 continue
-            media = ROOT / item.data["video" if item.data.get("type") == "reel" else "image"]
-            if media.stat().st_size > TG_VIDEO_LIMIT:
-                print(f"{item.id}: file over 50 MB, cannot preview in Telegram")
-                continue
-            is_video = item.data.get("type") == "reel"
-            method, field_name = ("sendVideo", "video") if is_video else ("sendPhoto", "photo")
             if item.data.get("telegram_message_id"):  # re-sent draft: remove the old preview and its buttons
                 http.post(f"{base}/deleteMessage", json={"chat_id": chat_id, "message_id": item.data["telegram_message_id"]})
-            data = {"chat_id": chat_id, "caption": _preview(item), "reply_markup": json.dumps(keyboard(item.id))}
-            if is_video:
-                data |= {"supports_streaming": "true", **_video_meta(media)}
-            with media.open("rb") as fh:
-                resp = http.post(f"{base}/{method}", data=data, files={field_name: (media.name, fh)}).json()
+            if item.data.get("type") == "carousel":
+                # Albums can't carry buttons: send the slides, then a message with the caption + buttons.
+                paths = [ROOT / f for f in item.data["images"]][:10]
+                files = {f"s{i}": (p.name, p.read_bytes()) for i, p in enumerate(paths)}
+                album = [{"type": "photo", "media": f"attach://s{i}"} for i in range(len(paths))]
+                http.post(f"{base}/sendMediaGroup", data={"chat_id": chat_id, "media": json.dumps(album)}, files=files)
+                resp = http.post(f"{base}/sendMessage", json={"chat_id": chat_id, "text": _preview(item),
+                                                             "reply_markup": keyboard(item.id)}).json()
+            else:
+                is_video = item.data.get("type") == "reel"
+                media = ROOT / item.data["video" if is_video else "image"]
+                if media.stat().st_size > TG_VIDEO_LIMIT:
+                    print(f"{item.id}: file over 50 MB, cannot preview in Telegram")
+                    continue
+                method, field_name = ("sendVideo", "video") if is_video else ("sendPhoto", "photo")
+                data = {"chat_id": chat_id, "caption": _preview(item), "reply_markup": json.dumps(keyboard(item.id))}
+                if is_video:
+                    data |= {"supports_streaming": "true", **_video_meta(media)}
+                with media.open("rb") as fh:
+                    resp = http.post(f"{base}/{method}", data=data, files={field_name: (media.name, fh)}).json()
             if not resp.get("ok"):
                 print(f"{item.id}: Telegram error {resp.get('description')}")
                 continue

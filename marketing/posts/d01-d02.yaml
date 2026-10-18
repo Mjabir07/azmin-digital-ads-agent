@@ -1,0 +1,56 @@
+# Day 1 story (tonight) + Day 2 carousel and story. AZMIN Editorial theme.
+designs:
+  - name: d01-story-poll
+    kind: story
+    kicker: QUICK QUESTION
+    title: "Do you reply to customer WhatsApps *after 10 PM?*"
+    options: ["YES", "NO"]
+    cta: "DM us your answer 👇 Our AI chatbot can reply for you, 24/7."
+  - name: d02-c1
+    kind: cover
+    kicker: WEBSITE CHECKLIST
+    title: "5 things every business website *needs* in 2026"
+    sub: "Missing even one can cost you customers."
+  - name: d02-c2
+    kind: point
+    count: 02/07
+    num: "01"
+    title: "Loads *fast*"
+    body: "People leave slow websites before they even see your offer. Speed is the first impression."
+  - name: d02-c3
+    kind: point
+    count: 03/07
+    num: "02"
+    title: "Looks perfect on *phones*"
+    body: "Most customers will find you on their phone. Big buttons, easy text, no zooming."
+  - name: d02-c4
+    kind: point
+    count: 04/07
+    num: "03"
+    title: "A *WhatsApp* button"
+    body: "In the UAE, customers want to ask first. One tap to chat beats any contact form."
+  - name: d02-c5
+    kind: point
+    count: 05/07
+    num: "04"
+    title: "Shows up on *Google*"
+    body: "SEO basics plus a Google Business Profile, so people searching for your service actually find you."
+  - name: d02-c6
+    kind: point
+    count: 06/07
+    num: "05"
+    title: "Clear contact & *location*"
+    body: "Phone, WhatsApp, map and opening hours, easy to find on every page."
+  - name: d02-c7
+    kind: cta
+    count: 07/07
+    theme: navy
+    title: "Missing any of *these?*"
+    body: "We build all five into every website, from AED 999 with domain + 1 year hosting. Ready in as little as 1 day."
+  - name: d02-story
+    kind: story
+    theme: navy
+    kicker: TONIGHT · 7:30 PM
+    title: "5 things every business website *needs*"
+    body: "A checklist you'll want to save. Does your website pass?"
+    cta: "Turn on post notifications 🔔"
