@@ -16,6 +16,8 @@ concurrency:
 
 jobs:
   collect:
+    # Only the main branch talks to Telegram/Meta, so a side branch can never double-post or steal button taps.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
