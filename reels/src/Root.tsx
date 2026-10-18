@@ -11,5 +11,7 @@ export const Root: React.FC = () => (
     <Composition id="CreatorReel" component={CreatorReel} durationInFrames={CREATOR_REEL_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="AvatarReel" component={AvatarReel} defaultProps={{ set: "jabir" as const }} durationInFrames={avatarReelFrames("jabir")} fps={30} width={1080} height={1920} />
     <Composition id="YaraReel" component={AvatarReel} defaultProps={{ set: "yara" as const }} durationInFrames={avatarReelFrames("yara")} fps={30} width={1080} height={1920} />
+    <Composition id="YaraAiReel" component={AvatarReel} defaultProps={{ set: "yaraAi" as const }} durationInFrames={avatarReelFrames("yaraAi")} fps={30} width={1080} height={1920} />
+    <Composition id="YaraDebateReel" component={AvatarReel} defaultProps={{ set: "yaraDebate" as const }} durationInFrames={avatarReelFrames("yaraDebate")} fps={30} width={1080} height={1920} />
   </>
 );
