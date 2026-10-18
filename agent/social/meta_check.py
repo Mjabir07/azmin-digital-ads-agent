@@ -62,6 +62,17 @@ def main() -> int:
                 else:
                     ok = False
                     lines.append("Instagram: not linked to this Page")
+                wa = get(p["id"], fields="whatsapp_number").get("whatsapp_number")
+                lines.append(f"WhatsApp on Page: {'linked' if wa else 'not linked (Page settings -> Linked accounts -> WhatsApp)'}")
+
+            # Ads readiness (read-only): ad accounts the robot user can use
+            accounts = get("me/adaccounts", fields="account_id,name,currency,timezone_name,account_status,funding_source_details").get("data", [])
+            if not accounts:
+                lines.append("Ad accounts: none assigned to the robot user yet")
+            for a in accounts:
+                status = {1: "active", 2: "disabled", 3: "unsettled", 7: "pending review", 9: "in grace period", 101: "closed"}.get(a.get("account_status"), a.get("account_status"))
+                pay = "payment method added" if a.get("funding_source_details") else "no payment method"
+                lines.append(f"Ad account: {a.get('name')} (act_{a['account_id']}) · {a.get('currency')} · {a.get('timezone_name')} · {status} · {pay}")
         except Exception as e:  # report, never crash with the token in the trace
             ok = False
             lines.append(f"Error: {redact(str(e), [token])}")
