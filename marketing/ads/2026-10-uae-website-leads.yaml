@@ -1,0 +1,66 @@
+# First campaign: UAE business owners → WhatsApp chats about the AED 999 Starter Combo.
+# Built PAUSED by agent/ads/launch.py; Jabir activates with ✅ in Telegram. Limits: config/limits.yaml.
+campaign:
+  name: "AZD | UAE | WhatsApp Leads | Website Design"
+  objective: OUTCOME_ENGAGEMENT
+prefill_message: "Hi! I have a business and I'm interested in the AED 999 website."
+targeting_base:
+  cities: ["Dubai", "Sharjah", "Abu Dhabi", "Ajman"]
+  location_types: [home]                 # people who live there, not tourists/visitors
+  age_min: 27
+  age_max: 55
+  locales: ["English (All)", "Arabic"]
+  placements:                            # no Audience Network / Messenger
+    publisher_platforms: [facebook, instagram]
+    facebook_positions: [feed, story, facebook_reels]
+    instagram_positions: [stream, story, reels]
+owner_signals:
+  behaviors: ["Small business owners", "Facebook page admins"]
+  interests: ["Entrepreneurship", "Small business", "Startup company", "E-commerce", "Digital marketing", "Online advertising"]
+adsets:
+  - name: "A | Owners strict | 27-55"
+    daily_budget_aed: 37.5
+    advantage_audience: false
+  - name: "B | Advantage+ owner hints | 27-55"
+    daily_budget_aed: 37.5
+    advantage_audience: true
+ads:
+  - name: "Yara-Offer-Reel"
+    video: marketing/reels/yara-reel-w01.mp4
+    primary_text: |
+      For UAE business owners 👋 Your customers Google you before they call.
+
+      Get a professional business website, ready in as little as 1 day:
+      ✅ Mobile-friendly design
+      ✅ Free domain + 1 year hosting
+      ✅ WhatsApp button & Google-ready
+
+      Starter Combo from AED 999. Tap to chat with us on WhatsApp.
+    headline: "Business website from AED 999"
+  - name: "MeVsMe-Reel"
+    video: marketing/reels/yara-me-vs-me-w02.mp4
+    primary_text: |
+      Business owner in the UAE? "My Instagram page is enough" is costing you customers.
+
+      Customers check Google first. A website makes you look trusted and easy to find.
+      Website + free domain + 1 year hosting, from AED 999. Ready in as little as 1 day.
+    headline: "Get found on Google"
+  - name: "Offer-Image"
+    image: marketing/posts/d03-d08/d07-post.jpg
+    primary_text: |
+      For UAE business owners: your business website, ready in as little as 1 day ⚡
+
+      Starter Combo from AED 999: business website, free domain, 1 year hosting.
+      Mobile-friendly, WhatsApp button, Google-ready. Message us to get started.
+    headline: "Starter Combo · AED 999"
+  - name: "3Signs-Carousel"
+    images:
+      - marketing/posts/d03-d08/d08-c1.jpg
+      - marketing/posts/d03-d08/d08-c2.jpg
+      - marketing/posts/d03-d08/d08-c3.jpg
+      - marketing/posts/d03-d08/d08-c4.jpg
+      - marketing/posts/d03-d08/d08-c5.jpg
+    primary_text: |
+      Running a business in the UAE? Check these 3 signs you're losing customers online 👇
+      We fix all three: website from AED 999 with domain + 1 year hosting.
+    headline: "Fix it from AED 999"

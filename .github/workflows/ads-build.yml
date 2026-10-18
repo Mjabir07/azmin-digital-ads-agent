@@ -1,0 +1,45 @@
+# Build a Meta ad campaign from a spec, PAUSED (no spend), and send the plan to Telegram for ✅ Activate.
+# Put the spec path on the first line of ops/ads-build.trigger. Add "--build" on the second line to create it;
+# without it this is a read-only dry run that resolves targeting.
+name: ads-build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ops/ads-build.trigger
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+concurrency:
+  group: telegram-inbox
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      META_ACCESS_TOKEN: ${{ secrets.META_ACCESS_TOKEN }}
+      META_GRAPH_API_VERSION: ${{ vars.META_GRAPH_API_VERSION }}
+      META_AD_ACCOUNT_ID: ${{ vars.META_AD_ACCOUNT_ID }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --locked
+      - name: Plan / build (paused)
+        run: uv run python -m agent.ads.launch "$(sed -n 1p ops/ads-build.trigger)" --resolve $(sed -n 2p ops/ads-build.trigger)
+      - name: Send for approval
+        run: uv run python -m agent.social.approvals
+      - name: Save IDs + queue
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add marketing/ads marketing/queue
+          git diff --cached --quiet && exit 0
+          git commit -m "Ads: built paused campaign, sent for approval"
+          for i in 1 2 3 4; do git pull --rebase origin main && git push origin HEAD:main && exit 0; sleep 5; done; exit 1

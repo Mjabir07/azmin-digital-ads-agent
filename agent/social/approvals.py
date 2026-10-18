@@ -56,7 +56,12 @@ def send_drafts(token: str, chat_id: str) -> list[str]:
                 continue
             if item.data.get("telegram_message_id"):  # re-sent draft: remove the old preview and its buttons
                 http.post(f"{base}/deleteMessage", json={"chat_id": chat_id, "message_id": item.data["telegram_message_id"]})
-            if item.data.get("type") == "carousel":
+            if item.data.get("type") == "ad_activate":  # ad campaign: text plan + Activate/Reject
+                kb = {"inline_keyboard": [[{"text": "✅ Activate ads", "callback_data": f"approve:{item.id}"},
+                                           {"text": "❌ Reject", "callback_data": f"reject:{item.id}"}]]}
+                text = f"{item.data['caption']}\n\n💰 {item.data.get('note', '')}"
+                resp = http.post(f"{base}/sendMessage", json={"chat_id": chat_id, "text": text[:4000], "reply_markup": kb}).json()
+            elif item.data.get("type") == "carousel":
                 # Albums can't carry buttons: send the slides, then a message with the caption + buttons.
                 paths = [ROOT / f for f in item.data["images"]][:10]
                 files = {f"s{i}": (p.name, p.read_bytes()) for i, p in enumerate(paths)}

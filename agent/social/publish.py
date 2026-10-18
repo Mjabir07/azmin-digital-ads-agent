@@ -116,6 +116,26 @@ class Meta:
         return "Facebook story (live for 24 h)"
 
 
+def activate_ads(meta: Meta, item: queue.Item, live: bool) -> str:
+    """Jabir tapped ✅ Activate: re-check budgets against config/limits.yaml, then set everything ACTIVE."""
+    limits = yaml.safe_load((ROOT / "config/limits.yaml").read_text())
+    built = yaml.safe_load((ROOT / item.data["built"]).read_text())
+    budgets = [int(meta.call("GET", a["id"], fields="daily_budget")["daily_budget"]) / 100 for a in built["adsets"]]
+    if any(b > limits["adset_daily_budget_max"] for b in budgets) or sum(budgets) > limits["account_daily_budget_max"]:
+        item.data["status"] = "failed"
+        item.save()
+        return f"❌ Not activated {item.id}: budgets {budgets} break config/limits.yaml"
+    if not live:
+        return f"🧪 DRY RUN — would activate {item.id} (AED {sum(budgets):g}/day)"
+    for obj in [built["campaign_id"], *[a["id"] for a in built["adsets"]], *[a["id"] for a in built["ads"]]]:
+        meta.call("POST", obj, status="ACTIVE")
+    item.data["status"] = "posted"
+    item.data["activated_at"] = time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime())
+    item.save()
+    return (f"🚀 Ads ACTIVE: {item.id} · AED {sum(budgets):g}/day\n"
+            "Meta reviews ads first (minutes to a few hours). Learning phase: no edits for 72 h.")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
@@ -131,6 +151,9 @@ def main() -> int:
                 (os.environ.get("META_GRAPH_API_VERSION") or DEFAULT_GRAPH_API_VERSION).strip())
     lines = []
     ig, page = accounts["instagram_account_id"], accounts["facebook_page_id"]
+    for item in [i for i in due if i.data.get("type") == "ad_activate"]:
+        lines.append(activate_ads(meta, item, live))
+    due = [i for i in due if i.data.get("type") != "ad_activate"]
     for item in due:
         kind = item.data.get("type", "reel")
         files = item.data.get("images") or [item.data.get("video") or item.data.get("image")]
