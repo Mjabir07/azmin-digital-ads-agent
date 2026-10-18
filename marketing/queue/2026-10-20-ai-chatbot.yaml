@@ -1,18 +1,28 @@
 id: w02-ai-chatbot
 type: reel
 video: marketing/reels/yara-ai-chatbot-w02.mp4
-platforms: [instagram, facebook]
-post_at: "2026-10-20 19:30"
-caption: |
-  Everyone in Dubai is talking about AI 🤖 Here's how a small business can actually use it.
+platforms:
+- instagram
+- facebook
+post_at: 2026-10-20 19:30
+caption: 'Everyone in Dubai is talking about AI 🤖 Here''s how a small business can actually use it.
+
 
   An AI chatbot on your WhatsApp answers customers instantly, even at 2 AM. No more missed messages, no more lost bookings.
 
+
   ✅ We set it up for you
+
   💬 WhatsApp us: +971 56 724 7597
+
   🌐 azmindigital.com
+
 
   #AIAutomation #WhatsAppChatbot #DubaiBusiness #SmallBusinessUAE #AIDubai #DigitalAgencyDubai #UAEEntrepreneurs
 
+
   Music: "Emerge" by Alex Beroza (ccmixter.org, CC BY 3.0)
-status: draft
+
+  '
+status: pending
+telegram_message_id: 34
