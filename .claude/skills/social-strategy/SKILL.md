@@ -24,6 +24,25 @@ on the best post is what makes it "fast". No follower buying, follow/unfollow, e
 Weekly mix (7 feed posts): **3 reels** (2 Yara + 1 motion) · **3 carousels** · **1 single post**.
 Reels bring new people (reach); carousels get saves/shares (algorithm signal + trust); posts carry the offer.
 
+## Feed theme — "AZMIN Editorial" (every post follows it)
+One recognisable look so the grid always looks planned and premium (renderer: `agent/creatives/editorial.py`,
+specs in `marketing/posts/`; reels use the same look in their end cards and stickers).
+- **Palette:** paper cream `#F4F1EA` + ink `#0B0B0C` (default), navy `#071A3D` (CTA slides, teasers),
+  brand blue `#0062F5` (offer posts, accent marker). WhatsApp green only on the number pill.
+- **Type:** Inter Tight 800, tight tracking, for headlines; *Instrument Serif italic* for 1–2 accent words
+  on a blue marker (write `*word*` in specs). Never more than 2 accents per design.
+- **Every design:** logo dot + "azmindigital" header top-left, slide counter top-right in serif italic,
+  faint 120 px grid lines, footer line ("swipe →", "Save this", site).
+- **Grid rhythm (3 columns):** keep a repeating pattern so any screenshot of the profile looks designed:
+  Yara reel (people, warm) → cream carousel cover → navy/blue post or motion reel. Avoid two navy tiles
+  side by side; at least one face (Yara) in every row of three.
+- **Sizes:** feed 1080×1350 (4:5) — keep text inside the centre 1080×1080 so the grid crop never cuts it;
+  stories/reels 1080×1920 with 250 px top / 340 px bottom kept clear for app buttons.
+- **Reel covers:** a frame where Yara faces the camera + short headline in the same type (set `cover` /
+  `thumb_offset` in the queue item).
+- **Research first:** each week starts with `trend-scout` (Google Trends, news, Instagram scout report);
+  topics and hooks come from that research and the calendar, never random.
+
 ## Content pillars (share of feed posts)
 1. **Educate (35%)** — practical tips owners can use today: website must-haves, Google Business Profile,
    WhatsApp replies, business email, ad mistakes. Format: carousel / Yara reel.
