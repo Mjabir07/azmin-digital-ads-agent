@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import subprocess
 import sys
 
 import httpx
@@ -31,6 +32,18 @@ def keyboard(item_id: str) -> dict:
                                  {"text": "❌ Reject", "callback_data": f"reject:{item_id}"}]]}
 
 
+def _video_meta(path) -> dict:
+    """Width/height/duration so Telegram shows the preview in the real 9:16 shape (it guesses otherwise)."""
+    try:
+        out = subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height:format=duration",
+                              "-of", "json", str(path)], capture_output=True, text=True)
+        info = json.loads(out.stdout)
+        st = info["streams"][0]
+        return {"width": st["width"], "height": st["height"], "duration": round(float(info["format"]["duration"]))}
+    except (OSError, ValueError, KeyError, IndexError):
+        return {"width": 1080, "height": 1920}  # our reels are always rendered 1080x1920
+
+
 def send_drafts(token: str, chat_id: str) -> list[str]:
     sent = []
     base = f"https://api.telegram.org/bot{token}"
@@ -42,12 +55,15 @@ def send_drafts(token: str, chat_id: str) -> list[str]:
             if media.stat().st_size > TG_VIDEO_LIMIT:
                 print(f"{item.id}: file over 50 MB, cannot preview in Telegram")
                 continue
-            method, field_name = ("sendVideo", "video") if item.data.get("type") == "reel" else ("sendPhoto", "photo")
+            is_video = item.data.get("type") == "reel"
+            method, field_name = ("sendVideo", "video") if is_video else ("sendPhoto", "photo")
+            if item.data.get("telegram_message_id"):  # re-sent draft: remove the old preview and its buttons
+                http.post(f"{base}/deleteMessage", json={"chat_id": chat_id, "message_id": item.data["telegram_message_id"]})
+            data = {"chat_id": chat_id, "caption": _preview(item), "reply_markup": json.dumps(keyboard(item.id))}
+            if is_video:
+                data |= {"supports_streaming": "true", **_video_meta(media)}
             with media.open("rb") as fh:
-                resp = http.post(f"{base}/{method}", data={
-                    "chat_id": chat_id, "caption": _preview(item), "supports_streaming": "true",
-                    "reply_markup": json.dumps(keyboard(item.id)),
-                }, files={field_name: (media.name, fh)}).json()
+                resp = http.post(f"{base}/{method}", data=data, files={field_name: (media.name, fh)}).json()
             if not resp.get("ok"):
                 print(f"{item.id}: Telegram error {resp.get('description')}")
                 continue

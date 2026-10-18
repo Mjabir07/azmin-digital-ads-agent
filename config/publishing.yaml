@@ -1,0 +1,4 @@
+# Organic posting switch. OWNER DECISION: Jabir asked on 2026-10-18 to start posting live from today.
+# Even when live, nothing is published unless Jabir taps ✅ Approve on the Telegram preview.
+# Set to false to pause all posting.
+live: true

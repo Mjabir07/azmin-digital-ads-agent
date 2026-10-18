@@ -1,7 +1,8 @@
 """Publish APPROVED queue items whose time has come to Instagram (Reels) and the Facebook Page.
 
-Live posting only happens when PUBLISH_LIVE=true (GitHub repo variable) and --dry-run is not given;
-otherwise it reports what it would post. Videos are served to Meta from jsDelivr (public CDN mirror of
+Live posting only happens when config/publishing.yaml has `live: true` (or the PUBLISH_LIVE repo variable
+is "true") and --dry-run is not given; otherwise it reports what it would post. Either way an item is only
+posted after Jabir tapped ✅ Approve in Telegram. Videos are served to Meta from jsDelivr (public CDN mirror of
 this public repo, correct video/mp4 type), pinned to the commit SHA.
 """
 
@@ -60,7 +61,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
-    live = os.environ.get("PUBLISH_LIVE", "").lower() == "true" and not args.dry_run
+    cfg = yaml.safe_load((ROOT / "config/publishing.yaml").read_text()) or {}
+    live = (cfg.get("live") is True or os.environ.get("PUBLISH_LIVE", "").lower() == "true") and not args.dry_run
     due = [i for i in queue.load_all() if i.due()]
     if not due:
         print("Nothing due.")
