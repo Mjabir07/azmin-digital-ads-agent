@@ -5,7 +5,7 @@ name: publisher
 
 on:
   schedule:
-    - cron: "*/15 * * * *"   # schedules run on the default branch only
+    - cron: "*/5 * * * *"    # GitHub minimum; schedules run on the default branch only
   push:
     paths:
       - marketing/queue/**
