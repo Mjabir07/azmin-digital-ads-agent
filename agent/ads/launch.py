@@ -127,7 +127,14 @@ def targeting(spec: dict, ids: dict, advantage: bool) -> dict:
     return t
 
 
-def welcome(prefill: str) -> str:
+def welcome(prefill: str, spec: dict | None = None) -> str:
+    """WhatsApp welcome screen: greeting + tap buttons (ice-breakers) if the spec has them, else a pre-filled message."""
+    if spec and spec.get("ice_breakers"):
+        return json.dumps({"type": "VISUAL_EDITOR", "version": 2, "landing_screen_type": "welcome_message", "media_type": "text",
+                           "text_format": {"customer_action_type": "ice_breakers",
+                                           "message": {"ice_breakers": [{"title": t} for t in spec["ice_breakers"][:4]],
+                                                       "quick_replies": [], "text": spec.get("greeting", "Hi! 👋")}},
+                           "user_edit": False, "surface": "visual_editor_new"})
     return json.dumps({"type": "VISUAL_EDITOR", "version": 2, "landing_screen_type": "welcome_message", "media_type": "text",
                        "text_format": {"customer_action_type": "autofill_message",
                                        "message": {"autofill_message": {"content": prefill}, "text": "Hi! 👋 How can we help your business?"}}})
@@ -146,7 +153,11 @@ def plan_text(spec: dict, ids: dict | None, total: float) -> str:
     if ids:
         lines.append("Owner signals: " + ", ".join(x["name"] for x in ids["behaviors"] + ids["interests"]))
     lines.append("Ads: " + ", ".join(ad["name"] for ad in spec["ads"]))
-    lines.append(f"Pre-filled WhatsApp message: \"{spec['prefill_message']}\"")
+    if spec.get("ice_breakers"):
+        lines.append(f"WhatsApp greeting: \"{spec['greeting']}\"")
+        lines.append("Tap buttons: " + " · ".join(f"[{t}]" for t in spec["ice_breakers"]))
+    else:
+        lines.append(f"Pre-filled WhatsApp message: \"{spec['prefill_message']}\"")
     return "\n".join(lines)
 
 
@@ -167,12 +178,12 @@ def make_creative(g: Graph, spec: dict, ad: dict, act: str) -> str:
             time.sleep(10)
         story = {"page_id": page, "instagram_user_id": ig, "video_data": {
             "video_id": vid, "image_url": st.get("picture"), "message": ad["primary_text"], "title": ad["headline"],
-            "call_to_action": cta, "page_welcome_message": welcome(prefill)}}
+            "call_to_action": cta, "page_welcome_message": welcome(prefill, spec)}}
     else:
         files = ad.get("images") or [ad["image"]]
         hashes = [g.upload_image(act, ROOT / f) for f in files]
         link = {"link": "https://api.whatsapp.com/send", "message": ad["primary_text"], "name": ad["headline"],
-                "call_to_action": cta, "page_welcome_message": welcome(prefill)}
+                "call_to_action": cta, "page_welcome_message": welcome(prefill, spec)}
         if len(hashes) == 1:
             link["image_hash"] = hashes[0]
         else:
@@ -186,6 +197,11 @@ def replace_ads(g: Graph, spec: dict, built_path: Path, act: str) -> list[str]:
     """Swap the creative of already-built (paused) ads for spec ads marked `replaces: <old name>`."""
     built = yaml.safe_load(built_path.read_text())
     done = []
+    for name in spec.get("remove_ads", []):
+        for b in [b for b in built["ads"] if b["name"].endswith(f"/ {name}")]:
+            g.call("DELETE", b["id"])
+            built["ads"].remove(b)
+            done.append(f"removed {b['name']}")
     for ad in [a for a in spec["ads"] if a.get("replaces")]:
         targets = [b for b in built["ads"] if b["name"].endswith(f"/ {ad['replaces']}")]
         if not targets:

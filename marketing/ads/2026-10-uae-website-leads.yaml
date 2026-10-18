@@ -4,7 +4,15 @@
 campaign:
   name: "AZD | UAE | WhatsApp Leads | Website Design"
   objective: OUTCOME_ENGAGEMENT
-prefill_message: "Hi! I have a business and I'm interested in the AED 999 website."
+prefill_message: "Hi! I have a business and I'm interested in the AED 999 website."   # used only if no ice_breakers
+# Jabir 2026-10-18: greeting + 4 tap buttons (ice-breakers) to filter leads; website only.
+greeting: "Hi 👋 Thanks for contacting AZMIN DIGITAL. Which one fits you? Tap to start:"
+ice_breakers:
+  - "I have a business – need a website"
+  - "Starting a new business"
+  - "Redesign my current website"
+  - "Just checking prices"
+remove_ads: ["Yara-Offer-Reel", "Yara-AI-Chatbot-Reel"]   # Jabir 2026-10-18: removed (the chatbot swap was undone too)
 targeting_base:
   cities: ["Dubai", "Sharjah", "Abu Dhabi", "Ajman"]
   location_types: [home]                 # people who live there, not tourists/visitors
@@ -25,17 +33,8 @@ adsets:
     end: "2026-10-23 08:00"
     advantage_audience: false
 ads:
-  - name: "Yara-AI-Chatbot-Reel"
-    replaces: "Yara-Offer-Reel"          # Jabir 2026-10-18: use the reel already posted on Instagram
-    video: marketing/reels/yara-ai-chatbot-w02.mp4
-    prefill_message: "Hi! I have a business and I'm interested in an AI WhatsApp chatbot."
-    primary_text: |
-      For UAE business owners 👋 Missing customer messages at night?
-
-      An AI chatbot on your WhatsApp answers customers instantly, even at 2 AM: hours, services, bookings, FAQs.
-      We set it up and train it on your business. Tap to chat with us.
-    headline: "AI chatbot for your WhatsApp"
   - name: "MeVsMe-Reel"
+    replaces: "MeVsMe-Reel"      # rebuilt with the ice-breaker greeting
     video: marketing/reels/yara-me-vs-me-w02.mp4
     primary_text: |
       Business owner in the UAE? "My Instagram page is enough" is costing you customers.
@@ -44,6 +43,7 @@ ads:
       Website + free domain + 1 year hosting, from AED 999. Ready in as little as 1 day.
     headline: "Get found on Google"
   - name: "Offer-Image"
+    replaces: "Offer-Image"
     image: marketing/posts/d03-d08/d07-post.jpg
     primary_text: |
       For UAE business owners: your business website, ready in as little as 1 day ⚡

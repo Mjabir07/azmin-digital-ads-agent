@@ -15,12 +15,10 @@ caption: '📣 Ad plan: AZD | UAE | WhatsApp Leads | Website Design
 
   • Owners strict | 27-55: AED 200 total, 2026-10-19 08:00 → 2026-10-23 08:00 Dubai · business-owner signals only
 
-  Owner signals: Small business owners, Facebook Page admins, Entrepreneurship, Small business, Startup company, E-commerce, Digital marketing, Online advertising
+  Ads: MeVsMe-Reel, Offer-Image
 
-  Ads: Yara-AI-Chatbot-Reel, MeVsMe-Reel, Offer-Image
+  WhatsApp greeting: "Hi 👋 Thanks for contacting AZMIN DIGITAL. Which one fits you? Tap to start:"
 
-  Pre-filled WhatsApp message: "Hi! I have a business and I''m interested in the AED 999 website."
-
-  AI chatbot ad pre-filled message: "Hi! I have a business and I''m interested in an AI WhatsApp chatbot."'
-status: pending
-telegram_message_id: 120
+  Tap buttons: [I have a business – need a website] · [Starting a new business] · [Redesign my current website] · [Just checking prices]'
+status: draft
+telegram_message_id: 119

@@ -46,3 +46,11 @@ def test_targeting_excludes_audience_network_and_tourists():
     assert t["geo_locations"]["location_types"] == ["home"]
     assert "audience_network" not in t["publisher_platforms"]
     assert t["targeting_automation"]["advantage_audience"] == 0
+
+
+def test_welcome_uses_ice_breakers_when_set():
+    import json
+    w = json.loads(launch.welcome("x", {"greeting": "Hi", "ice_breakers": ["a", "b", "c", "d", "e"]}))
+    assert w["text_format"]["customer_action_type"] == "ice_breakers"
+    assert [i["title"] for i in w["text_format"]["message"]["ice_breakers"]] == ["a", "b", "c", "d"]  # WhatsApp max 4
+    assert json.loads(launch.welcome("prefill"))["text_format"]["customer_action_type"] == "autofill_message"

@@ -33,8 +33,6 @@ jobs:
       - run: uv sync --locked
       - name: Plan / build (paused)
         run: uv run python -m agent.ads.launch "$(sed -n 1p ops/ads-build.trigger)" --resolve $(sed -n 2p ops/ads-build.trigger)
-      - name: Send for approval
-        run: uv run python -m agent.social.approvals
       - name: Save IDs + queue
         run: |
           git config user.name "github-actions[bot]"
