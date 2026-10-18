@@ -77,6 +77,16 @@ class Graph:
         return body
 
 
+    def upload_image(self, act: str, path: Path) -> str:
+        """Upload an ad image as a file (uploading by URL needs extra Meta capability). Returns its hash."""
+        with path.open("rb") as fh:
+            resp = self.http.post(f"{act}/adimages", params={"access_token": self.token}, files={"filename": (path.name, fh)})
+        body = resp.json()
+        if "error" in body:
+            raise RuntimeError(f"Meta API error on {act}/adimages: {body['error'].get('error_user_msg') or body['error'].get('message')}")
+        return next(iter(body["images"].values()))["hash"]
+
+
 def resolve(g: Graph, spec: dict) -> dict:
     """Look up IDs for cities, locales, interests and behaviours (read-only search calls)."""
     base, sig = spec["targeting_base"], spec["owner_signals"]
@@ -179,10 +189,7 @@ def _build(g: Graph, spec: dict, ids: dict, act: str) -> dict:
                 "call_to_action": cta, "page_welcome_message": welcome(spec["prefill_message"])}}
         else:
             files = ad.get("images") or [ad["image"]]
-            hashes = []
-            for f in files:
-                img = g.call("POST", f"{act}/adimages", url=media_url(f))
-                hashes.append(next(iter(img["images"].values()))["hash"])
+            hashes = [g.upload_image(act, ROOT / f) for f in files]
             link = {"link": "https://api.whatsapp.com/send", "message": ad["primary_text"], "name": ad["headline"],
                     "call_to_action": cta, "page_welcome_message": welcome(spec["prefill_message"])}
             if len(hashes) == 1:
