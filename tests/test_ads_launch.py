@@ -8,7 +8,12 @@ def _spec(*budgets):
 
 
 def test_limits_accept_launch_plan():
-    assert launch.check_limits(_spec(37.5, 37.5)) == 75
+    assert launch.check_limits(_spec(50)) == 50
+
+
+def test_spend_cap_minimum():
+    with pytest.raises(launch.LimitError):
+        launch.check_limits({**_spec(50), "campaign": {"spend_cap_aed": 50}})
 
 
 def test_limits_reject_adset_over_150():

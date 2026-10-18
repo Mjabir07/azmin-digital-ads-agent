@@ -1,8 +1,10 @@
 # First campaign: UAE business owners → WhatsApp chats about the AED 999 Starter Combo.
 # Built PAUSED by agent/ads/launch.py; Jabir activates with ✅ in Telegram. Limits: config/limits.yaml.
+# Jabir 2026-10-18: AED 50/day, AED 200 total for the first test (about 4 days).
 campaign:
   name: "AZD | UAE | WhatsApp Leads | Website Design"
   objective: OUTCOME_ENGAGEMENT
+  spend_cap_aed: 200        # Meta stops the whole campaign at AED 200 total
 prefill_message: "Hi! I have a business and I'm interested in the AED 999 website."
 targeting_base:
   cities: ["Dubai", "Sharjah", "Abu Dhabi", "Ajman"]
@@ -18,12 +20,9 @@ owner_signals:
   behaviors: ["Small business owners", "Facebook page admins"]
   interests: ["Entrepreneurship", "Small business", "Startup company", "E-commerce", "Digital marketing", "Online advertising"]
 adsets:
-  - name: "A | Owners strict | 27-55"
-    daily_budget_aed: 37.5
+  - name: "Owners strict | 27-55"
+    daily_budget_aed: 50
     advantage_audience: false
-  - name: "B | Advantage+ owner hints | 27-55"
-    daily_budget_aed: 37.5
-    advantage_audience: true
 ads:
   - name: "Yara-Offer-Reel"
     video: marketing/reels/yara-reel-w01.mp4
@@ -53,14 +52,3 @@ ads:
       Starter Combo from AED 999: business website, free domain, 1 year hosting.
       Mobile-friendly, WhatsApp button, Google-ready. Message us to get started.
     headline: "Starter Combo · AED 999"
-  - name: "3Signs-Carousel"
-    images:
-      - marketing/posts/d03-d08/d08-c1.jpg
-      - marketing/posts/d03-d08/d08-c2.jpg
-      - marketing/posts/d03-d08/d08-c3.jpg
-      - marketing/posts/d03-d08/d08-c4.jpg
-      - marketing/posts/d03-d08/d08-c5.jpg
-    primary_text: |
-      Running a business in the UAE? Check these 3 signs you're losing customers online 👇
-      We fix all three: website from AED 999 with domain + 1 year hosting.
-    headline: "Fix it from AED 999"

@@ -43,6 +43,9 @@ def check_limits(spec: dict) -> float:
         total += b
     if total > LIMITS["account_daily_budget_max"]:
         raise LimitError(f"Total AED {total}/day is above the account limit AED {LIMITS['account_daily_budget_max']}")
+    cap = spec.get("campaign", {}).get("spend_cap_aed")
+    if cap is not None and float(cap) < 100:
+        raise LimitError("Meta's minimum campaign spend cap is AED 100")
     return total
 
 
@@ -109,7 +112,9 @@ def welcome(prefill: str) -> str:
 
 
 def plan_text(spec: dict, ids: dict | None, total: float) -> str:
-    lines = [f"📣 Ad plan: {spec['campaign']['name']}", f"Objective: WhatsApp conversations · Total AED {total:g}/day",
+    cap = spec["campaign"].get("spend_cap_aed")
+    lines = [f"📣 Ad plan: {spec['campaign']['name']}",
+             f"Objective: WhatsApp conversations · AED {total:g}/day" + (f" · stops automatically at AED {cap:g} total" if cap else ""),
              f"Where: {', '.join(spec['targeting_base']['cities'])} (people living there) · Age {spec['targeting_base']['age_min']}–{spec['targeting_base']['age_max']}",
              "Placements: Facebook + Instagram feed, stories, reels (no Audience Network)"]
     for a in spec["adsets"]:
@@ -125,7 +130,8 @@ def build(g: Graph, spec: dict, ids: dict, act: str) -> dict:
     page, ig = ACCOUNTS["facebook_page_id"], ACCOUNTS["instagram_account_id"]
     cta = {"type": "WHATSAPP_MESSAGE", "value": {"app_destination": "WHATSAPP"}}
     camp = g.call("POST", f"{act}/campaigns", name=spec["campaign"]["name"], objective=spec["campaign"]["objective"],
-                  status="PAUSED", special_ad_categories=[], is_adset_budget_sharing_enabled="false")["id"]
+                  status="PAUSED", special_ad_categories=[], is_adset_budget_sharing_enabled="false",
+                  **({"spend_cap": int(float(spec["campaign"]["spend_cap_aed"]) * 100)} if spec["campaign"].get("spend_cap_aed") else {}))["id"]
     built = {"campaign_id": camp, "adsets": [], "ads": []}
     creatives = []
     for ad in spec["ads"]:
