@@ -34,6 +34,8 @@ def main() -> int:
     saved, skipped, last_id = [], [], None
     with httpx.Client(timeout=120) as http:
         updates = http.get(f"{base}/getUpdates").json().get("result", [])
+        kinds = [next((k for k in ("video", "document", "photo", "text") if k in (u.get("message") or {})), "/".join(u)) for u in updates]
+        print(f"{len(updates)} update(s) waiting: {kinds}")  # diagnostics only, no message contents
         for u in updates:
             last_id = u["update_id"]
             msg = u.get("message") or {}
