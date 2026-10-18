@@ -6,5 +6,8 @@ platforms:
 - facebook
 post_at: 2026-10-18 20:15
 note: 'Day 1 story. Optional: add a Poll sticker (YES/NO) in the Instagram app for more replies.'
-status: approved
+status: posted
 telegram_message_id: 41
+posted:
+  instagram: Instagram story (live for 24 h)
+  facebook: Facebook story (live for 24 h)
