@@ -37,6 +37,9 @@ const MAX_RESULTS_PER_SEARCH = 300;
 // 6 minutes, so each run qualifies a few leads and the hourly trigger
 // continues where it left off.
 const MAX_QUALIFY_PER_RUN = 6;
+// Leads with no website listed are checked first (they convert best) and
+// are quick: no speed test, just a few domain lookups each.
+const MAX_NO_WEBSITE_PER_RUN = 60;
 const RUN_TIME_BUDGET_MS = 4.5 * 60 * 1000;
 
 const AGENCY = {
@@ -145,6 +148,17 @@ function setupSheet() {
       )
     );
     config.getRange(2, 1, rows.length, CONFIG_HEADERS.length).setValues(rows);
+  }
+  // A live view of the best leads: businesses with no website at all.
+  if (!ss.getSheetByName("No Website")) {
+    const nw = ss.insertSheet("No Website");
+    const last = columnLetter_(LEAD_HEADERS.length);
+    const scoreCol = columnLetter_(LEAD_HEADERS.indexOf("Lead score") + 1);
+    nw.getRange(1, 1, 1, LEAD_HEADERS.length).setValues([LEAD_HEADERS])
+      .setFontWeight("bold").setBackground("#0062fd").setFontColor("#ffffff");
+    nw.setFrozenRows(1);
+    nw.getRange("A2").setFormula(`=IFERROR(FILTER(Leads!A2:${last}, Leads!${scoreCol}2:${scoreCol}="No website"), "No leads yet. They appear here as the agent checks them.")`);
+    nw.getRange(2, 1, 5000, LEAD_HEADERS.length).setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
   }
   ss.toast(`Sheet ready. Lead source: ${sourceName_()}. Next: AZMIN Leads → 2. Find new leads now`, "AZMIN Leads", 10);
 }
@@ -384,33 +398,96 @@ function qualifyLeads() {
 
   const data = leads.getRange(2, 1, leads.getLastRow() - 1, LEAD_HEADERS.length).getValues();
   const col = (h) => LEAD_HEADERS.indexOf(h);
-  let done = 0;
+  const todo = (row) => !row[col("Lead score")] || row[col("Lead score")] === "Check";
+  // No-website leads first: they're the best fit and quick to check.
+  const order = data.map((row, i) => i).filter((i) => todo(data[i]))
+    .sort((a, b) => Number(Boolean(data[a][col("Website")])) - Number(Boolean(data[b][col("Website")])));
+  let noSite = 0;
+  let withSite = 0;
 
-  for (let i = 0; i < data.length; i++) {
-    if (done >= MAX_QUALIFY_PER_RUN || Date.now() - started > RUN_TIME_BUDGET_MS) break;
+  for (const i of order) {
+    if (Date.now() - started > RUN_TIME_BUDGET_MS) break;
     const row = data[i];
-    if (row[col("Lead score")]) continue; // already processed
-
+    const r = i + 2;
     const lead = {
       business: row[col("Business")], city: row[col("City")], country: row[col("Country")],
       niche: row[col("Niche")], website: String(row[col("Website")] || ""),
       reviews: row[col("Reviews")], source: row[col("Source")],
     };
+
+    let tried = [];
+    if (!lead.website) {
+      if (noSite >= MAX_NO_WEBSITE_PER_RUN) continue;
+      noSite++;
+      // Map data sometimes misses a website, so look for one before calling it "no website".
+      const guess = guessWebsite_(lead);
+      tried = guess.tried;
+      if (guess.url) {
+        lead.website = guess.url;
+        leads.getRange(r, col("Website") + 1).setValue(guess.url);
+      }
+    }
+    if (lead.website) {
+      if (withSite >= MAX_QUALIFY_PER_RUN) continue; // speed-check it on a later run
+      withSite++;
+    }
+
     const check = checkWebsite_(lead.website, key);
+    check.tried = tried;
     const email = row[col("Email")] || (lead.website && check.reachable ? findEmail_(lead.website) : "");
     const score = scoreLead_(lead, check);
     const draft = draftMessage_(lead, check, score);
 
-    const r = i + 2;
     if (email) leads.getRange(r, col("Email") + 1).setValue(email);
     leads.getRange(r, col("Website check") + 1, 1, 4).setValues([[
       check.summary, check.speed === null ? "" : check.speed, score.label, score.why.join("; "),
     ]]);
     leads.getRange(r, col("Draft subject") + 1, 1, 2).setValues([[draft.subject, draft.body]])
       .setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
-    done++;
   }
-  return done;
+  return noSite + withSite;
+}
+
+/**
+ * Tries the obvious domains for a business name (e.g. "Bloom Interiors" in
+ * the UK → bloominteriors.co.uk, bloominteriors.com). A domain only counts
+ * if the page loads and mentions the business, so parked or unrelated
+ * domains don't hide a real no-website lead.
+ */
+function guessWebsite_(lead) {
+  const code = codeForCountry_(lead.country);
+  const tlds = { GB: ["co.uk", "com", "uk"], AE: ["ae", "com"], QA: ["qa", "com"], CA: ["ca", "com"], DE: ["de", "com"] }[code] || ["com"];
+  const base = shortName_(lead.business) || String(lead.business || "");
+  const plain = base.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/\b(ltd|limited|llc|l\.l\.c|fze|fz|gmbh|ug|inc|co|the|dr|dr\.)\b\.?/g, " ")
+    .replace(/[^a-z0-9 ]/g, " ").trim();
+  const words = plain.split(/\s+/).filter(Boolean);
+  if (!words.length) return { url: "", tried: [] };
+  const slugs = [...new Set([words.join(""), words.join("-")])].filter((x) => x.length >= 4 && x.length <= 40);
+  const keyWord = words.find((w) => w.length >= 4) || words[0];
+  const tried = [];
+  for (const slug of slugs) {
+    for (const tld of tlds) {
+      const domain = `${slug}.${tld}`;
+      tried.push(domain);
+      try {
+        const res = UrlFetchApp.fetch(`https://${domain}`, { muteHttpExceptions: true, followRedirects: true, validateHttpsCertificates: false });
+        if (res.getResponseCode() >= 400) continue;
+        const html = res.getContentText().slice(0, 200000).toLowerCase();
+        const parked = /domain (is )?for sale|buy this domain|parked|godaddy|sedo|hugedomains|dan\.com|this domain/.test(html);
+        if (!parked && html.indexOf(keyWord) !== -1) return { url: `https://${domain}`, tried };
+      } catch (e) {
+        // domain doesn't exist; try the next one
+      }
+    }
+  }
+  return { url: "", tried };
+}
+
+function codeForCountry_(name) {
+  const m = MARKETS.find((x) => x.country === name);
+  return m ? m.code : "";
 }
 
 /** Looks at the website: reachable? HTTPS? Mobile speed from PageSpeed. */
@@ -449,16 +526,19 @@ function checkWebsite_(url, key) {
 }
 
 /**
- * Hot / Warm / Check / Low, with the reasons that go into the message.
- * "Check" means no website was listed: map data often misses websites,
- * so confirm on Google Maps before saying they don't have one.
+ * No website / Hot / Warm / Low, with the reasons that go into the message.
+ * "No website" means none on the map listing and none at the obvious
+ * domains; open the Google Maps link once before contacting.
  */
 function scoreLead_(lead, check) {
   const why = [];
   let points = 0;
   if (!check.known) {
-    why.push("no website listed — confirm on Google Maps (if none, it's a Hot lead)");
-    return { label: "Check", points: 0, why };
+    why.push("no website on their map listing");
+    if (check.tried && check.tried.length) why.push(`none found at ${check.tried.slice(0, 4).join(", ")}`);
+    if (Number(lead.reviews) >= 10) why.push(`${lead.reviews} Google reviews`);
+    why.push("tip: open Verify on Google Maps before contacting");
+    return { label: "No website", points: 5, why };
   }
   if (!check.reachable) { points += 3; why.push("website not loading"); }
   else {
@@ -481,9 +561,7 @@ function draftMessage_(lead, check, score) {
   let hook;
 
   if (!check.known) {
-    // Only claim what we know. You confirm on Google Maps first.
-    subject = `More enquiries for ${shortName_(lead.business) || "your " + lead.niche.replace("interior designer", "studio")}`;
-    hook = `I came across ${shortName_(lead.business) || "your business"} while looking at ${lead.niche}s in ${lead.city}. Most ${clients} now check a website and message on WhatsApp before they book, so I wanted to share an idea.`;
+    return noWebsiteMessage_(lead, me, clients);
   } else if (!check.reachable) {
     subject = `Your website seems to be down`;
     hook = `I tried to visit your website and it didn't load, so people who find you online may be leaving before they contact you.`;
@@ -510,6 +588,30 @@ ${hook}
 I'm ${me} from ${AGENCY.name}. We build fast, premium websites for ${kind}s, with online booking/enquiry forms, WhatsApp chat and proper business email set up. Recent work: ${AGENCY.work.join(", ")}.
 
 Would a free 2-minute video review of what I'd improve be useful?
+
+Best regards,
+${me}
+${AGENCY.name} · ${AGENCY.site}
+${AGENCY.email} · WhatsApp ${AGENCY.whatsapp}${optOut}`;
+  return { subject, body };
+}
+
+/** The offer for businesses with no website: a new site, fast. */
+function noWebsiteMessage_(lead, me, clients) {
+  const name = shortName_(lead.business);
+  const kind = lead.niche === "clinic" ? "clinic" : "studio";
+  const optOut = /Canada|United Kingdom/.test(lead.country)
+    ? `\n\nIf this isn't relevant, just reply "no thanks" and I won't contact you again.`
+    : "";
+  const subject = name ? `A website for ${name}` : `A website for your ${kind}`;
+  const body =
+`${greeting_(lead)}
+
+I was looking at ${lead.niche}s in ${lead.city} and came across ${name || `your ${kind}`}, but I couldn't find a website for you. Most ${clients} look for a website before they call or book, so this is often where new enquiries are lost.
+
+I'm ${me} from ${AGENCY.name}. We build fast, professional websites with ${lead.niche === "clinic" ? "online appointment requests" : "a project portfolio and enquiry form"}, WhatsApp chat and business email on your own domain, usually live within 14 days. Recent work: ${AGENCY.work.join(", ")}.
+
+Would you like me to send a free homepage mock-up for ${name || `your ${kind}`}? No cost and no obligation.
 
 Best regards,
 ${me}
@@ -574,13 +676,14 @@ function sendSummary() {
   const today = new Date().toDateString();
   const fresh = data.filter((r) => r[col("Found")] instanceof Date && r[col("Found")].toDateString() === today);
   const hot = fresh.filter((r) => r[col("Lead score")] === "Hot");
-  const check = fresh.filter((r) => r[col("Lead score")] === "Check");
+  const noSite = data.filter((r) => r[col("Lead score")] === "No website" && r[col("Status")] === "New");
   const due = data.filter((r) => r[col("Follow-up due")] instanceof Date && r[col("Follow-up due")] <= new Date() && /Contacted|Follow-up sent/.test(r[col("Status")]));
   const text =
     `AZMIN Lead Agent — today\n` +
-    `New leads: ${fresh.length} (Hot: ${hot.length}, to check: ${check.length})\n` +
+    `New leads today: ${fresh.length} (Hot: ${hot.length})\n` +
+    `No-website leads waiting: ${noSite.length}\n` +
     `Follow-ups due: ${due.length}\n` +
-    hot.slice(0, 5).map((r) => `• ${r[col("Business")]} (${r[col("City")]}) — ${r[col("Why")]}`).join("\n");
+    noSite.slice(0, 5).concat(hot.slice(0, 3)).map((r) => `• ${r[col("Business")]} (${r[col("City")]}) — ${r[col("Why")]}`).join("\n");
   UrlFetchApp.fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
     method: "post", contentType: "application/json", muteHttpExceptions: true,
     payload: JSON.stringify({ chat_id: chat, text }),
@@ -599,6 +702,12 @@ function onEdit(e) {
 }
 
 // ---------------------------------------------------------------- helpers
+
+function columnLetter_(n) {
+  let s = "";
+  for (; n > 0; n = Math.floor((n - 1) / 26)) s = String.fromCharCode(65 + ((n - 1) % 26)) + s;
+  return s;
+}
 
 function prop_(name) {
   return PropertiesService.getScriptProperties().getProperty(name) || "";

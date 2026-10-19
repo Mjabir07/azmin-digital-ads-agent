@@ -71,14 +71,19 @@ Click **Save script properties**.
 
 ## 6. Daily routine (15–30 minutes)
 
-1. Filter **Lead score**:
-   - **Hot**: broken, insecure or slow website. Contact these first.
-   - **Check**: no website was listed. Click **Verify on Google Maps**. If they really
-     have no website, they're a Hot lead: set **Status = Verified**.
-   - **Warm**: worth contacting after the Hot ones. **Low**: skip.
+Start with the **No Website** tab: businesses with no website on their listing and none
+at their obvious domain names (the agent checks e.g. `name.co.uk`, `name.ae`). They need
+exactly what AZMIN sells, so they convert best, and their draft offers a free homepage
+mock-up. (If the tab is missing, run **AZMIN Leads → 1. Set up sheet** once more.)
+
+1. In **No Website**, pick a lead and click **Verify on Google Maps** to confirm it's real
+   and still has no website.
 2. Read the **Draft message**, make one line personal, send it (see **Channel**).
-3. Set **Status = Contacted**. **Follow-up due** fills in 3 days later.
-4. 10–20 messages a day, not hundreds.
+3. In the **Leads** tab, set that lead's **Status = Contacted** (the No Website tab is a
+   read-only view). **Follow-up due** fills in 3 days later.
+4. When the no-website leads are done, move on to **Lead score = Hot** in the Leads tab
+   (broken, insecure or slow websites), then **Warm**. Skip **Low**.
+5. 10–20 messages a day, not hundreds.
 
 ## Rules per country (built into the "Channel" column)
 
