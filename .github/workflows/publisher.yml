@@ -43,11 +43,15 @@ jobs:
         run: uv run python -m agent.social.approvals
       - name: Publish approved posts that are due
         run: uv run python -m agent.social.publish
+      - name: Ads reports (09:00 daily, 14:00 + 20:00 pulse, Dubai time)
+        run: uv run python -m agent.ads.scheduler
+        env:
+          TIMEZONE: Asia/Dubai
       - name: Save queue state
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add marketing/queue media/inbox
+          git add marketing/queue media/inbox marketing/state
           git diff --cached --quiet && echo "Nothing changed" && exit 0
           git commit -m "Publisher: update queue"
           git pull --rebase origin "${GITHUB_REF_NAME}"

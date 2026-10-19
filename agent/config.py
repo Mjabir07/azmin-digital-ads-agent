@@ -21,6 +21,14 @@ def load_yaml(name: str) -> dict:
         return yaml.safe_load(f) or {}
 
 
+def _ad_account_from_config() -> str:
+    """The ad account ID is not secret; config/accounts.yaml holds it so no extra GitHub Secret is needed."""
+    try:
+        return str(load_yaml("accounts.yaml").get("meta", {}).get("ad_account_id") or "")
+    except OSError:
+        return ""
+
+
 def _env(name: str, default: str = "") -> str:
     # Strip inline comments like ".env.example" has ("v24.0   # set to ...").
     value = os.environ.get(name, default) or default
@@ -54,7 +62,7 @@ class Settings:
         return cls(
             meta_graph_api_version=_env("META_GRAPH_API_VERSION") or DEFAULT_GRAPH_API_VERSION,
             meta_access_token=_env("META_ACCESS_TOKEN"),
-            meta_ad_account_id=_env("META_AD_ACCOUNT_ID"),
+            meta_ad_account_id=_env("META_AD_ACCOUNT_ID") or _ad_account_from_config(),
             meta_app_secret=_env("META_APP_SECRET"),
             anthropic_api_key=_env("ANTHROPIC_API_KEY"),
             claude_model=_env("CLAUDE_MODEL") or DEFAULT_CLAUDE_MODEL,

@@ -85,9 +85,12 @@ def run(argv: list[str] | None = None) -> int:
         return 0
 
     ok = True
-    try:
+    if not (settings.google_service_account_json and settings.google_sheet_id):
+        log.info("Google Sheets not set up yet - skipping the save")
+    else:
+      try:
         log.info(sheets.write(settings.google_service_account_json, settings.google_sheet_id, snapshot, recs, now))
-    except Exception as e:
+      except Exception as e:
         ok = False
         err = redact(str(e), settings.secrets())
         log.error("Google Sheets write failed: %s", err)
