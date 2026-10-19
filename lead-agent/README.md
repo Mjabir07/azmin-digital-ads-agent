@@ -5,7 +5,7 @@ Finds international clients for AZMIN DIGITAL: **interior designers and clinics*
 
 | Part | What it does | Where |
 |---|---|---|
-| **Lead engine** (Google Sheet + Apps Script) | Every day: finds businesses with the Google Places API, checks each website (loads? HTTPS? mobile speed), scores Hot / Warm / Low, finds the public contact email, drafts a personal first message, tracks follow-ups, optional Telegram summary. | [`apps-script/Code.gs`](apps-script/Code.gs) · setup in [`SETUP.md`](SETUP.md) |
+| **Lead engine** (Google Sheet + Apps Script) | Every day: finds businesses with the free TomTom Search API (OpenStreetMap as backup, Google Places optional), checks each website (loads? HTTPS? mobile speed), scores Hot / Warm / Low, finds the public contact email, drafts a personal first message, tracks follow-ups, optional Telegram summary. | [`apps-script/Code.gs`](apps-script/Code.gs) · setup in [`SETUP.md`](SETUP.md) |
 | **Lead Scout** (Claude Code sub-agent) | On demand: deep research on a market or on Hot leads from the sheet: reviews the site, checks email setup (SPF/DMARC), writes a sharper message (German version for Germany), and returns a table to paste back into the sheet. | [`.claude/agents/lead-scout.md`](../.claude/agents/lead-scout.md) |
 
 Nothing is ever sent automatically. Jabir reviews every message and sends it himself.
@@ -20,5 +20,5 @@ In a Claude Code session on this repo, ask for example:
 
 ## Cost
 
-Free: Apps Script runs on Google's servers, and the Places and PageSpeed APIs stay inside
-Google's free monthly allowance with the quota cap in SETUP.md step 3.
+Free, no credit card: Apps Script, the TomTom Search API (2,500 requests a day) and the
+PageSpeed Insights API are all free. Google Places is optional and needs billing.

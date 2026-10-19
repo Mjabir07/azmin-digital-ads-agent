@@ -2,18 +2,25 @@
  * AZMIN DIGITAL — Lead Agent (Google Apps Script)
  *
  * Lives inside a Google Sheet. Finds interior designers and clinics in the
- * target markets with the official Google Places API, checks their websites
- * with Google PageSpeed Insights, scores each lead, finds a public contact
- * email, and drafts a personalised first message. It never sends anything:
- * you review the drafts and send them yourself.
+ * target markets, checks their websites with Google PageSpeed Insights,
+ * scores each lead, finds the public contact email, and drafts a
+ * personalised first message. It never sends anything: you review the
+ * drafts and send them yourself.
  *
- * Setup: see lead-agent/SETUP.md. In short, paste this file into
- * Extensions → Apps Script, add the script properties below, then use the
- * "AZMIN Leads" menu → "1. Set up sheet".
+ * Where leads come from (first one with a key wins):
+ *   1. TomTom Search API  — free, no credit card, 2,500 requests a day,
+ *                           includes phone and website. Recommended.
+ *   2. Google Places API  — best data, but needs a Google billing account.
+ *   3. OpenStreetMap      — no key at all; fewer contact details.
+ *
+ * Setup: see lead-agent/SETUP.md.
  *
  * Script properties (Project Settings → Script properties):
- *   GOOGLE_API_KEY      required. One key with "Places API (New)" and
- *                       "PageSpeed Insights API" enabled.
+ *   TOMTOM_API_KEY      recommended. Free key from developer.tomtom.com.
+ *   GOOGLE_API_KEY      recommended. Free key with "PageSpeed Insights API"
+ *                       enabled (no billing needed) for the speed check.
+ *   GOOGLE_PLACES       optional. Set to "on" to use Google Places instead
+ *                       of TomTom (needs billing + "Places API (New)").
  *   TELEGRAM_BOT_TOKEN  optional. Daily summary to Telegram.
  *   TELEGRAM_CHAT_ID    optional.
  *   SENDER_NAME         optional. Signature name, default "Jabir".
@@ -21,11 +28,11 @@
 
 // ---------------------------------------------------------------- settings
 
-// Google gives a free monthly allowance per API. Each Text Search call
-// returns up to 20 businesses. 25 calls a day ≈ 750 a month, which keeps
-// you inside the free tier. Also set a hard quota cap in Google Cloud
-// (SETUP.md step 3) so you can never be charged.
-const MAX_SEARCH_CALLS_PER_RUN = 25;
+// Searches per run. TomTom allows 2,500 a day free; this uses far less.
+const MAX_SEARCHES_PER_RUN = 20;
+// Each search fetches up to 100 businesses; stop paging a search after this
+// many so every city gets a turn.
+const MAX_RESULTS_PER_SEARCH = 300;
 // PageSpeed checks are slow (10–40 s each). Apps Script stops a run after
 // 6 minutes, so each run qualifies a few leads and the hourly trigger
 // continues where it left off.
@@ -37,23 +44,33 @@ const AGENCY = {
   site: "https://azmindigital.com",
   email: "info@azmindigital.com",
   whatsapp: "+971 56 724 7597",
-  work: [
-    "purepreciousjewellery.com",
-    "msjtechnicaluae.com",
-    "graceitme.com",
-  ],
+  work: ["purepreciousjewellery.com", "msjtechnicaluae.com", "graceitme.com"],
 };
 
-// Target markets. Edit the Config tab (not this list) once the sheet exists;
-// this only seeds it the first time.
+// Target markets. This only seeds the Config tab the first time; after that
+// edit the Config tab instead. Radius is in km around the city centre.
 const MARKETS = [
-  { country: "United Kingdom", code: "GB", cities: ["London", "Manchester", "Birmingham"] },
-  { country: "United Arab Emirates", code: "AE", cities: ["Dubai", "Abu Dhabi", "Sharjah"] },
-  { country: "Canada", code: "CA", cities: ["Toronto", "Vancouver", "Calgary"] },
-  { country: "Germany", code: "DE", cities: ["Berlin", "Munich", "Hamburg"] },
-  { country: "Qatar", code: "QA", cities: ["Doha"] },
+  { country: "United Kingdom", code: "GB", lang: "en-GB", cities: [["London", 51.5074, -0.1278, 20], ["Manchester", 53.4808, -2.2426, 12], ["Birmingham", 52.4862, -1.8904, 12]] },
+  { country: "United Arab Emirates", code: "AE", lang: "en-GB", cities: [["Dubai", 25.2048, 55.2708, 25], ["Abu Dhabi", 24.4539, 54.3773, 20], ["Sharjah", 25.3463, 55.4209, 12]] },
+  { country: "Canada", code: "CA", lang: "en-US", cities: [["Toronto", 43.6532, -79.3832, 20], ["Vancouver", 49.2827, -123.1207, 15], ["Calgary", 51.0447, -114.0719, 15]] },
+  { country: "Germany", code: "DE", lang: "de-DE", cities: [["Berlin", 52.52, 13.405, 15], ["Munich", 48.1351, 11.582, 12], ["Hamburg", 53.5511, 9.9937, 12]] },
+  { country: "Qatar", code: "QA", lang: "en-GB", cities: [["Doha", 25.2854, 51.531, 20]] },
 ];
 const NICHES = ["interior designer", "clinic"];
+// What to type into the search, per niche (German terms for Germany).
+const SEARCH_TEXT = {
+  "interior designer": { DE: "Innenarchitekt", default: "interior designer" },
+  clinic: { DE: "Arztpraxis", default: "clinic" },
+};
+
+// Words that show a result really is in the niche. Results that match
+// neither the category nor the name are dropped, so the sheet stays clean.
+const NICHE_MATCH = {
+  "interior designer": /interior|innen|design|décor|decor|fit[- ]?out|architect/i,
+  clinic: /clinic|clinique|klinik|doctor|dentist|dental|medical|medizin|praxis|health|physio|dermat|aesthetic|polyclinic|surgery/i,
+};
+// Big chains and hospitals rarely buy a website from a freelancer.
+const SKIP_NAME = /hospital|krankenhaus|pharmacy|apotheke|ikea|home ?centre|pan emirates|nhs |boots|superdrug|walgreens|cvs/i;
 
 // How to approach each market. Cold email rules differ a lot by country:
 // Germany (UWG §7) does not allow unsolicited marketing emails, even to
@@ -70,13 +87,19 @@ const CHANNEL_BY_CODE = {
 };
 
 const LEAD_HEADERS = [
-  "Found", "Country", "City", "Niche", "Business", "Phone", "Website", "Email",
-  "Rating", "Reviews", "Google Maps", "Place ID", "Website check", "Mobile speed",
-  "Lead score", "Why", "Channel", "Draft subject", "Draft message",
+  "Found", "Country", "City", "Niche", "Business", "Address", "Phone", "Website", "Email",
+  "Rating", "Reviews", "Verify on Google Maps", "Lead ID", "Source",
+  "Website check", "Mobile speed", "Lead score", "Why", "Channel", "Draft subject", "Draft message",
   "Status", "Last contact", "Follow-up due", "Notes",
 ];
-const CONFIG_HEADERS = ["Active", "Country", "Code", "City", "Niche", "Next page token", "Done", "Last run"];
-const STATUSES = ["New", "Contacted", "Follow-up sent", "Replied", "Call booked", "Won", "Lost", "Skip"];
+const CONFIG_HEADERS = ["Active", "Country", "Code", "Language", "City", "Niche", "Search text", "Lat", "Lon", "Radius km", "Next offset", "Done", "Last run"];
+const C = Object.fromEntries(CONFIG_HEADERS.map((h, i) => [h, i]));
+const STATUSES = ["New", "Verified", "Contacted", "Follow-up sent", "Replied", "Call booked", "Won", "Lost", "Skip"];
+const OVERPASS_MIRRORS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+];
 
 // ------------------------------------------------------------------- menu
 
@@ -102,9 +125,8 @@ function setupSheet() {
     leads.appendRow(LEAD_HEADERS);
     leads.setFrozenRows(1);
     leads.getRange(1, 1, 1, LEAD_HEADERS.length).setFontWeight("bold").setBackground("#0b1220").setFontColor("#ffffff");
-    const statusCol = LEAD_HEADERS.indexOf("Status") + 1;
     const rule = SpreadsheetApp.newDataValidation().requireValueInList(STATUSES, true).build();
-    leads.getRange(2, statusCol, 5000, 1).setDataValidation(rule);
+    leads.getRange(2, LEAD_HEADERS.indexOf("Status") + 1, 5000, 1).setDataValidation(rule);
     leads.setColumnWidth(LEAD_HEADERS.indexOf("Draft message") + 1, 420);
   }
 
@@ -113,19 +135,24 @@ function setupSheet() {
     config.appendRow(CONFIG_HEADERS);
     config.setFrozenRows(1);
     config.getRange(1, 1, 1, CONFIG_HEADERS.length).setFontWeight("bold");
+    const rows = [];
     MARKETS.forEach((m) =>
-      m.cities.forEach((city) =>
-        NICHES.forEach((niche) => config.appendRow([true, m.country, m.code, city, niche, "", false, ""]))
+      m.cities.forEach(([city, lat, lon, km]) =>
+        NICHES.forEach((niche) => {
+          const text = SEARCH_TEXT[niche][m.code] || SEARCH_TEXT[niche].default;
+          rows.push([true, m.country, m.code, m.lang, city, niche, text, lat, lon, km, 0, false, ""]);
+        })
       )
     );
+    config.getRange(2, 1, rows.length, CONFIG_HEADERS.length).setValues(rows);
   }
-  SpreadsheetApp.getActive().toast("Sheet ready. Next: AZMIN Leads → 2. Find new leads now", "AZMIN Leads", 8);
+  ss.toast(`Sheet ready. Lead source: ${sourceName_()}. Next: AZMIN Leads → 2. Find new leads now`, "AZMIN Leads", 10);
 }
 
 function installTriggers() {
   removeTriggers();
-  // Find leads every morning (Dubai time follows the sheet's time zone).
-  ScriptApp.newTrigger("findLeads").timeBased().everyDays(1).atHour(7).create();
+  // Find leads a few times a day until every search is done, then it idles.
+  ScriptApp.newTrigger("findLeads").timeBased().everyHours(6).create();
   // Check websites and draft messages through the day, a few at a time.
   ScriptApp.newTrigger("qualifyLeads").timeBased().everyHours(1).create();
   ScriptApp.newTrigger("sendSummary").timeBased().everyDays(1).atHour(18).create();
@@ -138,97 +165,211 @@ function removeTriggers() {
 
 // ------------------------------------------------------------ find leads
 
-function findLeads() {
-  const key = prop_("GOOGLE_API_KEY");
-  if (!key) throw new Error("Add GOOGLE_API_KEY in Project Settings → Script properties (see SETUP.md).");
+function sourceName_() {
+  if (prop_("GOOGLE_PLACES") === "on" && prop_("GOOGLE_API_KEY")) return "Google Places";
+  if (prop_("TOMTOM_API_KEY")) return "TomTom";
+  return "OpenStreetMap";
+}
 
+function findLeads() {
+  const started = Date.now();
   const ss = SpreadsheetApp.getActive();
   const leads = ss.getSheetByName("Leads");
   const config = ss.getSheetByName("Config");
   if (!leads || !config) throw new Error("Run AZMIN Leads → 1. Set up sheet first.");
 
-  const known = new Set(columnValues_(leads, "Place ID"));
+  const source = sourceName_();
+  const known = new Set(columnValues_(leads, "Lead ID"));
+  // Also skip the same business found twice under different IDs.
+  const knownNames = new Set(columnValues_(leads, "Business"));
   const rows = config.getDataRange().getValues();
   const today = new Date();
-  let calls = 0;
+  let searches = 0;
   let added = 0;
 
-  // Work through the active searches that still have results to fetch,
-  // starting with the ones that ran longest ago.
   const queue = rows
     .map((r, i) => ({ r, i }))
     .slice(1)
-    .filter(({ r }) => r[0] === true && r[6] !== true)
-    .sort((a, b) => (a.r[7] || 0) - (b.r[7] || 0));
+    .filter(({ r }) => r[C.Active] === true && r[C.Done] !== true)
+    .sort((a, b) => (a.r[C["Last run"]] || 0) - (b.r[C["Last run"]] || 0));
 
   for (const { r, i } of queue) {
-    if (calls >= MAX_SEARCH_CALLS_PER_RUN) break;
-    const [, country, code, city, niche, pageToken] = r;
-    const res = placesSearch_(key, `${niche} in ${city}`, code, pageToken);
-    calls++;
+    if (searches >= MAX_SEARCHES_PER_RUN || Date.now() - started > RUN_TIME_BUDGET_MS) break;
+    const search = {
+      country: r[C.Country], code: r[C.Code], lang: r[C.Language] || "en-GB", city: r[C.City],
+      niche: r[C.Niche], text: r[C["Search text"]] || r[C.Niche],
+      lat: Number(r[C.Lat]), lon: Number(r[C.Lon]), km: Number(r[C["Radius km"]]) || 15,
+      offset: Number(r[C["Next offset"]]) || 0,
+    };
+
+    let page;
+    try {
+      page = source === "TomTom" ? tomtomSearch_(search)
+        : source === "Google Places" ? placesSearch_(search)
+        : osmSearch_(search);
+    } catch (e) {
+      console.warn(`Search failed (${search.niche}, ${search.city}): ${e.message}`);
+      config.getRange(i + 1, C["Last run"] + 1).setValue(today);
+      searches++;
+      continue;
+    }
+    searches++;
 
     const fresh = [];
-    for (const p of res.places || []) {
-      if (!p.id || known.has(p.id)) continue;
-      if (p.businessStatus && p.businessStatus !== "OPERATIONAL") continue;
-      known.add(p.id);
-      fresh.push(leadRow_(today, country, code, city, niche, p));
+    for (const b of page.results) {
+      const nameKey = `${b.name}|${search.city}`.toLowerCase();
+      if (!b.id || known.has(b.id) || knownNames.has(nameKey)) continue;
+      if (!isGenuine_(b, search.niche)) continue;
+      known.add(b.id);
+      knownNames.add(nameKey);
+      fresh.push(leadRow_(today, search, b, source));
     }
     if (fresh.length) {
       leads.getRange(leads.getLastRow() + 1, 1, fresh.length, LEAD_HEADERS.length).setValues(fresh);
       added += fresh.length;
     }
 
-    // Save where this search got to: Google returns up to 3 pages (60 results).
-    const next = res.nextPageToken || "";
-    config.getRange(i + 1, 6, 1, 3).setValues([[next, next === "", today]]);
-    if (next) Utilities.sleep(2000); // the next page token takes a moment to become valid
+    const done = !page.next || page.next >= MAX_RESULTS_PER_SEARCH;
+    config.getRange(i + 1, C["Next offset"] + 1, 1, 3).setValues([[done ? 0 : page.next, done, today]]);
+    Utilities.sleep(source === "OpenStreetMap" ? 5000 : 400); // be polite to the free services
   }
 
-  PropertiesService.getScriptProperties().setProperty("LAST_FIND", JSON.stringify({ at: today.toISOString(), added, calls }));
-  ss.toast(`${added} new leads from ${calls} searches.`, "AZMIN Leads", 8);
+  ss.toast(`${added} new leads from ${searches} searches (${source}).`, "AZMIN Leads", 8);
   return added;
 }
 
-function placesSearch_(key, textQuery, regionCode, pageToken) {
-  const body = { textQuery, regionCode, pageSize: 20 };
-  if (pageToken) body.pageToken = pageToken;
+/** Drop results that aren't real, independent businesses in the niche. */
+function isGenuine_(b, niche) {
+  if (!b.name || b.name.length < 3) return false;
+  if (b.chain) return false;
+  if (SKIP_NAME.test(b.name)) return false;
+  const text = `${b.name} ${b.category || ""}`;
+  return NICHE_MATCH[niche].test(text);
+}
+
+/** TomTom Search API. Free key, no card: developer.tomtom.com */
+function tomtomSearch_(s) {
+  const params = {
+    key: prop_("TOMTOM_API_KEY"), lat: s.lat, lon: s.lon, radius: Math.round(s.km * 1000),
+    limit: 100, ofs: s.offset, countrySet: s.code, idxSet: "POI", language: s.lang,
+  };
+  const url = `https://api.tomtom.com/search/2/search/${encodeURIComponent(s.text)}.json?` + query_(params);
+  const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true });
+  if (res.getResponseCode() !== 200) throw new Error(`TomTom ${res.getResponseCode()}: ${res.getContentText().slice(0, 200)}`);
+  const json = JSON.parse(res.getContentText());
+  const results = (json.results || []).map((r) => {
+    const poi = r.poi || {};
+    const cats = (poi.classifications || []).map((c) => c.code).concat(poi.categories || []);
+    return {
+      id: `tomtom:${r.id}`,
+      name: poi.name || "",
+      address: (r.address && r.address.freeformAddress) || "",
+      phone: poi.phone || "",
+      website: normaliseUrl_(poi.url),
+      category: cats.join(", "),
+      chain: (poi.brands || []).length > 0,
+    };
+  });
+  const total = (json.summary && json.summary.totalResults) || 0;
+  const next = s.offset + 100 < total ? s.offset + 100 : 0;
+  return { results, next };
+}
+
+/** Google Places API (New). Needs a billing account. */
+function placesSearch_(s) {
+  const body = {
+    textQuery: `${s.text} in ${s.city}`, regionCode: s.code, pageSize: 20,
+    locationBias: { circle: { center: { latitude: s.lat, longitude: s.lon }, radius: Math.min(50000, s.km * 1000) } },
+  };
+  const token = PropertiesService.getScriptProperties().getProperty(`PAGE_${s.city}_${s.niche}`);
+  if (s.offset && token) body.pageToken = token;
   const res = UrlFetchApp.fetch("https://places.googleapis.com/v1/places:searchText", {
-    method: "post",
-    contentType: "application/json",
-    muteHttpExceptions: true,
+    method: "post", contentType: "application/json", muteHttpExceptions: true,
     headers: {
-      "X-Goog-Api-Key": key,
-      "X-Goog-FieldMask": [
-        "places.id", "places.displayName", "places.formattedAddress",
-        "places.internationalPhoneNumber", "places.websiteUri", "places.rating",
-        "places.userRatingCount", "places.googleMapsUri", "places.businessStatus",
-        "nextPageToken",
-      ].join(","),
+      "X-Goog-Api-Key": prop_("GOOGLE_API_KEY"),
+      "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.internationalPhoneNumber,places.websiteUri,places.rating,places.userRatingCount,places.googleMapsUri,places.businessStatus,places.primaryTypeDisplayName,nextPageToken",
     },
     payload: JSON.stringify(body),
   });
-  if (res.getResponseCode() !== 200) {
-    throw new Error(`Places API error ${res.getResponseCode()}: ${res.getContentText().slice(0, 300)}`);
-  }
-  return JSON.parse(res.getContentText());
+  if (res.getResponseCode() !== 200) throw new Error(`Places ${res.getResponseCode()}: ${res.getContentText().slice(0, 200)}`);
+  const json = JSON.parse(res.getContentText());
+  const results = (json.places || [])
+    .filter((p) => !p.businessStatus || p.businessStatus === "OPERATIONAL")
+    .map((p) => ({
+      id: `google:${p.id}`,
+      name: (p.displayName && p.displayName.text) || "",
+      address: p.formattedAddress || "",
+      phone: p.internationalPhoneNumber || "",
+      website: normaliseUrl_(p.websiteUri),
+      rating: p.rating, reviews: p.userRatingCount, maps: p.googleMapsUri,
+      category: (p.primaryTypeDisplayName && p.primaryTypeDisplayName.text) || "",
+    }));
+  if (json.nextPageToken) PropertiesService.getScriptProperties().setProperty(`PAGE_${s.city}_${s.niche}`, json.nextPageToken);
+  return { results, next: json.nextPageToken ? s.offset + 20 : 0 };
 }
 
-function leadRow_(today, country, code, city, niche, p) {
+/** OpenStreetMap via the free Overpass API. No key; fewer contact details. */
+function osmSearch_(s) {
+  const a = `(around:${Math.round(s.km * 1000)},${s.lat},${s.lon})`;
+  const name = `["name"~"interior|innen|decor|fit ?out|design",i]`;
+  const body = s.niche === "clinic"
+    ? `nwr["amenity"~"^(clinic|dentist|doctors)$"]["name"]${a};nwr["healthcare"~"^(clinic|dentist|doctor)$"]["name"]${a};`
+    : `nwr["office"~"interior_design|architect|designer|company"]${name}${a};nwr["craft"~"interior"]["name"]${a};nwr["shop"="interior_decoration"]${name}${a};`;
+  const q = `[out:json][timeout:50];(${body});out center tags 400;`;
+
+  let lastError = "";
+  for (const mirror of OVERPASS_MIRRORS) {
+    try {
+      const res = UrlFetchApp.fetch(mirror, { method: "post", payload: { data: q }, muteHttpExceptions: true });
+      if (res.getResponseCode() !== 200) { lastError = `${res.getResponseCode()}`; continue; }
+      const els = JSON.parse(res.getContentText()).elements || [];
+      const results = els.map((e) => {
+        const t = e.tags || {};
+        const addr = [t["addr:housenumber"], t["addr:street"], t["addr:city"] || s.city].filter(Boolean).join(" ");
+        return {
+          id: `osm:${e.type}/${e.id}`,
+          name: t.name || "",
+          address: addr,
+          phone: t.phone || t["contact:phone"] || "",
+          website: normaliseUrl_(t.website || t["contact:website"] || t.url),
+          email: t.email || t["contact:email"] || "",
+          category: [t.amenity, t.healthcare, t.office, t.craft, t.shop].filter(Boolean).join(", "),
+          chain: Boolean(t.brand || t["brand:wikidata"]),
+        };
+      });
+      // Businesses with contact details first: they're the most useful leads.
+      results.sort((x, y) => contactScore_(y) - contactScore_(x));
+      return { results, next: 0 };
+    } catch (e) {
+      lastError = e.message;
+    }
+  }
+  throw new Error(`OpenStreetMap busy (${lastError}); it will retry next run`);
+}
+
+function contactScore_(b) {
+  return (b.website ? 2 : 0) + (b.phone ? 1 : 0) + (b.email ? 1 : 0);
+}
+
+function leadRow_(today, s, b, source) {
   const row = new Array(LEAD_HEADERS.length).fill("");
   const set = (h, v) => (row[LEAD_HEADERS.indexOf(h)] = v == null ? "" : v);
   set("Found", today);
-  set("Country", country);
-  set("City", city);
-  set("Niche", niche);
-  set("Business", (p.displayName && p.displayName.text) || "");
-  set("Phone", p.internationalPhoneNumber);
-  set("Website", p.websiteUri);
-  set("Rating", p.rating);
-  set("Reviews", p.userRatingCount);
-  set("Google Maps", p.googleMapsUri);
-  set("Place ID", p.id);
-  set("Channel", CHANNEL_BY_CODE[code] || "");
+  set("Country", s.country);
+  set("City", s.city);
+  set("Niche", s.niche);
+  set("Business", b.name);
+  set("Address", b.address);
+  set("Phone", b.phone);
+  set("Website", b.website);
+  set("Email", b.email);
+  set("Rating", b.rating);
+  set("Reviews", b.reviews);
+  // One click to confirm the business is real and see its reviews.
+  set("Verify on Google Maps", b.maps || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${b.name} ${b.address || s.city}`)}`);
+  set("Lead ID", b.id);
+  set("Source", source);
+  set("Channel", CHANNEL_BY_CODE[s.code] || "");
   set("Status", "New");
   return row;
 }
@@ -251,26 +392,21 @@ function qualifyLeads() {
     if (row[col("Lead score")]) continue; // already processed
 
     const lead = {
-      business: row[col("Business")],
-      city: row[col("City")],
-      country: row[col("Country")],
-      niche: row[col("Niche")],
-      website: String(row[col("Website")] || ""),
-      rating: row[col("Rating")],
-      reviews: row[col("Reviews")],
+      business: row[col("Business")], city: row[col("City")], country: row[col("Country")],
+      niche: row[col("Niche")], website: String(row[col("Website")] || ""),
+      reviews: row[col("Reviews")], source: row[col("Source")],
     };
     const check = checkWebsite_(lead.website, key);
-    const email = lead.website && check.reachable ? findEmail_(lead.website) : "";
+    const email = row[col("Email")] || (lead.website && check.reachable ? findEmail_(lead.website) : "");
     const score = scoreLead_(lead, check);
     const draft = draftMessage_(lead, check, score);
 
-    const out = [
+    const r = i + 2;
+    if (email) leads.getRange(r, col("Email") + 1).setValue(email);
+    leads.getRange(r, col("Website check") + 1, 1, 4).setValues([[
       check.summary, check.speed === null ? "" : check.speed, score.label, score.why.join("; "),
-      draft.subject, draft.body,
-    ];
-    if (email) leads.getRange(i + 2, col("Email") + 1).setValue(email);
-    leads.getRange(i + 2, col("Website check") + 1, 1, 4).setValues([out.slice(0, 4)]);
-    leads.getRange(i + 2, col("Draft subject") + 1, 1, 2).setValues([out.slice(4)]);
+    ]]);
+    leads.getRange(r, col("Draft subject") + 1, 1, 2).setValues([[draft.subject, draft.body]]);
     done++;
   }
   return done;
@@ -278,8 +414,8 @@ function qualifyLeads() {
 
 /** Looks at the website: reachable? HTTPS? Mobile speed from PageSpeed. */
 function checkWebsite_(url, key) {
-  if (!url) return { reachable: false, https: false, speed: null, summary: "No website" };
-  const out = { reachable: false, https: url.indexOf("https://") === 0, speed: null, summary: "" };
+  if (!url) return { known: false, reachable: false, https: false, speed: null, summary: "No website listed" };
+  const out = { known: true, reachable: false, https: url.indexOf("https://") === 0, speed: null, summary: "" };
   try {
     const res = UrlFetchApp.fetch(url, { muteHttpExceptions: true, followRedirects: true, validateHttpsCertificates: false });
     out.reachable = res.getResponseCode() < 400;
@@ -290,41 +426,45 @@ function checkWebsite_(url, key) {
     out.summary = "Website not loading";
     return out;
   }
-  if (key) {
-    try {
-      const api = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed" +
-        `?url=${encodeURIComponent(url)}&strategy=mobile&category=performance&key=${key}`;
-      const res = UrlFetchApp.fetch(api, { muteHttpExceptions: true });
-      if (res.getResponseCode() === 200) {
-        const json = JSON.parse(res.getContentText());
-        const s = json.lighthouseResult && json.lighthouseResult.categories.performance.score;
-        if (typeof s === "number") out.speed = Math.round(s * 100);
-        const lcp = json.lighthouseResult && json.lighthouseResult.audits["largest-contentful-paint"];
-        if (lcp && lcp.numericValue) out.loadSeconds = Math.round(lcp.numericValue / 100) / 10;
-      }
-    } catch (e) {
-      // Speed is a bonus; the lead is still useful without it.
+  try {
+    const api = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed?" +
+      query_({ url, strategy: "mobile", category: "performance", key: key || undefined });
+    const res = UrlFetchApp.fetch(api, { muteHttpExceptions: true });
+    if (res.getResponseCode() === 200) {
+      const lh = JSON.parse(res.getContentText()).lighthouseResult || {};
+      const s = lh.categories && lh.categories.performance.score;
+      if (typeof s === "number") out.speed = Math.round(s * 100);
+      const lcp = lh.audits && lh.audits["largest-contentful-paint"];
+      if (lcp && lcp.numericValue) out.loadSeconds = Math.round(lcp.numericValue / 100) / 10;
     }
+  } catch (e) {
+    // Speed is a bonus; the lead is still useful without it.
   }
   const parts = [out.https ? "HTTPS" : "No HTTPS"];
-  if (out.speed !== null) parts.push(`mobile score ${out.speed}/100`);
+  parts.push(out.speed !== null ? `mobile score ${out.speed}/100` : "speed not checked");
   if (out.loadSeconds) parts.push(`loads in ~${out.loadSeconds}s on mobile`);
   out.summary = parts.join(", ");
   return out;
 }
 
-/** Hot / Warm / Low, with the reasons that go into the message. */
+/**
+ * Hot / Warm / Check / Low, with the reasons that go into the message.
+ * "Check" means no website was listed: map data often misses websites,
+ * so confirm on Google Maps before saying they don't have one.
+ */
 function scoreLead_(lead, check) {
   const why = [];
   let points = 0;
-  if (!lead.website) { points += 3; why.push("no website"); }
-  else if (!check.reachable) { points += 3; why.push("website not loading"); }
+  if (!check.known) {
+    why.push("no website listed — confirm on Google Maps (if none, it's a Hot lead)");
+    return { label: "Check", points: 0, why };
+  }
+  if (!check.reachable) { points += 3; why.push("website not loading"); }
   else {
     if (!check.https) { points += 2; why.push("not secure (no HTTPS)"); }
     if (check.speed !== null && check.speed < 50) { points += 2; why.push(`slow on mobile (${check.speed}/100)`); }
     else if (check.speed !== null && check.speed < 75) { points += 1; why.push(`could be faster on mobile (${check.speed}/100)`); }
   }
-  // Busy, well-reviewed businesses can afford a proper site.
   if (Number(lead.reviews) >= 30) { points += 1; why.push(`${lead.reviews} Google reviews`); }
   const label = points >= 3 ? "Hot" : points >= 2 ? "Warm" : "Low";
   if (!why.length) why.push("site looks fine — low priority");
@@ -334,20 +474,22 @@ function scoreLead_(lead, check) {
 /** A short, specific first message. You edit and send it yourself. */
 function draftMessage_(lead, check, score) {
   const me = prop_("SENDER_NAME") || "Jabir";
-  const kind = lead.niche === "clinic" ? "clinic" : "studio";
+  const kind = lead.niche === "clinic" ? "clinic" : "interior design studio";
   const clients = lead.niche === "clinic" ? "patients" : "clients";
   let subject;
   let hook;
 
-  if (!lead.website || !check.reachable) {
-    subject = `A website for ${lead.business}`;
-    hook = lead.website
-      ? `I tried to visit your website and it didn't load, so people who find you on Google Maps may be leaving before they contact you.`
-      : `I found ${lead.business} on Google Maps${lead.reviews ? ` (${lead.reviews} reviews — well done)` : ""}, but couldn't find a website. Most ${clients} check a website before they book.`;
+  if (!check.known) {
+    // Only claim what we know. You confirm on Google Maps first.
+    subject = `More enquiries for ${lead.business}`;
+    hook = `I came across ${lead.business} while looking at ${lead.niche}s in ${lead.city}. Most ${clients} now check a website and message on WhatsApp before they book, so I wanted to share an idea.`;
+  } else if (!check.reachable) {
+    subject = `Your website seems to be down`;
+    hook = `I tried to visit your website and it didn't load, so people who find you online may be leaving before they contact you.`;
   } else {
     subject = `Quick idea for ${lead.business}'s website`;
     const issues = [];
-    if (check.loadSeconds) issues.push(`it takes about ${check.loadSeconds} seconds to load on a phone`);
+    if (check.loadSeconds && check.loadSeconds >= 3) issues.push(`it takes about ${check.loadSeconds} seconds to load on a phone`);
     else if (check.speed !== null && check.speed < 75) issues.push(`it scores ${check.speed}/100 for mobile speed on Google's own test`);
     if (!check.https) issues.push(`browsers mark it "Not secure"`);
     hook = issues.length
@@ -377,7 +519,8 @@ ${AGENCY.email} · WhatsApp ${AGENCY.whatsapp}${optOut}`;
 
 /** First public email on the homepage or contact page, if any. */
 function findEmail_(url) {
-  const pages = [url, url.replace(/\/$/, "") + "/contact", url.replace(/\/$/, "") + "/contact-us"];
+  const base = url.replace(/\/$/, "");
+  const pages = [url, base + "/contact", base + "/contact-us", base + "/impressum", base + "/kontakt"];
   for (const page of pages) {
     try {
       const res = UrlFetchApp.fetch(page, { muteHttpExceptions: true, followRedirects: true, validateHttpsCertificates: false });
@@ -393,10 +536,9 @@ function findEmail_(url) {
 
 function pickEmail_(html) {
   const found = (html.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi) || []).map((e) => e.toLowerCase());
-  const junk = /\.(png|jpe?g|gif|svg|webp)$|example\.|sentry|wixpress|domain\.com|email\.com|@2x/;
+  const junk = /\.(png|jpe?g|gif|svg|webp)$|example\.|sentry|wixpress|domain\.com|email\.com|@2x|yourname|name@/;
   const good = found.filter((e) => !junk.test(e));
-  // Prefer the usual enquiry inboxes.
-  return good.find((e) => /^(info|hello|contact|enquir|inquir|office|reception|admin)/.test(e)) || good[0] || "";
+  return good.find((e) => /^(info|hello|contact|enquir|inquir|office|reception|admin|praxis|kontakt)/.test(e)) || good[0] || "";
 }
 
 // --------------------------------------------------------------- summary
@@ -412,16 +554,15 @@ function sendSummary() {
   const today = new Date().toDateString();
   const fresh = data.filter((r) => r[col("Found")] instanceof Date && r[col("Found")].toDateString() === today);
   const hot = fresh.filter((r) => r[col("Lead score")] === "Hot");
+  const check = fresh.filter((r) => r[col("Lead score")] === "Check");
   const due = data.filter((r) => r[col("Follow-up due")] instanceof Date && r[col("Follow-up due")] <= new Date() && /Contacted|Follow-up sent/.test(r[col("Status")]));
   const text =
     `AZMIN Lead Agent — today\n` +
-    `New leads: ${fresh.length} (Hot: ${hot.length})\n` +
+    `New leads: ${fresh.length} (Hot: ${hot.length}, to check: ${check.length})\n` +
     `Follow-ups due: ${due.length}\n` +
     hot.slice(0, 5).map((r) => `• ${r[col("Business")]} (${r[col("City")]}) — ${r[col("Why")]}`).join("\n");
   UrlFetchApp.fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-    method: "post",
-    contentType: "application/json",
-    muteHttpExceptions: true,
+    method: "post", contentType: "application/json", muteHttpExceptions: true,
     payload: JSON.stringify({ chat_id: chat, text }),
   });
 }
@@ -443,8 +584,26 @@ function prop_(name) {
   return PropertiesService.getScriptProperties().getProperty(name) || "";
 }
 
+function query_(params) {
+  return Object.keys(params)
+    .filter((k) => params[k] !== undefined && params[k] !== "")
+    .map((k) => `${encodeURIComponent(k)}=${encodeURIComponent(params[k])}`)
+    .join("&");
+}
+
+function normaliseUrl_(u) {
+  if (!u) return "";
+  const s = String(u).trim();
+  if (!s) return "";
+  return /^https?:\/\//i.test(s) ? s : `http://${s}`;
+}
+
 function columnValues_(sheet, header) {
   if (sheet.getLastRow() < 2) return [];
   const c = LEAD_HEADERS.indexOf(header) + 1;
-  return sheet.getRange(2, c, sheet.getLastRow() - 1, 1).getValues().map((r) => r[0]).filter(String);
+  const vals = sheet.getRange(2, c, sheet.getLastRow() - 1, 1).getValues().map((r) => r[0]);
+  if (header !== "Business") return vals.filter(String);
+  // Business names are matched together with their city.
+  const cities = sheet.getRange(2, LEAD_HEADERS.indexOf("City") + 1, sheet.getLastRow() - 1, 1).getValues();
+  return vals.map((n, i) => (n ? `${n}|${cities[i][0]}`.toLowerCase() : "")).filter(String);
 }
