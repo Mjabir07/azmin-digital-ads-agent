@@ -406,7 +406,8 @@ function qualifyLeads() {
     leads.getRange(r, col("Website check") + 1, 1, 4).setValues([[
       check.summary, check.speed === null ? "" : check.speed, score.label, score.why.join("; "),
     ]]);
-    leads.getRange(r, col("Draft subject") + 1, 1, 2).setValues([[draft.subject, draft.body]]);
+    leads.getRange(r, col("Draft subject") + 1, 1, 2).setValues([[draft.subject, draft.body]])
+      .setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
     done++;
   }
   return done;
@@ -481,13 +482,13 @@ function draftMessage_(lead, check, score) {
 
   if (!check.known) {
     // Only claim what we know. You confirm on Google Maps first.
-    subject = `More enquiries for ${lead.business}`;
-    hook = `I came across ${lead.business} while looking at ${lead.niche}s in ${lead.city}. Most ${clients} now check a website and message on WhatsApp before they book, so I wanted to share an idea.`;
+    subject = `More enquiries for ${shortName_(lead.business) || "your " + lead.niche.replace("interior designer", "studio")}`;
+    hook = `I came across ${shortName_(lead.business) || "your business"} while looking at ${lead.niche}s in ${lead.city}. Most ${clients} now check a website and message on WhatsApp before they book, so I wanted to share an idea.`;
   } else if (!check.reachable) {
     subject = `Your website seems to be down`;
     hook = `I tried to visit your website and it didn't load, so people who find you online may be leaving before they contact you.`;
   } else {
-    subject = `Quick idea for ${lead.business}'s website`;
+    subject = shortName_(lead.business) ? `Quick idea for ${shortName_(lead.business)}'s website` : `Quick idea for your website`;
     const issues = [];
     if (check.loadSeconds && check.loadSeconds >= 3) issues.push(`it takes about ${check.loadSeconds} seconds to load on a phone`);
     else if (check.speed !== null && check.speed < 75) issues.push(`it scores ${check.speed}/100 for mobile speed on Google's own test`);
@@ -502,7 +503,7 @@ function draftMessage_(lead, check, score) {
     : "";
 
   const body =
-`Hi ${lead.business} team,
+`${greeting_(lead)}
 
 ${hook}
 
@@ -515,6 +516,25 @@ ${me}
 ${AGENCY.name} · ${AGENCY.site}
 ${AGENCY.email} · WhatsApp ${AGENCY.whatsapp}${optOut}`;
   return { subject, body };
+}
+
+/**
+ * Map listings often stuff keywords into the name ("Top Interior Designer
+ * London Award Winning…"). Use the real brand part when it looks like a
+ * name, otherwise fall back to a neutral greeting.
+ */
+function shortName_(name) {
+  let n = String(name || "").split(/\s[|–—-]\s|,|\(|:/)[0].trim();
+  const words = n.split(/\s+/).filter(Boolean);
+  const stuffed = /\b(best|top|award|no\.? ?1|#1|leading|affordable|cheap|near me)\b/i.test(n);
+  const generic = /^(interior designers?|interior design|clinic|dental clinic|medical (centre|center)|doctor|dentist)( in [a-z ]+)?$/i.test(n);
+  if (!n || stuffed || generic || words.length > 5) return "";
+  return n;
+}
+
+function greeting_(lead) {
+  const n = shortName_(lead.business);
+  return n ? `Hi ${n} team,` : "Hi there,";
 }
 
 /** First public email on the homepage or contact page, if any. */
