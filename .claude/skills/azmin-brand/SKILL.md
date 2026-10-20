@@ -26,7 +26,7 @@ Also offered (mention lightly): apps, web hosting & cloud servers.
 
 ## Never
 - Invented prices, discounts or deadlines; guaranteed results ("100% more sales"); fake reviews/testimonials.
-- Client work without permission. Approved portfolio: **msjtechnicaluae.com** only (Grace IT: do NOT use).
+- Client work without permission. Approved portfolio: **msjtechnicaluae.com** and **purepreciousjewellery.com** (both shown on azmindigital.com). Grace IT: do NOT use.
 - Personal-attribute targeting language ("Are you struggling with money?") — Meta policy.
 - Arabic copy published without a native-speaker review (flag it instead).
 - Competitor names or negative comparisons.
