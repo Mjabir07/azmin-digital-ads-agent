@@ -116,6 +116,7 @@ function onOpen() {
     .addItem("1. Set up sheet", "setupSheet")
     .addItem("2. Find new leads now", "findLeads")
     .addItem("3. Check websites + draft messages now", "qualifyLeads")
+    .addItem("Rewrite all draft messages (after a wording change)", "rewriteDrafts")
     .addSeparator()
     .addItem("Turn on daily automation", "installTriggers")
     .addItem("Turn off automation", "removeTriggers")
@@ -595,6 +596,44 @@ function codeForCountry_(name) {
   return m ? m.code : "";
 }
 
+/**
+ * Rebuilds every draft from what's already in the sheet, without checking
+ * the websites again. Use it after changing the message wording.
+ */
+function rewriteDrafts() {
+  const leads = SpreadsheetApp.getActive().getSheetByName("Leads");
+  if (!leads || leads.getLastRow() < 2) return 0;
+  const n = leads.getLastRow() - 1;
+  const data = leads.getRange(2, 1, n, LEAD_HEADERS.length).getValues();
+  const col = (h) => LEAD_HEADERS.indexOf(h);
+  const out = leads.getRange(2, col("Draft subject") + 1, n, 2).getValues();
+  let count = 0;
+  data.forEach((row, i) => {
+    const label = row[col("Lead score")];
+    if (!label || label === "Unverified" || label === "Check manually") return;
+    const summary = String(row[col("Website check")] || "");
+    const website = String(row[col("Website")] || "");
+    const load = summary.match(/~([\d.]+)s/);
+    const check = {
+      known: Boolean(website) && label !== "No website",
+      reachable: summary.indexOf("not loading") === -1,
+      https: summary.indexOf("No HTTPS") === -1,
+      speed: row[col("Mobile speed")] === "" ? null : Number(row[col("Mobile speed")]),
+      loadSeconds: load ? Number(load[1]) : undefined,
+    };
+    const lead = {
+      business: row[col("Business")], city: row[col("City")], country: row[col("Country")],
+      niche: row[col("Niche")], website, reviews: row[col("Reviews")],
+    };
+    const d = draftMessage_(lead, check, { label });
+    out[i] = [d.subject, d.body];
+    count++;
+  });
+  leads.getRange(2, col("Draft subject") + 1, n, 2).setValues(out).setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
+  SpreadsheetApp.getActive().toast(`${count} draft messages rewritten.`, "AZMIN Leads", 6);
+  return count;
+}
+
 /** Looks at the website: reachable? HTTPS? Mobile speed from PageSpeed. */
 function checkWebsite_(url, key) {
   if (!url) return { known: false, reachable: false, https: false, speed: null, summary: "No website listed" };
@@ -699,7 +738,7 @@ function draftMessage_(lead, check, score) {
 
 ${hook}
 
-I'm ${me} from ${AGENCY.name}. We build fast, premium websites for ${kind}s, with online booking/enquiry forms, WhatsApp chat and proper business email set up. Recent work: ${AGENCY.work.join(", ")}.
+I'm ${me} from ${AGENCY.name}. We build fast, premium websites for ${kind}s, with online booking/enquiry forms, WhatsApp chat and proper business email set up. You can see our work at ${AGENCY.site.replace("https://", "")}.
 
 Would a free 2-minute video review of what I'd improve be useful?
 
@@ -723,7 +762,7 @@ function noWebsiteMessage_(lead, me, clients) {
 
 I was looking at ${lead.niche}s in ${lead.city} and came across ${name || `your ${kind}`}, but I couldn't find a website for you. Most ${clients} look for a website before they call or book, so this is often where new enquiries are lost.
 
-I'm ${me} from ${AGENCY.name}. We build fast, professional websites with ${lead.niche === "clinic" ? "online appointment requests" : "a project portfolio and enquiry form"}, WhatsApp chat and business email on your own domain, usually live within 14 days. Recent work: ${AGENCY.work.join(", ")}.
+I'm ${me} from ${AGENCY.name}. We build fast, professional websites with ${lead.niche === "clinic" ? "online appointment requests" : "a project portfolio and enquiry form"}, WhatsApp chat and business email on your own domain. You can see our work at ${AGENCY.site.replace("https://", "")}.
 
 Would you like me to send a free homepage mock-up for ${name || `your ${kind}`}? No cost and no obligation.
 
