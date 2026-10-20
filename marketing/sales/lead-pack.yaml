@@ -16,5 +16,6 @@ designs:
     title_size: 104
   - name: 3-our-work
     kind: work
+    image: brand/portfolio/purepreciousjewellery-mobile.png
     title: "Real client, *real website*"
-    cta: "msjtechnicaluae.com · built by AZMIN DIGITAL"
+    cta: "purepreciousjewellery.com\nBuilt by AZMIN DIGITAL"
