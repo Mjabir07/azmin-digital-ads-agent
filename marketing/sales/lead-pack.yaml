@@ -1,0 +1,20 @@
+# WhatsApp lead pack: images Jabir sends to ad leads (AZMIN Editorial theme).
+designs:
+  - name: 1-offer
+    kind: offer
+    theme: blue
+    kicker: STARTER COMBO
+    items: ["Professional business website", "Mobile-friendly + WhatsApp button", "Free domain name", "1 year hosting included", "Ready in as little as 1 day"]
+  - name: 2-how-it-works
+    kind: story
+    size: portrait
+    theme: paper
+    kicker: HOW IT WORKS
+    title: "Your website in *4 simple steps*"
+    body: "1. Tell us about your business\n2. Clear quote, 50% to start\n3. We design & build (you approve)\n4. Launch + support after"
+    cta: "Reply with your business name to start 👇"
+    title_size: 104
+  - name: 3-our-work
+    kind: work
+    title: "Real client, *real website*"
+    cta: "msjtechnicaluae.com · built by AZMIN DIGITAL"

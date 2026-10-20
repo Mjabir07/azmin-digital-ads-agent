@@ -65,7 +65,7 @@ def k_cover(d: dict, w: int, h: int) -> str:
     return f"""<div class="grid"></div>{head(d)}
     <div class="main">
       {f'<div class="chip">{html.escape(d["kicker"])}</div>' if d.get("kicker") else ""}
-      <div style="margin-top:44px;font-size:{d.get("size", 124)}px;font-weight:800;letter-spacing:-6px;line-height:1.02">{rich(d["title"])}</div>
+      <div style="margin-top:44px;font-size:{d.get("title_size", 124)}px;font-weight:800;letter-spacing:-6px;line-height:1.02">{rich(d["title"])}</div>
       {f'<div style="margin-top:40px;font-size:42px;font-weight:500;color:var(--muted);line-height:1.35">{rich(d["sub"], False)}</div>' if d.get("sub") else ""}
     </div>
     <div class="foot"><span>{html.escape(d.get("foot", "Save this for later"))}</span><span style="font-family:Serif;font-style:italic;font-size:44px;color:var(--ink)">swipe →</span></div>"""
@@ -84,7 +84,7 @@ def k_point(d: dict, w: int, h: int) -> str:
 def k_cta(d: dict, w: int, h: int) -> str:
     return f"""<div class="grid"></div>{head(d)}
     <div class="main">
-      <div style="font-size:{d.get("size", 110)}px;font-weight:800;letter-spacing:-5px;line-height:1.04">{rich(d["title"])}</div>
+      <div style="font-size:{d.get("title_size", 110)}px;font-weight:800;letter-spacing:-5px;line-height:1.04">{rich(d["title"])}</div>
       <div style="margin-top:40px;font-size:46px;font-weight:500;line-height:1.4;color:var(--muted)">{rich(d.get("body", ""), False)}</div>
       <div style="margin-top:70px" class="pill"><span style="padding:30px 0 30px 48px">{WA.format(s=66, c="#fff")}</span><span style="font-size:56px;padding:30px 52px 30px 0">{PHONE}</span></div>
       <div style="margin-top:34px;font-size:36px;font-weight:600;color:var(--muted)">azmindigital.com · Dubai</div>
@@ -109,11 +109,11 @@ def k_story(d: dict, w: int, h: int) -> str:
     return f"""<div class="grid"></div>{head(d)}
     <div class="main">
       {f'<div class="chip">{html.escape(d["kicker"])}</div>' if d.get("kicker") else ""}
-      <div style="margin-top:50px;font-size:{d.get("size", 120)}px;font-weight:800;letter-spacing:-5px;line-height:1.04">{rich(d["title"])}</div>
+      <div style="margin-top:50px;font-size:{d.get("title_size", 120)}px;font-weight:800;letter-spacing:-5px;line-height:1.04">{rich(d["title"])}</div>
       {f'<div style="margin-top:50px;font-size:50px;font-weight:500;line-height:1.4;color:var(--muted)">{rich(d["body"], False)}</div>' if d.get("body") else ""}
       <div style="display:flex;gap:24px">{"".join(f'<div style="margin-top:44px;background:var(--ink);color:var(--bg);border-radius:999px;padding:26px 60px;font-size:60px;font-weight:800">{html.escape(o)}</div>' for o in d.get("options", []))}</div>
-    </div>
-    <div style="position:absolute;left:80px;right:80px;bottom:330px;font-size:44px;font-weight:700">{rich(d.get("cta", ""), False)}</div>"""
+      {f'<div style="margin-top:70px;font-size:44px;font-weight:700">{rich(d["cta"], False)}</div>' if d.get("cta") else ""}
+    </div>"""
 
 
 def k_work(d: dict, w: int, h: int) -> str:
