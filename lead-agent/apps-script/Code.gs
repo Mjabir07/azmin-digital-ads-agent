@@ -19,6 +19,10 @@
  *   TOMTOM_API_KEY      recommended. Free key from developer.tomtom.com.
  *   GOOGLE_API_KEY      recommended. Free key with "PageSpeed Insights API"
  *                       enabled (no billing needed) for the speed check.
+ *   TAVILY_API_KEY      recommended. Free key from tavily.com (1,000 searches
+ *                       a month, no card). Confirms "no website" leads with a
+ *                       real web search before they reach the No Website tab.
+ *   TAVILY_DAILY_LIMIT  optional. Web searches per day, default 30.
  *   GOOGLE_PLACES       optional. Set to "on" to use Google Places instead
  *                       of TomTom (needs billing + "Places API (New)").
  *   TELEGRAM_BOT_TOKEN  optional. Daily summary to Telegram.
@@ -398,7 +402,12 @@ function qualifyLeads() {
 
   const data = leads.getRange(2, 1, leads.getLastRow() - 1, LEAD_HEADERS.length).getValues();
   const col = (h) => LEAD_HEADERS.indexOf(h);
-  const todo = (row) => !row[col("Lead score")] || row[col("Lead score")] === "Check";
+  // Re-check leads scored before the web-search check existed.
+  const todo = (row) => {
+    const score = row[col("Lead score")];
+    if (!score || score === "Check" || score === "Unverified") return true;
+    return score === "No website" && String(row[col("Why")]).indexOf("web search") === -1;
+  };
   // No-website leads first: they're the best fit and quick to check.
   const order = data.map((row, i) => i).filter((i) => todo(data[i]))
     .sort((a, b) => Number(Boolean(data[a][col("Website")])) - Number(Boolean(data[b][col("Website")])));
@@ -416,15 +425,22 @@ function qualifyLeads() {
     };
 
     let tried = [];
+    let search = null;
     if (!lead.website) {
       if (noSite >= MAX_NO_WEBSITE_PER_RUN) continue;
+      const waiting = row[col("Lead score")] === "Unverified";
+      // Already waiting for a web search and none left today: try again tomorrow.
+      if (waiting && searchesLeft_() <= 0) continue;
       noSite++;
-      // Map data sometimes misses a website, so look for one before calling it "no website".
+      // Map data often misses websites, so look properly before calling it
+      // "no website": first the obvious domains, then a real web search.
       const guess = guessWebsite_(lead);
       tried = guess.tried;
-      if (guess.url) {
-        lead.website = guess.url;
-        leads.getRange(r, col("Website") + 1).setValue(guess.url);
+      if (!guess.url && searchesLeft_() > 0) search = webSearchWebsite_(lead);
+      const found = guess.url || (search && search.url) || "";
+      if (found) {
+        lead.website = found;
+        leads.getRange(r, col("Website") + 1).setValue(found);
       }
     }
     if (lead.website) {
@@ -434,6 +450,9 @@ function qualifyLeads() {
 
     const check = checkWebsite_(lead.website, key);
     check.tried = tried;
+    check.searched = Boolean(search && search.ok);
+    check.generic = Boolean(search && search.generic);
+    check.social = (search && search.social) || [];
     const email = row[col("Email")] || (lead.website && check.reachable ? findEmail_(lead.website) : "");
     const score = scoreLead_(lead, check);
     const draft = draftMessage_(lead, check, score);
@@ -485,6 +504,92 @@ function guessWebsite_(lead) {
   return { url: "", tried };
 }
 
+// Sites that list businesses but aren't their own website.
+const DIRECTORY = /(^|\.)(facebook|instagram|linkedin|twitter|x|tiktok|youtube|pinterest|threads|wa|whatsapp|t|google|goo|maps\.apple|apple|bing|yelp|tripadvisor|yellowpages|yell|thomsonlocal|192|freeindex|cylex|hotfrog|foursquare|mapquest|waze|2gis|mapcarta|justdial|practo|okadoc|doctoruna|vezeeta|zocdoc|healthgrades|doctolib|jameda|ratemds|nhs|houzz|checkatrade|bark|trustpilot|wikipedia|wikidata|dubizzle|bayut|propertyfinder|connect|gulfbusiness|yellowpages-uae|uaecontact|dubaicityguide|qatarliving|gelbeseiten|dasoertliche|11880|meinestadt|cylex-uk|scoot|top10|clutch|sortlist|bizapedia|opencorporates|companieshouse|find-and-update|dnb|zoominfo|crunchbase|glassdoor|indeed|booking|fresha|treatwell|setmore|calendly|linktr|beacons|wixsite|business\.site|carrd)\.[a-z.]+$/i;
+// Words that don't identify a business on their own.
+const GENERIC_WORDS = new Set(("clinic clinics medical medicine center centre centres polyclinic poly dental dentist dentists dentistry " +
+  "doctor doctors dr health healthcare care hospital pharmacy aesthetic aesthetics skin beauty laser physio physiotherapy " +
+  "interior interiors design designs designer designers studio studios decor decoration fit out fitout contracting " +
+  "architect architects architecture home homes house living luxury group company co llc ltd limited gmbh fze " +
+  "services solutions the and of for in at by und fur für praxis arztpraxis innenarchitekt innenarchitektur zahnarzt " +
+  "dubai london manchester birmingham toronto vancouver calgary berlin munich münchen hamburg doha sharjah abu dhabi " +
+  "uae uk qatar canada germany").split(" "));
+
+/**
+ * Web-searches "<name> <city>" (Tavily, free tier) and returns the
+ * business's own website if a result clearly belongs to it. Directory and
+ * social pages are ignored, but social profiles are noted.
+ */
+function webSearchWebsite_(lead) {
+  const key = prop_("TAVILY_API_KEY");
+  if (!key) return null;
+  const name = shortName_(lead.business) || String(lead.business || "");
+  // "Interior Designer in London" can't be matched to one website safely.
+  if (!distinctWords_(name).length) return { ok: false, generic: true, url: "", social: [] };
+  let json;
+  useSearch_();
+  try {
+    const res = UrlFetchApp.fetch("https://api.tavily.com/search", {
+      method: "post", contentType: "application/json", muteHttpExceptions: true,
+      headers: { Authorization: `Bearer ${key}` },
+      payload: JSON.stringify({ api_key: key, query: `${name} ${lead.city}`, max_results: 8, search_depth: "basic" }),
+    });
+    if (res.getResponseCode() !== 200) {
+      console.warn(`Tavily ${res.getResponseCode()}: ${res.getContentText().slice(0, 200)}`);
+      return null;
+    }
+    json = JSON.parse(res.getContentText());
+  } catch (e) {
+    return null;
+  }
+  return pickOwnWebsite_(name, json.results || []);
+}
+
+/** The words that identify this business (not "clinic", "Dubai", …). */
+function distinctWords_(name) {
+  return String(name).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .split(/[^a-z0-9]+/).filter((w) => w.length >= 3 && !GENERIC_WORDS.has(w));
+}
+
+function pickOwnWebsite_(name, results) {
+  const words = distinctWords_(name);
+  const social = [];
+  for (const r of results) {
+    const m = String(r.url || "").match(/^https?:\/\/(?:www\.)?([^\/?#:]+)/i);
+    if (!m) continue;
+    const host = m[1].toLowerCase();
+    if (DIRECTORY.test(host)) {
+      const s = (host.match(/facebook|instagram|linkedin|tiktok/) || [])[0];
+      if (s && social.indexOf(s) === -1) social.push(s);
+      continue;
+    }
+    if (!words.length) continue; // name too generic to match safely
+    const text = `${host} ${r.title || ""} ${(r.content || "").slice(0, 400)}`.toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    const hits = words.filter((w) => text.indexOf(w) !== -1).length;
+    const inHost = words.some((w) => host.replace(/[^a-z0-9]/g, "").indexOf(w) !== -1);
+    if (inHost || hits >= Math.min(2, words.length)) return { ok: true, url: `https://${m[1]}`, social };
+  }
+  return { ok: words.length > 0, url: "", social };
+}
+
+function searchesLeft_() {
+  if (!prop_("TAVILY_API_KEY")) return 0;
+  const limit = Number(prop_("TAVILY_DAILY_LIMIT")) || 30;
+  const used = Number(PropertiesService.getScriptProperties().getProperty(searchDayKey_())) || 0;
+  return limit - used;
+}
+
+function useSearch_() {
+  const props = PropertiesService.getScriptProperties();
+  const k = searchDayKey_();
+  props.setProperty(k, String((Number(props.getProperty(k)) || 0) + 1));
+}
+
+function searchDayKey_() {
+  return `SEARCHES_${Utilities.formatDate(new Date(), "Etc/UTC", "yyyy-MM-dd")}`;
+}
+
 function codeForCountry_(name) {
   const m = MARKETS.find((x) => x.country === name);
   return m ? m.code : "";
@@ -534,8 +639,17 @@ function scoreLead_(lead, check) {
   const why = [];
   let points = 0;
   if (!check.known) {
-    why.push("no website on their map listing");
-    if (check.tried && check.tried.length) why.push(`none found at ${check.tried.slice(0, 4).join(", ")}`);
+    if (check.generic) {
+      why.push("no website listed, but the name is too generic to check automatically — search it yourself");
+      return { label: "Check manually", points: 0, why };
+    }
+    if (!check.searched) {
+      why.push("no website on their map listing; waiting for a web search to confirm" +
+        (prop_("TAVILY_API_KEY") ? " (daily limit reached, continues tomorrow)" : " (add TAVILY_API_KEY)"));
+      return { label: "Unverified", points: 0, why };
+    }
+    why.push("no website on their map listing or in a web search for their name");
+    if (check.social.length) why.push(`only has ${check.social.join(" / ")}`);
     if (Number(lead.reviews) >= 10) why.push(`${lead.reviews} Google reviews`);
     why.push("tip: open Verify on Google Maps before contacting");
     return { label: "No website", points: 5, why };

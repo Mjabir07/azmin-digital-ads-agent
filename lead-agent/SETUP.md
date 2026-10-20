@@ -46,6 +46,16 @@ results outside the niche are dropped, duplicates are skipped, and every lead ha
 3. Click the key → **API restrictions → Restrict key** → tick only
    **PageSpeed Insights API** → **Save**.
 
+## 3b. Free Tavily key, to confirm "no website" leads (no card)
+
+Map data often misses a business's website. Before a lead goes into the **No Website**
+tab, the agent searches the web for its name (like you would on Google) and only keeps
+it if no real website shows up.
+
+1. Go to **tavily.com** → **Sign up** (Google sign-in is fine).
+2. On the dashboard, copy your **API key** (starts with `tvly-`).
+3. The free plan includes 1,000 searches a month; the agent uses up to 30 a day.
+
 ## 4. Add the keys to the script
 
 In the Apps Script tab: **Project Settings (⚙) → Script properties → Add script property**
@@ -54,6 +64,7 @@ In the Apps Script tab: **Project Settings (⚙) → Script properties → Add s
 |---|---|
 | `TOMTOM_API_KEY` | the TomTom key from step 2 |
 | `GOOGLE_API_KEY` | the Google key from step 3 |
+| `TAVILY_API_KEY` | the Tavily key from step 3b |
 | `SENDER_NAME` | `Jabir` |
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | optional daily summary |
 
