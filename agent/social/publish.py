@@ -20,6 +20,9 @@ from agent.config import DEFAULT_GRAPH_API_VERSION, ROOT
 from agent.notify import telegram
 from agent.social import queue
 
+PUBLISH_WAIT = 5  # seconds; tests set it to 0
+MAX_ATTEMPTS = 3  # publisher runs every 5 min, so a failed platform is retried for about 15 min
+
 
 def media_url(rel_path: str) -> str:
     """Public URL Meta downloads from. Videos via jsDelivr (correct video/mp4 type); images via GitHub raw
@@ -65,19 +68,31 @@ class Meta:
             if status == "ERROR":
                 raise RuntimeError("Instagram could not process the video")
             time.sleep(10)
-        media_id = self.call("POST", f"{ig_id}/media_publish", creation_id=box)["id"]
+        media_id = self._media_publish(ig_id, box)
         return self.call("GET", media_id, fields="permalink").get("permalink", media_id)
 
     def _ig_publish(self, ig_id: str, box: str) -> str:
-        for _ in range(60):  # wait until Instagram has fetched/processed the media
+        for i in range(60):  # wait until Instagram has fetched/processed the media
             status = self.call("GET", box, fields="status_code").get("status_code")
-            if status in ("FINISHED", None):
+            if status == "FINISHED" or (status is None and i >= 2):
                 break
             if status == "ERROR":
                 raise RuntimeError("Instagram could not process the media")
-            time.sleep(5)
-        media_id = self.call("POST", f"{ig_id}/media_publish", creation_id=box)["id"]
+            time.sleep(PUBLISH_WAIT)
+        media_id = self._media_publish(ig_id, box)
         return self.call("GET", media_id, fields="permalink").get("permalink") or f"instagram media {media_id}"
+
+    def _media_publish(self, ig_id: str, box: str, tries: int = 3) -> str:
+        """Meta sometimes answers "resource does not exist" for a container that isn't ready yet.
+        Retrying with the same container is safe: a container can only be published once."""
+        for i in range(tries):
+            try:
+                return self.call("POST", f"{ig_id}/media_publish", creation_id=box)["id"]
+            except RuntimeError:
+                if i == tries - 1:
+                    raise
+                time.sleep(PUBLISH_WAIT * 2 * (i + 1))
+        raise AssertionError("unreachable")
 
     def instagram_image(self, ig_id: str, image: str, caption: str) -> str:
         return self._ig_publish(ig_id, self.call("POST", f"{ig_id}/media", image_url=image, caption=caption)["id"])
@@ -144,6 +159,22 @@ def activate_ads(meta: Meta, item: queue.Item, live: bool) -> str:
             "Meta reviews ads first (minutes to a few hours). Learning phase: no edits for 72 h.")
 
 
+def record_result(item: queue.Item, posted: dict, errors: list[str]) -> str:
+    """Save what was posted. A platform that failed stays "approved" so the next run retries only that one,
+    up to MAX_ATTEMPTS runs; then the item is closed as posted (partly) or failed."""
+    attempts = int(item.data.get("attempts") or 0) + (1 if errors else 0)
+    retry = bool(errors) and attempts < MAX_ATTEMPTS
+    item.data["posted"] = posted
+    if errors:
+        item.data["attempts"] = attempts
+    item.data["status"] = "approved" if retry else "failed" if errors and not posted else "posted"
+    item.save()
+    head = f"✅ Posted {item.id}" if posted and not errors else f"⚠️ Partly posted {item.id}" if posted else f"❌ Failed {item.id}"
+    return (head + ("\n" if posted else "") + "\n".join(f"• {k}: {v}" for k, v in posted.items())
+            + ("\n⚠️ " + "; ".join(errors) if errors else "")
+            + (f"\n🔁 Will retry in 5 min (attempt {attempts} of {MAX_ATTEMPTS})" if retry else ""))
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
@@ -190,12 +221,7 @@ def main() -> int:
                                         meta.facebook_photos(page, urls, caption))
             except (RuntimeError, httpx.HTTPError) as e:
                 errors.append(f"{platform}: {e}")
-        item.data["posted"] = posted
-        item.data["status"] = "failed" if errors and not posted else "posted"
-        item.save()
-        head = f"✅ Posted {item.id}" if posted and not errors else f"⚠️ Partly posted {item.id}" if posted else f"❌ Failed {item.id}"
-        lines.append(head + ("\n" if posted else "") + "\n".join(f"• {k}: {v}" for k, v in posted.items())
-                     + ("\n⚠️ " + "; ".join(errors) if errors else ""))
+        lines.append(record_result(item, posted, errors))
     report = "\n\n".join(lines)
     print(report)
     tg_token, tg_chat = os.environ.get("TELEGRAM_BOT_TOKEN", ""), os.environ.get("TELEGRAM_CHAT_ID", "")
