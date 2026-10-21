@@ -56,22 +56,9 @@ Build in the phases in `docs/SPEC.md`. Finish, test and demo each phase to Jabir
 the next. Write tests for the rules engine. Use a `--dry-run` flag on anything that would call a
 write endpoint.
 
-## Lead Agent (live, separate from the ads agent) — `lead-agent/`
-Finds international website clients (interior designers and clinics in UK, UAE, Canada,
-Germany, Qatar). It runs entirely in Google Sheets / Apps Script, not GitHub Actions.
-- Google Sheet "AZMIN Leads" + Apps Script `lead-agent/apps-script/Code.gs`. Jabir pastes the
-  file into Extensions → Apps Script; after any change, send him the file, tell him to re-paste
-  it, then run the menu item that applies the change (e.g. "Rewrite all draft messages").
-- Keys live in Apps Script → Project Settings → Script properties, never in chat or code:
-  `TOMTOM_API_KEY` (leads, free, no card), `TAVILY_API_KEY` (web search that confirms
-  "no website" leads, 1,000 free/month, `TAVILY_DAILY_LIMIT` 30/day), `GOOGLE_API_KEY`
-  (PageSpeed only, no billing). Jabir has no card Google Cloud accepts: prefer no-card services.
-- No-website leads first; "No website" only after a domain guess AND a web search find no own
-  site, otherwise "Unverified" / "Check manually". Sites get PageSpeed → Hot / Warm / Low.
-- Drafts: short, no client-site list, no delivery time, link to azmindigital.com; opt-out line for
-  UK/Canada; Germany = no cold email (call/LinkedIn). Nothing is ever sent automatically.
-- Setup and daily routine: `lead-agent/SETUP.md`. Deep research on demand: the `lead-scout`
-  sub-agent in `.claude/agents/lead-scout.md`.
+## Lead Finder (moved to its own repo)
+The Google Sheet lead agent and the lead-scout sub-agent now live in
+`Mjabir07/azmin-lead-finder`, with their own chat. Don't change them from this repo.
 
 ## Branches
 `main` is the finished version (scheduled workflows run from it). Do work on a branch named
