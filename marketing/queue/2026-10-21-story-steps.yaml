@@ -5,5 +5,7 @@ platforms:
 - instagram
 - facebook
 post_at: 2026-10-21 10:00
-status: approved
+status: posted
 telegram_message_id: 92
+posted:
+  facebook: Facebook story (live for 24 h)
