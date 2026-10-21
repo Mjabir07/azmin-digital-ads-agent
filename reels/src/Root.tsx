@@ -4,6 +4,7 @@ import { TrendReel } from "./TrendReel";
 import { CreatorReel, CREATOR_REEL_FRAMES } from "./CreatorReel";
 import { AvatarReel, avatarReelFrames } from "./AvatarReel";
 import { WorkReel, WORK_REEL_FRAMES } from "./WorkReel";
+import { ExplainerReel, EXPLAINER_REEL_FRAMES } from "./ExplainerReel";
 
 export const Root: React.FC = () => (
   <>
@@ -15,5 +16,6 @@ export const Root: React.FC = () => (
     <Composition id="YaraAiReel" component={AvatarReel} defaultProps={{ set: "yaraAi" as const }} durationInFrames={avatarReelFrames("yaraAi")} fps={30} width={1080} height={1920} />
     <Composition id="YaraDebateReel" component={AvatarReel} defaultProps={{ set: "yaraDebate" as const }} durationInFrames={avatarReelFrames("yaraDebate")} fps={30} width={1080} height={1920} />
     <Composition id="WorkReel" component={WorkReel} durationInFrames={WORK_REEL_FRAMES} fps={30} width={1080} height={1920} />
+    <Composition id="ExplainerReel" component={ExplainerReel} durationInFrames={EXPLAINER_REEL_FRAMES} fps={30} width={1080} height={1920} />
   </>
 );
