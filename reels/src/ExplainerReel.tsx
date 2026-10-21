@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Easing, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
+import { AbsoluteFill, Audio, Easing, Img, Sequence, interpolate, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { C } from "./brand";
 import { WhatsAppIcon } from "./WhatsAppIcon";
 
@@ -7,10 +7,11 @@ import { WhatsAppIcon } from "./WhatsAppIcon";
  * "What AED 999 gets your business": 32 s motion-graphics explainer for the Starter Combo (receipt trend).
  * Hook → problem (Google search) → receipt prints line by line → real client sites → 3 steps → WhatsApp CTA.
  * Claims only from config/packages.yaml. Stories/Reels safe zones: nothing important in the top 250 / bottom 340 px.
- * Silent: add music from Meta's / Instagram's free library when uploading.
+ * Voice-over: reels/public/vo/explainer-1..6.wav (Kokoro-82M TTS, voice af_heart, Apache-2.0), one line per scene.
+ * No music: add a track from Meta's / Instagram's free library when uploading.
  */
 
-export const EXPLAINER_REEL_FRAMES = 960;
+export const EXPLAINER_REEL_FRAMES = 990;
 const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
 const outExpo = Easing.bezier(0.16, 1, 0.3, 1);
 const fonts = `
@@ -291,7 +292,7 @@ const Cta: React.FC = () => {
   );
 };
 
-const SCENES: [React.FC, number][] = [[Hook, 110], [Problem, 160], [Receipt, 250], [Samples, 200], [Steps, 150], [Cta, 90]];
+const SCENES: [React.FC, number][] = [[Hook, 125], [Problem, 160], [Receipt, 250], [Samples, 200], [Steps, 150], [Cta, 105]];
 
 export const ExplainerReel: React.FC = () => {
   let start = 0;
@@ -307,11 +308,12 @@ export const ExplainerReel: React.FC = () => {
             <Sequence from={from} durationInFrames={i === SCENES.length - 1 ? len : len + 6}>
               <Scene len={i === SCENES.length - 1 ? len + 999 : len + 6}><S /></Scene>
             </Sequence>
+            <Sequence from={from + (i === 0 ? 4 : 8)}><Audio src={staticFile(`vo/explainer-${i + 1}.wav`)} /></Sequence>
             {i > 0 && <Sequence from={from - 9} durationInFrames={20}><Wipe /></Sequence>}
           </React.Fragment>
         );
       })}
-      <Sequence durationInFrames={EXPLAINER_REEL_FRAMES - 96}>
+      <Sequence durationInFrames={EXPLAINER_REEL_FRAMES - 111}>
         <div style={{ position: "absolute", top: 120, left: 80, opacity: 0.9 }}><Logo size={64} /></div>
       </Sequence>
     </AbsoluteFill>
