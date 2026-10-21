@@ -290,7 +290,34 @@ def t_highlight(c: dict, lang: str, size: str) -> str:
   {icon(c['icon'], 420)}</div>"""
 
 
-TEMPLATES = {"profile": t_profile, "cover": t_cover, "cover_agency": t_cover_agency, "cover_center": t_cover_center, "highlight": t_highlight, "price": t_price, "feature": t_feature, "cta": t_cta, "list": t_list, "newbiz": t_newbiz, "scene": t_scene}
+def t_receipt(c: dict, lang: str, size: str) -> str:
+    """Trending "what AED X gets you" format: the offer as a shop receipt (portrait or story)."""
+    story = size == "story"
+    k = 0.92 if story else 0.86
+    lines = "".join(
+        f'<div class="r-line"><span>{esc(i["item"])}</span><i></i><b class="{"free" if i.get("free") else ""}">{esc(i["value"])}</b></div>'
+        for i in c["items"]
+    )
+    total = f'{esc(c["price"]["currency"])} {esc(c["price"]["amount"])}'
+    return f"""
+<div class="canvas dark rc {'story' if story else ''}" style="{'' if story else 'padding:56px 72px 44px'}"><div class="shape s1"></div><div class="shape s2"></div>
+  {brand(True)}
+  <div class="main">
+    <div><div class="kicker">{esc(c['kicker'])}</div></div>
+    <h1 style="font-size:{int(c.get('title_size', 66) * k)}px; margin-top:22px">{esc(c['title'])}</h1>
+    <div class="receipt" style="margin-top:{int(30 * k)}px; zoom:{k}">
+      <div class="r-head"><b>AZMIN DIGITAL</b><span>{esc(c.get('receipt_sub', 'Receipt · Dubai, UAE'))}</span></div>
+      {lines}
+      <div class="r-total"><span>TOTAL</span><b>{total}</b></div>
+      <div class="r-foot">{esc(c.get('receipt_note', ''))}</div>
+    </div>
+    <div style="margin-top:{int(40 * k)}px; zoom:{k}">{cta(c, lang)}</div>
+  </div>
+  <div class="footer"><div><div class="footnote muted">{esc(c['footnote'])}</div>{_note_inline(c)}</div></div>
+</div>"""
+
+
+TEMPLATES = {"profile": t_profile, "cover": t_cover, "cover_agency": t_cover_agency, "cover_center": t_cover_center, "highlight": t_highlight, "price": t_price, "feature": t_feature, "cta": t_cta, "list": t_list, "newbiz": t_newbiz, "scene": t_scene, "receipt": t_receipt}
 
 
 def page(c: dict) -> str:
