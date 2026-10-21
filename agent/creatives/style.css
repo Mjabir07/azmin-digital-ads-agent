@@ -150,3 +150,25 @@ h1 { font-weight: 800; line-height: 1.05; letter-spacing: -1px; }
 .cchip { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18);
   border-radius: 999px; padding: 12px 22px 12px 14px; font-size: 24px; font-weight: 600; }
 .cchip svg { background: linear-gradient(135deg, var(--blue), var(--cyan)); border-radius: 50%; padding: 6px; box-sizing: content-box; }
+
+/* receipt template ("what AED 999 gets you") */
+.rc h1 span { color: var(--cyan) !important; }
+.dark.story .main h1 span { color: var(--cyan) !important; }
+.receipt { background: #fff; color: var(--ink); border-radius: 18px 18px 0 0; padding: 34px 40px 30px; max-width: 860px;
+  position: relative; box-shadow: 0 30px 70px rgba(0,0,0,.35); transform: rotate(-1.2deg); margin-bottom: 22px; }
+.receipt::after { content: ""; position: absolute; left: 0; right: 0; bottom: -22px; height: 22px;
+  background: linear-gradient(-45deg, transparent 16px, #fff 0) 0 0 / 32px 22px repeat-x,
+              linear-gradient(45deg, transparent 16px, #fff 0) 0 0 / 32px 22px repeat-x; }
+.r-head { text-align: center; border-bottom: 3px dashed #C9D3E6; padding-bottom: 18px; margin-bottom: 14px; }
+.r-head b { display: block; font-size: 34px; font-weight: 800; letter-spacing: 6px; }
+.r-head span { font-size: 22px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; }
+.r-line { display: flex; align-items: baseline; gap: 14px; font-size: 32px; font-weight: 600; padding: 7px 0; }
+.r-line i { flex: 1; border-bottom: 3px dotted #C9D3E6; transform: translateY(-8px); }
+.r-line b { font-weight: 800; color: var(--blue); white-space: nowrap; }
+.r-line b.free { color: #fff; background: var(--wa); border-radius: 10px; padding: 2px 14px; font-size: 26px; }
+.r-total { display: flex; justify-content: space-between; align-items: center; border-top: 3px dashed #C9D3E6;
+  margin-top: 14px; padding-top: 18px; font-weight: 800; }
+.r-total span { font-size: 34px; letter-spacing: 4px; }
+.r-total b { font-size: 64px; letter-spacing: -1px; background: linear-gradient(90deg, var(--blue), var(--cyan));
+  -webkit-background-clip: text; color: transparent; }
+.r-foot { text-align: center; font-size: 22px; color: var(--muted); margin-top: 12px; }

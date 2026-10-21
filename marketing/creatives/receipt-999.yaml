@@ -1,0 +1,59 @@
+# "What AED 999 gets you" receipt creative (trend-scout, 2026-10-21).
+# Trend: the "what X gets you" / receipt reveal format (Reels, Oct 2026). Bridge: show the whole
+# Starter Combo as a receipt, so the price and what's included are clear in one look.
+# Why now: CTR is 0.4% on the current ads (needs a stronger scroll-stopper); Facebook Reels and
+# ages 25-34 bring the cheapest chats, so the 9:16 versions matter most.
+# Claims only from config/packages.yaml + azmin-brand (Starter Combo AED 999, domain + 1 year hosting,
+# "ready in as little as 1 day", mobile-friendly, WhatsApp button, fixed price). No page count.
+# Render: uv run --group creatives python -m agent.creatives.render marketing/creatives/receipt-999.yaml
+
+defaults:
+  price: {currency: AED, amount: "999"}
+  kicker: For UAE business owners
+  title: "What **AED 999** gets\nyour business"
+  items:
+    - {item: Professional business website, value: "✓"}
+    - {item: Mobile-friendly design, value: "✓"}
+    - {item: WhatsApp chat button, value: "✓"}
+    - {item: Domain name, value: FREE, free: true}
+    - {item: 1 year hosting, value: FREE, free: true}
+    - {item: Ready in as little as, value: 1 day}
+  receipt_note: Fixed price · No hidden costs
+  cta: Chat with us on WhatsApp
+  footnote: AZMIN DIGITAL · Dubai, UAE
+  sample_note: null
+
+creatives:
+  # Feed (Facebook + Instagram) 4:5
+  - id: receipt-portrait
+    template: receipt
+    size: portrait
+
+  # Stories / Reels 9:16 (static)
+  - id: receipt-story
+    template: receipt
+    size: story
+
+  # ---- Receipt reel: 3 scenes, 4 s each ----
+  - id: receipt-reel-1
+    template: scene
+    size: story
+    scene: text
+    title_size: 112
+    title: "What does\n**AED 999**\nget a UAE\nbusiness?"
+  - id: receipt-reel-2
+    template: receipt
+    size: story
+    kicker: Here's the receipt 🧾
+    title: "Everything to get\nyour business online"
+  - id: receipt-reel-3
+    template: scene
+    size: story
+    scene: cta
+    title: "Your website,\nready in as\nlittle as 1 day"
+    cta: Chat on WhatsApp
+
+reels:
+  - id: receipt-reel
+    seconds_per_scene: 4
+    scenes: [receipt-reel-1, receipt-reel-2, receipt-reel-3]
