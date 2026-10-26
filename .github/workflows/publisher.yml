@@ -34,7 +34,11 @@ jobs:
       META_GRAPH_API_VERSION: ${{ vars.META_GRAPH_API_VERSION }}
       PUBLISH_LIVE: ${{ vars.PUBLISH_LIVE }}
     steps:
+      # Check out the branch tip, not the commit that triggered the run: a run queued behind another one
+      # must see the queue state that run just saved, or it re-sends the same Telegram preview.
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
       - uses: astral-sh/setup-uv@v5
       - run: uv sync --locked
       - name: Read Telegram (button taps + clips)
