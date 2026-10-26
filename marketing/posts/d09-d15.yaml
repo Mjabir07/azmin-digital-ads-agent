@@ -1,0 +1,221 @@
+# Days 9-15 (Mon 26 Oct – Sun 1 Nov). AZMIN Editorial theme.
+# Changes vs 30-day plan: Day 10 feed = the AED 999 explainer reel (ready, no Flow credits);
+# Day 12 Yara reel (needs Flow clips) swapped for the "4 steps" carousel; Day 15 = "website vs Instagram"
+# carousel (moved up from Day 22); the Flag Day greeting moves to Tue 3 Nov (Flag Day is 3 Nov).
+designs:
+  # Day 9 (Mon) carousel — Google Business Profile
+  - name: d09-c1
+    kind: cover
+    kicker: GOOGLE MAPS
+    title: "Google Business Profile: *5-minute* checklist"
+    sub: "Show up when customers search for businesses near them."
+  - name: d09-c2
+    kind: point
+    count: 02/07
+    num: "01"
+    title: "Claim & *verify* it"
+    body: "Search your business on Google Maps. If the profile isn't yours yet, claim it and verify it."
+  - name: d09-c3
+    kind: point
+    count: 03/07
+    num: "02"
+    title: "Name, hours, *phone*"
+    body: "Your real business name, correct opening hours and a number someone actually answers."
+  - name: d09-c4
+    kind: point
+    count: 04/07
+    num: "03"
+    title: "The right *category*"
+    body: "Pick the main category that matches what you sell. It decides which searches you appear in."
+  - name: d09-c5
+    kind: point
+    count: 05/07
+    num: "04"
+    title: "Real *photos*"
+    body: "Shop front, team, products, finished work. Real photos build trust before the first call."
+  - name: d09-c6
+    kind: point
+    count: 06/07
+    num: "05"
+    title: "Link your *website*"
+    body: "Your profile sends people to your site to compare and decide. No website? Many stop there."
+  - name: d09-c7
+    kind: cta
+    count: 07/07
+    theme: navy
+    title: "Want to get *found?*"
+    body: "We build your business website and connect it to your Google profile."
+  - name: d09-story
+    kind: story
+    kicker: NEW POST
+    title: "Google Business Profile *checklist*"
+    body: "5 things to fix in 5 minutes."
+    cta: "Open today's post and save it 📌"
+  # Day 10 (Tue) — feed is the AED 999 explainer reel; story = this-or-that
+  - name: d10-story
+    kind: story
+    kicker: THIS OR THAT
+    title: "Dark website or *light* website?"
+    options: ["DARK", "LIGHT"]
+    cta: "DM us your pick 👇 Tonight: what AED 999 gets you 🧾"
+  # Day 11 (Wed) single post — myth vs truth
+  - name: d11-post
+    kind: cover
+    kicker: MYTH vs TRUTH
+    title: "“A website costs *thousands* and takes months”"
+    sub: "Truth: a business website from AED 999 with domain + 1 year hosting, ready in as little as 1 day."
+    foot: "azmindigital.com"
+    hint: "WhatsApp us →"
+  - name: d11-story
+    kind: story
+    theme: navy
+    kicker: BEHIND THE SCENES
+    title: "Every project starts with a *clear quote*"
+    body: "You know the price before we start. No surprises."
+    cta: "Tonight: a website myth, busted 💥"
+  # Day 12 (Thu) carousel — our 4 steps
+  - name: d12-c1
+    kind: cover
+    kicker: HOW WE WORK
+    title: "From idea to *live website*"
+    sub: "Our 4 steps, start to finish."
+  - name: d12-c2
+    kind: point
+    count: 02/06
+    num: "01"
+    title: "A clear *quote*"
+    body: "You know exactly what you get and what it costs before we start."
+  - name: d12-c3
+    kind: point
+    count: 03/06
+    num: "02"
+    title: "A design you *approve*"
+    body: "We show you the design first and adjust it until it feels like your business."
+  - name: d12-c4
+    kind: point
+    count: 04/06
+    num: "03"
+    title: "Built with *progress updates*"
+    body: "You always know where your website is. No chasing, no guessing."
+  - name: d12-c5
+    kind: point
+    count: 05/06
+    num: "04"
+    title: "Launch + *support*"
+    body: "We go live together, and we stay with you after launch."
+  - name: d12-c6
+    kind: cta
+    count: 06/06
+    theme: navy
+    title: "Start your website *today*"
+    body: "Starter Combo from AED 999 with domain + 1 year hosting. Ready in as little as 1 day."
+  - name: d12-story
+    kind: story
+    kicker: QUICK TIP
+    title: "Add a *WhatsApp button* to your website"
+    body: "One tap from visitor to conversation."
+    cta: "Tonight: how we build a website in 4 steps ✨"
+  # Day 13 (Fri) carousel — Meta ads mistakes
+  - name: d13-c1
+    kind: cover
+    kicker: META ADS
+    title: "5 mistakes that *burn* your ad budget"
+    sub: "Facebook & Instagram ads for small businesses."
+  - name: d13-c2
+    kind: point
+    count: 02/07
+    num: "01"
+    title: "No clear *audience*"
+    body: "Say who it's for in the first line. \"For UAE business owners\" filters out the wrong clicks."
+  - name: d13-c3
+    kind: point
+    count: 03/07
+    num: "02"
+    title: "Editing *too soon*"
+    body: "Meta needs a few days to learn. Big changes in the first days restart the learning."
+  - name: d13-c4
+    kind: point
+    count: 04/07
+    num: "03"
+    title: "Only *one* ad"
+    body: "Test a few different ideas: a video, an image, an offer. Let the results decide."
+  - name: d13-c5
+    kind: point
+    count: 05/07
+    num: "04"
+    title: "Paying for the wrong *placements*"
+    body: "Check where your messages come from and stop paying for places that bring none."
+  - name: d13-c6
+    kind: point
+    count: 06/07
+    num: "05"
+    title: "No *follow-up*"
+    body: "Most people don't buy on day one. Reply fast, then follow up a few days later."
+  - name: d13-c7
+    kind: cta
+    count: 07/07
+    theme: navy
+    title: "Want ads that bring *real chats?*"
+    body: "We plan and run your Meta & Google ads, with a clear report every month."
+  - name: d13-story
+    kind: work
+    image: brand/portfolio/purepreciousjewellery-mobile.png
+    title: "Real client, *real website*"
+    cta: "purepreciousjewellery.com · built by AZMIN DIGITAL"
+  # Day 14 (Sat) single post — FAQ
+  - name: d14-post
+    kind: cover
+    kicker: FAQ
+    title: "How fast can you build *my website?*"
+    sub: "Starter Combo websites can be ready in as little as 1 day. Exact timing depends on your domain setup and how fast we get your content."
+    foot: "azmindigital.com"
+    hint: "Ask us anything →"
+  - name: d14-story
+    kind: story
+    theme: blue
+    kicker: ASK US
+    title: "Ask us *anything* about websites"
+    body: "Price, timing, domain, hosting: send us your question."
+    cta: "DM us or WhatsApp +971 56 724 7597 💬"
+  # Day 15 (Sun) carousel — website vs Instagram
+  - name: d15-c1
+    kind: cover
+    kicker: WEBSITE vs INSTAGRAM
+    title: "Your *website* vs your Instagram"
+    sub: "You need both. Here's what each one does."
+  - name: d15-c2
+    kind: point
+    count: 02/06
+    num: "01"
+    title: "Instagram: *be seen*"
+    body: "Show your work, build a following and stay in people's feeds."
+  - name: d15-c3
+    kind: point
+    count: 03/06
+    num: "02"
+    title: "Website: *be found*"
+    body: "People who search Google find you, compare you and contact you."
+  - name: d15-c4
+    kind: point
+    count: 04/06
+    num: "03"
+    title: "Website: *you own it*"
+    body: "Your domain, your page, your rules. No algorithm decides who sees it."
+  - name: d15-c5
+    kind: point
+    count: 05/06
+    num: "04"
+    title: "Together: *more customers*"
+    body: "Instagram brings attention. Your website turns it into trust and enquiries."
+  - name: d15-c6
+    kind: cta
+    count: 06/06
+    theme: navy
+    title: "Get your website from *AED 999*"
+    body: "Domain + 1 year hosting included. Ready in as little as 1 day."
+  - name: d15-story
+    kind: story
+    kicker: QUICK QUESTION
+    title: "Where is your business *based?*"
+    body: "Dubai · Sharjah · Abu Dhabi · Ajman · somewhere else"
+    cta: "Reply with your city 👇"
