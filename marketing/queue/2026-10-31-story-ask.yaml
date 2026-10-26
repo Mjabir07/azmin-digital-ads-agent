@@ -5,4 +5,5 @@ platforms:
 - instagram
 - facebook
 post_at: 2026-10-31 10:00
-status: draft
+status: pending
+telegram_message_id: 201
