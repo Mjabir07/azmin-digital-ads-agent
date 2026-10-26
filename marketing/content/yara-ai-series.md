@@ -29,13 +29,19 @@ driven by "Comment SEO and I'll send you the guide". We copy the format, never h
 | 1 per week | Business post (AED 999 offer, our work), so the page still sells |
 7:30 PM Dubai = 9 PM India, 3:30 PM UK, 11:30 AM New York: a good slot for an international mix.
 
-## Three reel formats (to fit ~1,050 Flow credits a month, ~20 per 8 s clip)
-| Format | What | Flow clips | Credits | Per week |
-| --- | --- | --- | --- | --- |
-| **A. Full Yara** | Yara explains on camera; screen demo inserts | 3–4 | 60–80 | 2 |
-| **B. Yara hook + demo** | Yara opens and closes; middle is a screen demo / motion graphics | 2 | 40 | 3 |
-| **C. Motion only** | Kinetic type, news cards, screen demo; no Flow | 0 | 0 | 2 |
-Week ≈ 220–240 credits → about 950–1,000 a month. Tell Jabir if the Flow plan has fewer credits.
+## How every reel is made (no Flow; decided by Jabir 26 Oct)
+All videos are built fully in Claude Code, at no cost per video:
+| Part | Tool |
+| --- | --- |
+| Script | `reels/scripts/<ep>.yaml` (one line per scene; `say:` for pronunciation) |
+| Yara's voice | `uv run --group voice python -m agent.voice.tts reels/scripts/<ep>.yaml` (Kokoro-82M, voice `af_heart`, free, Apache-2.0) |
+| Yara on screen | her portrait `reels/public/yara.jpg` with a glow that pulses with her voice (big card for hook/CTA, circle during demos) |
+| Screen demos, titles, effects | Remotion (`reels/src/YaraTutorial.tsx`), skills `remotion-best-practices`, `playwright-recording` (real screen recordings), `ffmpeg` |
+| Captions | word-by-word karaoke from the voice timings |
+| Sound | our own SFX + music bed (`reels/public/sfx/make.sh`), so no licences needed |
+| Render | `cd reels && npx remotion render src/index.ts <Composition> ../marketing/reels/<file>.mp4` |
+Optional upgrade: ElevenLabs voice (skill `text-to-speech`) needs an API key and a paid plan for commercial use.
+Flow (`marketing/flow/`) is paused; the W03 shot list stays as a backup.
 
 ## Rules (on top of `azmin-brand`)
 - Say "Claude", "ChatGPT" etc. in words only: no logos, no implied partnership, no competitor bashing.
@@ -56,7 +62,7 @@ Format A/B/C as above. **WORD** = comment keyword (each has a guide).
 ### Week 1 (2–8 Nov) — Flow shot list W03 (`marketing/flow/shotlist-current.md`)
 | Day | Reel (7:30 PM; Sat/Sun 12:30) | Format | Comment | Extra |
 | --- | --- | --- | --- | --- |
-| Mon 2 | **Ep 1: find-skills, teach Claude new skills in seconds** | A | SKILL | |
+| Mon 2 | **Ep 1: find-skills, teach Claude new skills in seconds** | motion + voice | SKILL | |
 | Tue 3 | We made our reels with code: behind the scenes (Remotion) | C | CODE | UAE Flag Day post 12:30 |
 | Wed 4 | Make Claude write in *your* brand voice | B | BRAND | |
 | Thu 5 | AI news of the week (3 real updates) | C | — | News carousel |

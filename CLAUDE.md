@@ -64,6 +64,9 @@ The Google Sheet lead agent and the lead-scout sub-agent now live in
 - `remotion-best-practices` (remotion-dev): use when building or editing reels in `reels/`.
 - `social` (coreyhaines31/marketingskills): hooks, captions, carousels and reel scripts.
 - `find-skills` (vercel-labs): search skills.sh for new skills; read a skill fully before adding it.
+- `playwright-recording`, `ffmpeg` (digitalsamba video toolkit): real screen recordings and media prep for reels.
+- `text-to-speech` (ElevenLabs): only if Jabir adds an ElevenLabs key. Default voice is free Kokoro (`agent/voice/tts.py`).
+Reels are built fully in code (no Flow): see "How every reel is made" in `marketing/content/yara-ai-series.md`.
 Our own `azmin-brand`, `social-strategy` and the hard safety rules above always win over these
 (prices and claims only from `config/packages.yaml`; nothing is posted without Jabir's ✅).
 Update them with `npx skills update -p` on a `feature/…` branch.

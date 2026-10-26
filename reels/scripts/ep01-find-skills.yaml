@@ -1,0 +1,19 @@
+# AI Tools with Yara — Ep 1: find-skills (Mon 2 Nov). Format: full motion edit + Yara voice.
+id: ep01-find-skills
+voice: af_heart
+speed: 1.05
+lines:
+  - id: l1
+    text: Your Claude can learn new skills in seconds. Most people don't know this one.
+  - id: l2
+    text: First, install one skill called find-skills. It's a single command.
+    say: First, install one skill called find skills. It's a single command.
+  - id: l3
+    text: "Then just ask Claude: find me a skill for Instagram reels."
+  - id: l4
+    text: It searches a whole library of free skills, and shows the most trusted ones first.
+  - id: l5
+    text: Pick one, and Claude installs it. We use skills like these to make every reel on this page.
+  - id: l6
+    text: Comment SKILL and I'll send you the free step-by-step guide. Follow for daily AI tips.
+    say: Comment skill, and I'll send you the free step by step guide. Follow for daily AI tips.
