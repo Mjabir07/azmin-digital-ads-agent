@@ -1,4 +1,8 @@
-# "AI Tools with Yara": reach-first series (from Mon 2 Nov 2026)
+# "AI Tools with Yara": reach-first series (started Mon 26 Oct 2026)
+
+> **26 Oct update:** Jabir moved the start to **today, Mon 26 Oct**; the earlier week-2 posts were cancelled so the
+> page focuses on Yara episodes. Calendar dates below are one week later than reality: **subtract 7 days**
+> (week 1 = 26 Oct – 1 Nov). Daily Yara clips: `marketing/flow/daily-shots.md` (already re-dated).
 
 Approved by Jabir 26 Oct 2026: English, presented by Yara; our own comment → DM automation;
 Malayalam series later with Jabir's own avatar and voice.
@@ -47,6 +51,25 @@ an opening (-H) and an ending (-E) where Yara really talks, with a new outfit, p
 Clip list: `marketing/flow/daily-shots.md`; Claude in Chrome prompt: `marketing/flow/DAILY-INSTRUCTION.md`.
 The clips arrive via the Telegram bot; the agent cuts them into the motion edit (`talkingClip` for the hook).
 Days without clips still post: full motion + Yara's voice. The old weekly Flow shot list (W03) is no longer used.
+
+
+## Episode template v4 (from Ep 1, 26 Oct) — calmer, clearer, up to 59 s
+Jabir 26 Oct: v3 felt too fast to follow. Aim for **45–59 s**, one idea per screen.
+
+| Time | Part | What's on screen |
+| --- | --- | --- |
+| 0–8 s | **Yara opening (Flow clip -H)** | Yara talking; big hook title appears word by word over her; episode tag "AI TOOLS WITH YARA · EP 01" |
+| 8–10 s | **Series sting** | 1.5 s logo/series animation + signature sound (same every episode = recognisable) |
+| 10–15 s | **Why it matters** | one bold statement card or real footage (e.g. the #1 row on skills.sh) |
+| 15–45 s | **3 steps, ~10 s each** | "STEP 1/2/3" card (1 s) → demo (real website capture, terminal, chat) held long enough to read → one key takeaway line |
+| 45–51 s | **Result / proof** | what you get, our real work |
+| 51–59 s | **Yara ending (Flow clip -E)** | Yara's CTA + big "Comment WORD 👇" sticker + guide preview |
+
+**Pacing rules:** voice speed 0.95 · each screen ≥ 2.5 s · new elements appear one at a time (≥ 0.6 s apart) ·
+key text stays 1.5 s after it's spoken · smooth 0.5 s slide/zoom transitions (no constant flashes) ·
+max 2 stickers on screen · captions: 3 words, big, high contrast · music lower under the voice.
+**Look:** one signature colour per episode (from the brand palette + yellow accent), same layout grid, same
+episode tag and step cards, so every reel is instantly recognisable as the series.
 
 ## Rules (on top of `azmin-brand`)
 - Say "Claude", "ChatGPT" etc. in words only: no logos, no implied partnership, no competitor bashing.
