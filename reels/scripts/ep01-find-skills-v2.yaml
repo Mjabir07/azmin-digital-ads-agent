@@ -1,0 +1,20 @@
+# Ep 1 v2 — more colourful, real skills.sh footage, stronger hook (26 Oct: find-skills is #1, 4.1M installs).
+id: ep01-find-skills-v2
+voice: af_heart
+speed: 1.08
+lines:
+  - id: l1
+    text: This is the number one skill on skills.sh right now. Over four million installs.
+    say: This is the number one skill on skills dot s h right now. Over four million installs.
+  - id: l2
+    text: It's called find-skills, and it teaches Claude to find new skills for you.
+    say: It's called find skills, and it teaches Claude to find new skills for you.
+  - id: l3
+    text: Install it with one single command.
+  - id: l4
+    text: "Then just ask: find me a skill for Instagram reels. The most trusted ones come first."
+  - id: l5
+    text: Pick one, and Claude installs it. That's how we make every reel on this page.
+  - id: l6
+    text: Comment SKILL and I'll send you the free step-by-step guide. Follow for daily AI tips.
+    say: Comment skill, and I'll send you the free step by step guide. Follow for daily AI tips!
