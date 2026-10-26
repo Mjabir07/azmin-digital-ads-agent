@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>find-skills guide · AZMIN DIGITAL</title>
+<style>
+@font-face{font-family:'Inter Tight';font-weight:100 900;src:url(../../brand/fonts/InterTight.woff2)}
+@font-face{font-family:Serif;font-style:italic;src:url(../../brand/fonts/InstrumentSerif-400i.woff2)}
+@page{size:A4;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter Tight',sans-serif;color:#0B0B0C;background:#F4F1EA;font-size:11.5pt;line-height:1.5}
+.page{width:210mm;min-height:297mm;padding:16mm 16mm 14mm;position:relative;page-break-after:always;
+  background-image:linear-gradient(rgba(11,11,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(11,11,12,.05) 1px,transparent 1px);background-size:12mm 12mm}
+.page:last-child{page-break-after:auto}
+.head{display:flex;align-items:center;gap:8px;font-weight:700;font-size:11pt}
+.head img{width:22px;height:22px;background:#fff;border-radius:50%;padding:3px}
+.head .r{margin-left:auto;font-family:Serif;font-style:italic;font-weight:400;color:#6B6A66;font-size:13pt}
+h1{font-size:32pt;line-height:1.02;letter-spacing:-1.5px;font-weight:800;margin-top:8mm}
+em{font-family:Serif;font-style:italic;font-weight:400;color:#fff;background:linear-gradient(transparent 15%,#0062F5 15%,#0062F5 90%,transparent 90%);padding:0 3px}
+.sub{color:#6B6A66;font-size:13pt;margin-top:4mm}
+h2{font-size:15pt;font-weight:800;margin:5mm 0 1.5mm;display:flex;gap:8px;align-items:baseline}
+h2 .n{font-family:Serif;font-style:italic;font-weight:400;color:#0062F5;font-size:22pt}
+p,li{margin:1.5mm 0}
+ul{padding-left:5mm}
+code,.cmd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:9.5pt}
+.cmd{display:block;background:#0B1220;color:#E6EEFF;border-radius:8px;padding:10px 12px;margin:2.5mm 0;white-space:pre-wrap;word-break:break-all}
+.cmd b{color:#00D2E2;font-weight:400}
+.box{background:#fff;border-radius:10px;padding:10px 14px;margin-top:4mm;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse;margin-top:2mm;font-size:10pt}
+th,td{text-align:left;padding:5px 6px;border-bottom:1px solid rgba(11,11,12,.1)}
+th{font-weight:800}
+.cta{position:absolute;left:16mm;right:16mm;bottom:14mm;background:#071A3D;color:#F4F1EA;border-radius:12px;padding:12px 16px}
+.cta b{color:#00D2E2}
+.wa{display:inline-block;background:#25D366;color:#fff;border-radius:99px;padding:4px 12px;font-weight:800;margin-top:6px}
+.muted{color:#6B6A66;font-size:9.5pt}
+</style></head><body>
+<div class="page">
+  <div class="head"><img src="../../brand/logo.png" alt="">azmindigital<span class="r">free guide · 01</span></div>
+  <h1>Teach Claude <em>new skills</em> in 2 minutes</h1>
+  <div class="sub">The find-skills guide: search a whole library of free skills and add the right one.</div>
+
+  <h2>What is a skill?</h2>
+  <p>A skill is a small folder of instructions (a <code>SKILL.md</code> file, sometimes with examples) that Claude loads when it's useful.
+  Add a skill and Claude follows that expert playbook: for reels, SEO, design, ads and more.
+  <b>find-skills</b> (by Vercel) is the skill that finds other skills for you, from the public directory at <b>skills.sh</b>.</p>
+
+  <h2><span class="n">1</span> Install find-skills (Claude Code)</h2>
+  <p>In your project folder, run:</p>
+  <span class="cmd"><b>$</b> npx skills add https://github.com/vercel-labs/skills --skill find-skills</span>
+  <p class="muted">Add <code>-g</code> at the end to install it for all your projects. Needs Node.js.</p>
+
+  <h2><span class="n">2</span> Ask Claude to find a skill</h2>
+  <p>Just ask in plain words: <i>"Find a skill for Instagram reels"</i>. Claude runs a search like:</p>
+  <span class="cmd"><b>$</b> npx skills find instagram reels</span>
+  <p>and shows you options with the source and number of installs.</p>
+
+  <h2><span class="n">3</span> Check it, then install</h2>
+  <ul>
+    <li><b>Installs:</b> prefer 1,000+; be careful under 100.</li>
+    <li><b>Source:</b> official teams (e.g. <code>remotion-dev</code>, <code>anthropics</code>, <code>vercel-labs</code>) are safest.</li>
+    <li><b>Read the SKILL.md</b> before installing: skills run with your agent's permissions.</li>
+  </ul>
+  <span class="cmd"><b>$</b> npx skills add &lt;owner/repo@skill&gt;</span>
+
+  <div class="cta"><b>Want AI working in your business?</b> AZMIN DIGITAL builds websites, AI WhatsApp chatbots and automation in Dubai.<br>
+    <span class="wa">WhatsApp +971 56 724 7597</span> &nbsp; azmindigital.com</div>
+</div>
+
+<div class="page">
+  <div class="head"><img src="../../brand/logo.png" alt="">azmindigital<span class="r">free guide · 01</span></div>
+  <h2 style="margin-top:10mm">Using claude.ai instead of Claude Code?</h2>
+  <ul>
+    <li>Download the skill folder as a <code>.zip</code> (it must contain <code>SKILL.md</code>).</li>
+    <li>In Claude, open <b>Settings → Skills</b> and <b>upload</b> the zip, then switch it on.</li>
+    <li>find-skills searches by running a command, so it works best in Claude Code, or in chats with code execution and internet access turned on.</li>
+  </ul>
+
+  <h2>Skills we actually use</h2>
+  <table>
+    <tr><th>Skill</th><th>From</th><th>What for</th></tr>
+    <tr><td><code>remotion-best-practices</code></td><td>remotion-dev</td><td>Making reels with code (transitions, captions, voice-over)</td></tr>
+    <tr><td><code>social</code></td><td>coreyhaines31/marketingskills</td><td>Hooks, captions, carousels, reel scripts</td></tr>
+    <tr><td><code>find-skills</code></td><td>vercel-labs/skills</td><td>Finding the next skill you need</td></tr>
+  </table>
+  <p class="muted">Install counts change every day; check the latest on skills.sh before you install.</p>
+
+  <h2>Try these searches</h2>
+  <span class="cmd"><b>$</b> npx skills find social media content
+<b>$</b> npx skills find remotion video
+<b>$</b> npx skills find seo</span>
+
+  <div class="box"><b>Tip:</b> keep your own "brand" skill too: your colours, tone of voice, prices and things you never say.
+  Then every skill you add still sounds like your business. Comment <b>BRAND</b> on our reel for our free template.</div>
+
+  <div class="cta"><b>Follow @azmin_digital</b> for daily AI tips that save small businesses time.<br>
+    Need a website, chatbot or automation? <span class="wa">WhatsApp +971 56 724 7597</span> &nbsp; azmindigital.com</div>
+</div>
+</body></html>

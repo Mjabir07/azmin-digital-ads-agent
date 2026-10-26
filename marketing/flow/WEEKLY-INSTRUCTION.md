@@ -15,7 +15,7 @@ And log in to https://web.telegram.org once in the same Chrome.
 You are helping AZMIN DIGITAL create this week's video clips in Google Flow.
 
 1. Open this page in a new tab and read the shot list table:
-   https://github.com/Mjabir07/azmin-digital-ads-agent/blob/claude/vibrant-heisenberg-g8uqdx/marketing/flow/shotlist-current.md
+   https://github.com/Mjabir07/azmin-digital-ads-agent/blob/main/marketing/flow/shotlist-current.md
 2. In the Google Flow tab, first check Settings: "Visible watermarking" must be OFF (it is allowed on this plan).
    Do NOT use any watermark-removal extension (such as Erasio) — the official setting is enough.
 3. Create a new Flow project named exactly as the "Project name" line in the shot list.

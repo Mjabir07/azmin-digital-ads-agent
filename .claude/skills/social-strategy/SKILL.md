@@ -6,7 +6,10 @@ description: AZMIN DIGITAL Instagram + Facebook growth strategy — content pill
 # Social growth strategy (Instagram first, Facebook mirrors it)
 
 Load `azmin-brand` (claims, voice, never-list) and `trend-scout` (trend ideas) alongside this.
-Current plan: `marketing/content/30-day-plan.md` (day 1 = Sun 18 Oct 2026). Queue: `marketing/queue/` (publisher posts after ✅ in Telegram).
+Current plan: `marketing/content/30-day-plan.md` (day 1 = Sun 18 Oct 2026).
+**From Mon 2 Nov 2026 the goal is reach first** (approved by Jabir 26 Oct): a daily reel series "AI Tools with Yara"
+for an international audience, with comment → DM guides. Plan, formats, Flow credit budget and calendar:
+`marketing/content/yara-ai-series.md` (it replaces days 16–30 of the 30-day plan; sales posts continue weekly). Queue: `marketing/queue/` (publisher posts after ✅ in Telegram).
 
 ## Goal for month 1 (18 Oct – 16 Nov 2026)
 Build a trusted-looking, active page fast so ads and WhatsApp leads convert better:
