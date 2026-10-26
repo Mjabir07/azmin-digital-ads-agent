@@ -59,8 +59,9 @@ class Meta:
             raise RuntimeError(f"Meta API error on {path.split('?')[0]}: {data['error'].get('message')}")
         return data
 
-    def instagram_reel(self, ig_id: str, video: str, caption: str) -> str:
-        box = self.call("POST", f"{ig_id}/media", media_type="REELS", video_url=video, caption=caption, share_to_feed="true")["id"]
+    def instagram_reel(self, ig_id: str, video: str, caption: str, cover: str | None = None) -> str:
+        extra = {"cover_url": cover} if cover else {}
+        box = self.call("POST", f"{ig_id}/media", media_type="REELS", video_url=video, caption=caption, share_to_feed="true", **extra)["id"]
         for _ in range(60):  # Meta downloads and processes the video; usually < 1 min
             status = self.call("GET", box, fields="status_code").get("status_code")
             if status == "FINISHED":
@@ -198,11 +199,12 @@ def main() -> int:
         files = item.data.get("images") or [item.data.get("video") or item.data.get("image")]
         urls = [media_url(f) for f in files]
         caption = (item.data.get("caption") or "").strip()
+        cover = media_url(item.data["cover"]) if item.data.get("cover") else None  # reel cover image (Instagram)
         if not live:
             lines.append(f"🧪 DRY RUN — would post {kind} {item.id} to {', '.join(item.data['platforms'])} now ({urls[0]})")
             continue
         posted, errors = dict(item.data.get("posted") or {}), []
-        bad = [u for u in urls if not reachable(u)]
+        bad = [u for u in [*urls, *([cover] if cover else [])] if not reachable(u)]
         if bad:
             lines.append(f"⏳ {item.id}: media not downloadable yet ({bad[0]}) — will retry next run")
             continue
@@ -211,7 +213,7 @@ def main() -> int:
                 continue
             try:
                 if platform == "instagram":
-                    posted[platform] = (meta.instagram_reel(ig, urls[0], caption) if kind == "reel" else
+                    posted[platform] = (meta.instagram_reel(ig, urls[0], caption, cover) if kind == "reel" else
                                         meta.instagram_carousel(ig, urls, caption) if kind == "carousel" else
                                         meta.instagram_story(ig, urls[0]) if kind == "story" else
                                         meta.instagram_image(ig, urls[0], caption))
