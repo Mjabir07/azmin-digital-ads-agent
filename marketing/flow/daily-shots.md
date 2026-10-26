@@ -8,7 +8,7 @@ Add this to the END of every prompt (already included below):
 "Yara speaks clearly in English to camera with a friendly voice and a light Arabic accent, natural lip sync and natural
 hand gestures, waist-up framing, no background music, no subtitles, no text on screen, no other people, vertical 9:16."
 
-## 2026-10-26 (Mon) · Ep 1 find-skills · classic: sky-blue hijab, cream blazer · bright glass office · excited
+## 2026-10-26 (Mon) · ✅ done · Ep 1 find-skills · classic: sky-blue hijab, cream blazer · bright glass office · excited
 | Shot ID | Use | Prompt |
 | --- | --- | --- |
 | D01-H | opening | Yara AZMIN, a young woman in a loosely draped sky-blue satin hijab, oversized cream blazer over a white top and a delicate gold necklace, sits in a bright modern Dubai office with glass walls and plants. She leans toward the camera, eyes wide with excitement, raises one finger and says: "This is the number one skill on skills dot S H right now. Over four million installs!" Yara speaks clearly in English to camera with a friendly voice and a light Arabic accent, natural lip sync and natural hand gestures, waist-up framing, no background music, no subtitles, no text on screen, no other people, vertical 9:16. |

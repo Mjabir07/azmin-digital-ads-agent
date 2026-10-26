@@ -213,9 +213,9 @@ const ClipSection: React.FC<{ src: string; hook: boolean }> = ({ src, hook }) =>
   return (
     <AbsoluteFill>
       <AbsoluteFill style={{ transform: `scale(${zoom})` }}><OffthreadVideo src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover" }} /></AbsoluteFill>
-      <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(3,10,28,.55) 0%, rgba(3,10,28,0) 35%, rgba(3,10,28,0) 60%, rgba(3,10,28,.55) 100%)" }} />
+      <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(3,10,28,.45) 0%, rgba(3,10,28,0) 22%, rgba(3,10,28,0) 52%, rgba(3,10,28,.82) 80%, rgba(3,10,28,.9) 100%)" }} />
       {hook ? (
-        <div style={{ position: "absolute", left: 70, right: 70, top: 360, display: "flex", flexWrap: "wrap", gap: "0 22px" }}>
+        <div style={{ position: "absolute", left: 70, right: 70, top: 1130, display: "flex", flexWrap: "wrap", gap: "0 22px" }}>
           {HOOK_WORDS.map((w, i) => {
             const s = spring({ frame: f - 10 - i * 11, fps: FPS, config: { damping: 12 } });
             const hot = w === "#1";
@@ -225,11 +225,11 @@ const ClipSection: React.FC<{ src: string; hook: boolean }> = ({ src, hook }) =>
         </div>
       ) : (
         <>
-          <Sticker left={300} top={360} rot={-3} delay={20} size={76} bg="#fff" color={INK}>Comment <Accent light>SKILL</Accent> 👇</Sticker>
-          <div style={{ position: "absolute", right: 70, top: 980, width: 230, height: 325, borderRadius: 14, overflow: "hidden", border: "5px solid #fff", transform: `rotate(6deg) scale(${useIn(60, 13)})`, boxShadow: "0 30px 60px rgba(0,0,0,.4)" }}>
+          <Sticker left={70} top={1170} rot={-2} delay={20} size={76} bg="#fff" color={INK}>Comment <Accent light>SKILL</Accent> 👇</Sticker>
+          <div style={{ position: "absolute", right: 60, top: 340, width: 200, height: 283, borderRadius: 14, overflow: "hidden", border: "5px solid #fff", transform: `rotate(6deg) scale(${useIn(60, 13)})`, boxShadow: "0 30px 60px rgba(0,0,0,.4)" }}>
             <Img src={staticFile("guide01.png")} style={{ width: "100%" }} />
           </div>
-          <Sticker left={70} top={1200} rot={3} delay={110} bg={C.blue} color="#fff" size={44}>+ Follow for daily AI tips</Sticker>
+          <Sticker left={70} top={1340} rot={1} delay={110} bg={C.blue} color="#fff" size={44}>+ Follow for daily AI tips</Sticker>
         </>
       )}
     </AbsoluteFill>
