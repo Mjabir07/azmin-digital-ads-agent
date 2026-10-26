@@ -18,7 +18,7 @@ from agent.notify import telegram
 NEEDED = {
     "pages_show_list", "pages_read_engagement", "pages_manage_posts", "pages_manage_engagement",
     "read_insights", "instagram_basic", "instagram_content_publish", "instagram_manage_comments",
-    "instagram_manage_insights", "business_management", "ads_read", "ads_management",
+    "instagram_manage_insights", "instagram_manage_messages", "business_management", "ads_read", "ads_management",
 }
 
 
