@@ -42,7 +42,11 @@ All videos are built fully in Claude Code, at no cost per video:
 | Sound | our own beat, SFX and risers (`reels/public/sfx/synth.py`, `make.sh`), so no licences needed |
 | Render | `cd reels && npx remotion render src/index.ts <Composition> ../marketing/reels/<file>.mp4` |
 Optional upgrade: ElevenLabs voice (skill `text-to-speech`) needs an API key and a paid plan for commercial use.
-Flow (`marketing/flow/`) is paused; the W03 shot list stays as a backup.
+**Daily Yara clips (from 26 Oct):** a second Google account has **50 free Flow credits a day**, enough for 2 clips:
+an opening (-H) and an ending (-E) where Yara really talks, with a new outfit, place and mood every day.
+Clip list: `marketing/flow/daily-shots.md`; Claude in Chrome prompt: `marketing/flow/DAILY-INSTRUCTION.md`.
+The clips arrive via the Telegram bot; the agent cuts them into the motion edit (`talkingClip` for the hook).
+Days without clips still post: full motion + Yara's voice. The old weekly Flow shot list (W03) is no longer used.
 
 ## Rules (on top of `azmin-brand`)
 - Say "Claude", "ChatGPT" etc. in words only: no logos, no implied partnership, no competitor bashing.
