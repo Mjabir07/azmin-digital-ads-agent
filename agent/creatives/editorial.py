@@ -68,7 +68,7 @@ def k_cover(d: dict, w: int, h: int) -> str:
       <div style="margin-top:44px;font-size:{d.get("title_size", 124)}px;font-weight:800;letter-spacing:-6px;line-height:1.02">{rich(d["title"])}</div>
       {f'<div style="margin-top:40px;font-size:42px;font-weight:500;color:var(--muted);line-height:1.35">{rich(d["sub"], False)}</div>' if d.get("sub") else ""}
     </div>
-    <div class="foot"><span>{html.escape(d.get("foot", "Save this for later"))}</span><span style="font-family:Serif;font-style:italic;font-size:44px;color:var(--ink)">swipe →</span></div>"""
+    <div class="foot"><span>{html.escape(d.get("foot", "Save this for later"))}</span><span style="font-family:Serif;font-style:italic;font-size:44px;color:var(--ink)">{html.escape(d.get("hint", "swipe →"))}</span></div>"""
 
 
 def k_point(d: dict, w: int, h: int) -> str:

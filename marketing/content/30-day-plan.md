@@ -15,20 +15,20 @@ Status: ✅ ready · 🎬 needs Flow clips · 🛠 agent renders · 📷 needs a
 | 6 | Fri 23 Oct | C | "What can a WhatsApp chatbot answer for you?" (FAQ, bookings, location, hours) | Educate · AI | Our work: MSJ mobile screenshot | 🛠 |
 | 7 | Sat 24 Oct | P | Starter Combo: AED 999 (domain + 1 yr hosting, ready in as little as 1 day) | Offer · Web | DM prompt: "Reply WEB for details" | 🛠 |
 | 8 | Sun 25 Oct | Y | "3 signs your business is losing customers online" | Educate · Web | Poll: "Does your business have a website?" | 🎬 |
-| 9 | Mon 26 Oct | C | "Google Business Profile: 5-minute checklist" | Educate · Marketing | Share today's carousel | 🛠 |
-| 10 | Tue 27 Oct | M | "From idea to live website: our 4 steps" (quote → design → build → support) | Proof · Web | This-or-that: "Dark website or light website?" | 🛠 |
-| 11 | Wed 28 Oct | P | Myth vs truth: "A website costs thousands and takes months" | Offer · Web | Behind the scenes | 🛠 |
-| 12 | Thu 29 Oct | Y | Story: "Who gets the call?" (two businesses, one website) | Trend · Web | Tip: "Add your WhatsApp button to your site" | 🎬 |
-| 13 | Fri 30 Oct | C | "Meta ads: 5 mistakes that burn your budget" | Educate · Marketing | Our work | 🛠 |
-| 14 | Sat 31 Oct | P | FAQ: "How fast can you build my website?" | Trust · Web | DM prompt: "Ask us anything 👇" | 🛠 |
-| 15 | Sun 1 Nov | P | UAE Flag Day greeting (brand design) | Community | Poll: "Where is your business based?" | 🛠 |
+| 9 | Mon 26 Oct | C | "Google Business Profile: 5-minute checklist" | Educate · Marketing | Share today's carousel | ✅ |
+| 10 | Tue 27 Oct | M | "What AED 999 gets you" explainer reel (receipt, voice-over) | Offer · Web | This-or-that: "Dark website or light website?" | ✅ |
+| 11 | Wed 28 Oct | P | Myth vs truth: "A website costs thousands and takes months" | Offer · Web | Behind the scenes | ✅ |
+| 12 | Thu 29 Oct | C | "From idea to live website: our 4 steps" (quote → design → build → support) | Proof · Web | Tip: "Add your WhatsApp button to your site" | ✅ |
+| 13 | Fri 30 Oct | C | "Meta ads: 5 mistakes that burn your budget" | Educate · Marketing | Our work | ✅ |
+| 14 | Sat 31 Oct | P | FAQ: "How fast can you build my website?" | Trust · Web | DM prompt: "Ask us anything 👇" | ✅ |
+| 15 | Sun 1 Nov | C | "Your website vs your Instagram: what each one does" | Educate · Web | Poll: "Where is your business based?" | ✅ |
 | 16 | Mon 2 Nov | Y | "AI that books appointments while you sleep" | Educate · AI | Share today's reel | 🎬 |
 | 17 | Tue 3 Nov | C | "Is your website losing mobile visitors? 5 quick tests" | Educate · Web | Quiz: "How many seconds before visitors leave a slow site?" (answer only from a cited source) | 🛠 |
 | 18 | Wed 4 Nov | M | "One team: Website · AI · Marketing · Email" services showcase | Offer · All | Behind the scenes | 🛠 |
 | 19 | Thu 5 Nov | P | Meet the founder: Jabir and why AZMIN DIGITAL exists | Trust | Tip | 📷 |
 | 20 | Fri 6 Nov | C | "Before you hire a web designer: 6 questions to ask" | Trust · Web | Our work | 🛠 |
-| 21 | Sat 7 Nov | Y | "What AED 999 gets you" (receipt-style breakdown) | Offer · Web | DM prompt: "Reply WEB" | 🎬 |
-| 22 | Sun 8 Nov | C | "Your website vs your Instagram: what each one does" | Educate · Web | Poll | 🛠 |
+| 21 | Sat 7 Nov | Y | Story: "Who gets the call?" (two businesses, one website) | Trend · Web | DM prompt: "Reply WEB" | 🎬 |
+| 22 | Sun 8 Nov | P | UAE Flag Day recap / greeting (Flag Day is Tue 3 Nov: post the greeting that day) | Community | Poll | 🛠 |
 | 23 | Mon 9 Nov | Y | Trend reel (from that week's trend-scout report) | Trend | Share today's reel | 🎬 |
 | 24 | Tue 10 Nov | P | Business email setup: Google Workspace / Microsoft 365 / Zoho | Offer · Email | Quiz | 🛠 |
 | 25 | Wed 11 Nov | M | "Slow site vs fast site" side-by-side | Educate · Web | Behind the scenes | 🛠 |
@@ -39,5 +39,6 @@ Status: ✅ ready · 🎬 needs Flow clips · 🛠 agent renders · 📷 needs a
 | 30 | Mon 16 Nov | C | "Month 1 at AZMIN DIGITAL: what we built" + Starter Combo | Proof · Offer | Share + Highlights tidy-up | 🛠 |
 
 **Flow budget:** 7 new Yara reels × about 60 credits = about 420 credits, plus some B-roll. That fits the monthly credits.
+**Week 2 (26 Oct – 1 Nov):** designs in `marketing/posts/d09-d15/`, queued 26 Oct for ✅ in Telegram. Day 10 uses the ready AED 999 explainer reel; the "Who gets the call?" Yara reel moved to Day 21; Flag Day greeting goes out Tue 3 Nov.
 **Batches:** I prepare each week's posts every Sunday. Flow clips are made in one Claude in Chrome session, and all posts go to Telegram for ✅ about 5 days ahead.
 **Dates to watch:** Dubai AI Festival 26–28 Oct (AI reel goes out first), UAE Flag Day 3 Nov, GITEX 7–11 Dec, UAE National Day 2 Dec (next month).
