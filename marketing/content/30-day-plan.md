@@ -40,5 +40,6 @@ Status: ✅ ready · 🎬 needs Flow clips · 🛠 agent renders · 📷 needs a
 
 **Flow budget:** 7 new Yara reels × about 60 credits = about 420 credits, plus some B-roll. That fits the monthly credits.
 **Week 2 (26 Oct – 1 Nov):** designs in `marketing/posts/d09-d15/`, queued 26 Oct for ✅ in Telegram. Day 10 uses the ready AED 999 explainer reel; the "Who gets the call?" Yara reel moved to Day 21; Flag Day greeting goes out Tue 3 Nov.
+**From Mon 2 Nov:** days 16–30 are replaced by the daily "AI Tools with Yara" series: see `marketing/content/yara-ai-series.md`.
 **Batches:** I prepare each week's posts every Sunday. Flow clips are made in one Claude in Chrome session, and all posts go to Telegram for ✅ about 5 days ahead.
 **Dates to watch:** Dubai AI Festival 26–28 Oct (AI reel goes out first), UAE Flag Day 3 Nov, GITEX 7–11 Dec, UAE National Day 2 Dec (next month).
