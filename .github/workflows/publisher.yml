@@ -47,6 +47,9 @@ jobs:
         run: uv run python -m agent.social.approvals
       - name: Publish approved posts that are due
         run: uv run python -m agent.social.publish
+      - name: Comment keyword -> guide by DM (config/comment-dm.yaml)
+        run: uv run python -m agent.social.comment_dm
+        continue-on-error: true
       - name: Ads reports (09:00 daily, 14:00 + 20:00 pulse, Dubai time)
         run: uv run python -m agent.ads.scheduler
         env:

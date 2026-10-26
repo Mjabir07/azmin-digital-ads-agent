@@ -1,0 +1,96 @@
+from datetime import UTC, datetime
+
+import pytest
+import yaml
+
+from agent.config import ROOT
+from agent.social import comment_dm
+
+NOW = datetime(2026, 10, 27, 18, 0, tzinfo=UTC)
+ACCOUNTS = {"instagram_account_id": "ig", "facebook_page_id": "page", "instagram_username": "azmin_digital"}
+
+
+@pytest.fixture
+def cfg():
+    return yaml.safe_load((ROOT / "config/comment-dm.yaml").read_text())
+
+
+class FakeMeta:
+    def __init__(self, comments, dm_error=None):
+        self.comments, self.dm_error, self.posts = comments, dm_error, []
+
+    def _page_token(self, page_id):
+        return "page-token"
+
+    def call(self, method, path, token=None, **params):
+        if path == "ig/media":
+            return {"data": [{"id": "m1", "timestamp": "2026-10-26T17:00:00+0000", "permalink": "https://ig/p/1"},
+                             {"id": "old", "timestamp": "2026-10-01T17:00:00+0000"}]}
+        if path == "m1/comments":
+            return {"data": self.comments}
+        if path == "old/comments":
+            raise AssertionError("posts older than the lookback window are not read")
+        if method == "POST":
+            if path == "ig/messages" and self.dm_error:
+                raise RuntimeError(self.dm_error)
+            self.posts.append((path, token, params))
+            return {"id": "x"}
+        return {}
+
+
+def _c(cid, text, user="someone"):
+    return {"id": cid, "text": text, "username": user, "timestamp": f"2026-10-26T18:0{cid[-1]}:00+0000"}
+
+
+@pytest.mark.parametrize("text,expected", [
+    ("SKILL", "SKILL"), ("skills please 🙏", "SKILL"), ("Skill!", "SKILL"),
+    ("skillful video", None), ("nice", None), ("", None),
+])
+def test_match_keyword(cfg, text, expected):
+    assert comment_dm.match_keyword(text, cfg["keywords"]) == expected
+
+
+def test_auto_sends_one_dm_and_public_reply(cfg):
+    cfg["mode"] = "auto"
+    meta, state = FakeMeta([_c("c1", "SKILL"), _c("c2", "love it")]), {"done": {}}
+    lines = comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
+    dm = [p for p in meta.posts if p[0] == "ig/messages"]
+    assert len(dm) == 1 and dm[0][1] == "page-token"
+    assert '"comment_id": "c1"' in dm[0][2]["recipient"]
+    assert "find-skills.pdf" in dm[0][2]["message"]
+    assert [p[0] for p in meta.posts if p[0].endswith("/replies")] == ["c1/replies"]
+    assert state["done"]["c1"].endswith("sent SKILL") and "no-keyword" in state["done"]["c2"]
+    assert lines == ["📩 Guide sent by DM: 1× SKILL"]
+    # second run: nothing is sent again
+    meta.posts.clear()
+    assert comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True) == [] and meta.posts == []
+
+
+def test_auto_falls_back_to_telegram_when_meta_refuses(cfg):
+    cfg["mode"] = "auto"
+    meta, state = FakeMeta([_c("c1", "skill")], dm_error="(#10) permission missing"), {"done": {}}
+    text = "\n".join(comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True))
+    assert "@someone" in text and "auto DM failed" in text and "find-skills.pdf" in text
+    assert meta.posts == []  # no public "check your DMs" when no DM went out
+    assert "alerted" in state["done"]["c1"]
+
+
+def test_alert_mode_never_sends(cfg):
+    cfg["mode"] = "alert"
+    meta, state = FakeMeta([_c("c1", "SKILL")]), {"done": {}}
+    text = "\n".join(comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True))
+    assert meta.posts == [] and "@someone" in text and "DM text for SKILL" in text
+
+
+def test_dry_run_and_own_comments(cfg):
+    cfg["mode"] = "auto"
+    meta, state = FakeMeta([_c("c1", "SKILL"), _c("c2", "SKILL", user="azmin_digital")]), {"done": {}}
+    text = "\n".join(comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=False))
+    assert meta.posts == [] and state["done"] == {} and "@someone" in text and "@azmin_digital:" not in text
+
+
+def test_cap_leaves_rest_for_next_run(cfg):
+    cfg |= {"mode": "auto", "max_per_run": 1}
+    meta, state = FakeMeta([_c("c1", "skill"), _c("c2", "skill")]), {"done": {}}
+    comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
+    assert list(state["done"]) == ["c1"]

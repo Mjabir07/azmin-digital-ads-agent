@@ -1,0 +1,30 @@
+# Comment keyword -> free guide by DM ("AI Tools with Yara").
+# The publisher (every 5 min) reads new comments on our Instagram posts from the last 7 days.
+# When a comment contains a keyword below:
+#   mode: alert -> Jabir gets a Telegram message with the comment, the guide link and the DM text to send by hand.
+#   mode: auto  -> the agent sends the fixed DM below as an Instagram private reply (one per comment, Meta's
+#                  rule) and answers the comment publicly. If Meta refuses, it falls back to the Telegram alert.
+# Auto needs the system-user token to have instagram_manage_messages (docs/SETUP-COMMENT-DM.md).
+# Only the fixed text below is ever sent: no AI-written DMs, no prices.
+mode: alert
+max_per_run: 25          # safety cap so a viral post can't trigger a burst Meta might flag as spam
+lookback_days: 7         # Meta allows private replies up to 7 days after the comment
+
+dm_text: |-
+  Hi! 👋 Here's your free guide from AI Tools with Yara: {title}
+
+  📄 {link}
+
+  Follow @azmin_digital for a new AI tip every day.
+  Need a website or an AI assistant for your business? Just reply here. – AZMIN DIGITAL
+
+public_replies:          # one is picked per comment, only after the DM was sent
+  - "Sent! Check your DMs 📩"
+  - "Done ✅ It's in your inbox"
+  - "On its way to your DMs 📩"
+
+keywords:
+  SKILL:
+    match: [skill, skills]
+    title: "find-skills, step by step"
+    guide: marketing/guides/find-skills.pdf
