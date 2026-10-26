@@ -1,5 +1,7 @@
 # Flow shot list — current week
 
+> **Paused (26 Oct):** reels are now built fully in Claude Code. Keep this list only as a backup.
+
 Project name: AZMIN W03 Yara AI series
 Credit budget: 220
 
