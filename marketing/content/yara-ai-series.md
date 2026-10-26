@@ -35,10 +35,11 @@ All videos are built fully in Claude Code, at no cost per video:
 | --- | --- |
 | Script | `reels/scripts/<ep>.yaml` (one line per scene; `say:` for pronunciation) |
 | Yara's voice | `uv run --group voice python -m agent.voice.tts reels/scripts/<ep>.yaml` (Kokoro-82M, voice `af_heart`, free, Apache-2.0) |
-| Yara on screen | her portrait `reels/public/yara.jpg` with a glow that pulses with her voice (big card for hook/CTA, circle during demos) |
-| Screen demos, titles, effects | Remotion (`reels/src/YaraTutorial.tsx`), skills `remotion-best-practices`, `playwright-recording` (real screen recordings), `ffmpeg` |
+| Yara on screen | cut-out `reels/public/yara-cutout.png` (MediaPipe selfie segmenter, Apache-2.0) with head nods + sound-wave bars driven by her voice; no lip-sync yet |
+| Real footage | full-page captures of real websites (Playwright) scrolled inside a phone, e.g. skills.sh |
+| Screen demos, titles, effects | Remotion (`reels/src/YaraTutorialV2.tsx` = current template: colourful scenes, stickers, whip transitions, flashes, confetti), skills `remotion-best-practices`, `playwright-recording` (real screen recordings), `ffmpeg` |
 | Captions | word-by-word karaoke from the voice timings |
-| Sound | our own SFX + music bed (`reels/public/sfx/make.sh`), so no licences needed |
+| Sound | our own beat, SFX and risers (`reels/public/sfx/synth.py`, `make.sh`), so no licences needed |
 | Render | `cd reels && npx remotion render src/index.ts <Composition> ../marketing/reels/<file>.mp4` |
 Optional upgrade: ElevenLabs voice (skill `text-to-speech`) needs an API key and a paid plan for commercial use.
 Flow (`marketing/flow/`) is paused; the W03 shot list stays as a backup.
