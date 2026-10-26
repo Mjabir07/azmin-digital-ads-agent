@@ -7,6 +7,7 @@ import { WorkReel, WORK_REEL_FRAMES } from "./WorkReel";
 import { ExplainerReel, EXPLAINER_REEL_FRAMES } from "./ExplainerReel";
 import { YaraTutorial, YARA_TUTORIAL_FRAMES } from "./YaraTutorial";
 import { YaraTutorialV2, YARA_V2_FRAMES } from "./YaraTutorialV2";
+import { YaraTutorialV3, YARA_V3_FRAMES } from "./YaraTutorialV3";
 
 export const Root: React.FC = () => (
   <>
@@ -20,6 +21,7 @@ export const Root: React.FC = () => (
     <Composition id="WorkReel" component={WorkReel} durationInFrames={WORK_REEL_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="YaraTutorialEp01" component={YaraTutorial} durationInFrames={YARA_TUTORIAL_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="YaraTutorialEp01V2" component={YaraTutorialV2} durationInFrames={YARA_V2_FRAMES} fps={30} width={1080} height={1920} />
+    <Composition id="YaraTutorialEp01V3" component={YaraTutorialV3} defaultProps={{}} durationInFrames={YARA_V3_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="ExplainerReel" component={ExplainerReel} durationInFrames={EXPLAINER_REEL_FRAMES} fps={30} width={1080} height={1920} />
   </>
 );
