@@ -68,8 +68,12 @@ Jabir 26 Oct: v3 felt too fast to follow. Aim for **45–59 s**, one idea per sc
 **Pacing rules:** voice speed 0.95 · each screen ≥ 2.5 s · new elements appear one at a time (≥ 0.6 s apart) ·
 key text stays 1.5 s after it's spoken · smooth 0.5 s slide/zoom transitions (no constant flashes) ·
 max 2 stickers on screen · captions: 3 words, big, high contrast · music lower under the voice.
-**Look:** one signature colour per episode (from the brand palette + yellow accent), same layout grid, same
-episode tag and step cards, so every reel is instantly recognisable as the series.
+**Look (Jabir 26 Oct: premium, natural, on-brand, no stray colours):** AZMIN Editorial only: paper cream `#F4F1EA`,
+ink, navy, brand blue `#0062F5`, cyan `#00D2E2` as the single accent; Inter Tight + *Instrument Serif italic* accent
+words on a blue marker; faint grid lines; series sting on cream paper. Template: `reels/src/YaraEpisode.tsx`.
+**Thumbnails / reel covers:** `reels/src/YaraThumb.tsx` (Still `YaraThumb`): a frame of Yara from that day's Flow clip
+(different outfit, place, expression every episode) + "EP 0X" + topic title with a serif accent + series mark; text
+inside the centre 1080x1350 for the grid crop. Queue key `cover:` sets the Instagram reel cover.
 
 ## Rules (on top of `azmin-brand`)
 - Say "Claude", "ChatGPT" etc. in words only: no logos, no implied partnership, no competitor bashing.

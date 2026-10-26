@@ -82,3 +82,18 @@ def test_success_is_posted(tmp_path):
     item = _item(tmp_path)
     assert publish.record_result(item, {"instagram": "a", "facebook": "b"}, []).startswith("✅ Posted d04")
     assert item.data["status"] == "posted" and "attempts" not in item.data
+
+
+def test_reel_cover_is_sent_to_instagram():
+    meta = FakeMeta()
+    sent = {}
+    orig = meta.call
+
+    def spy(method, path, token=None, **params):
+        if path.endswith("/media"):
+            sent.update(params)
+        return orig(method, path, token, **params)
+
+    meta.call = spy
+    meta.instagram_reel("ig", "https://x/v.mp4", "cap", "https://x/cover.jpg")
+    assert sent["cover_url"] == "https://x/cover.jpg" and sent["media_type"] == "REELS"

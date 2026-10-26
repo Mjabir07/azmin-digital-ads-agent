@@ -1,0 +1,24 @@
+# Ep 1 v4 (template v4): hook/end come from Yara's Flow clips (D01-H / D01-E); the Kokoro hook/end lines are the
+# fallback when a clip is missing. The middle is narrated by Yara's voice at a calmer speed.
+id: ep01-find-skills-v4
+voice: af_heart
+speed: 0.95
+lines:
+  - id: hook
+    text: This is the number one skill on skills.sh right now. Over four million installs!
+    say: This is the number one skill on skills dot s h right now. Over four million installs!
+  - id: why
+    text: It's called find-skills. It teaches Claude to find, check and install new skills for you.
+    say: It's called find skills. It teaches Claude to find, check and install new skills for you.
+  - id: s1
+    text: "Step one: install it with one command. Copy it from skills.sh, or from our free guide."
+    say: "Step one: install it with one command. Copy it from skills dot s h, or from our free guide."
+  - id: s2
+    text: "Step two: ask Claude in plain words, like: find me a skill for Instagram reels."
+  - id: s3
+    text: "Step three: check the results. Pick a trusted one with lots of installs, and Claude installs it."
+  - id: result
+    text: That's exactly how we make every reel on this page, with skills like these.
+  - id: end
+    text: Comment SKILL and I'll send you the free step-by-step guide. Follow for daily AI tips!
+    say: Comment skill, and I'll send you the free step by step guide. Follow for daily AI tips!
