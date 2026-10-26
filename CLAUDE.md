@@ -60,6 +60,14 @@ write endpoint.
 The Google Sheet lead agent and the lead-scout sub-agent now live in
 `Mjabir07/azmin-lead-finder`, with their own chat. Don't change them from this repo.
 
+## Third-party skills (installed with `npx skills`, versions in `skills-lock.json`)
+- `remotion-best-practices` (remotion-dev): use when building or editing reels in `reels/`.
+- `social` (coreyhaines31/marketingskills): hooks, captions, carousels and reel scripts.
+- `find-skills` (vercel-labs): search skills.sh for new skills; read a skill fully before adding it.
+Our own `azmin-brand`, `social-strategy` and the hard safety rules above always win over these
+(prices and claims only from `config/packages.yaml`; nothing is posted without Jabir's ✅).
+Update them with `npx skills update -p` on a `feature/…` branch.
+
 ## Branches
 `main` is the finished version (scheduled workflows run from it). Do work on a branch named
 `feature/…`, `fix/…` or `content/…` (or the chat's `claude/…` branch) and merge it into `main`
