@@ -36,3 +36,8 @@ telegram_message_id: 220
 posted:
   instagram: https://www.instagram.com/reel/De9xd00D-B4/
   facebook: https://www.facebook.com/1289218264267511/videos/3326543010881575
+cleanup:
+- reels/public/ep01/D01-H.mp4
+- reels/public/ep01/D01-E.mp4
+- reels/public/vo/ep01-find-skills-v4
+cleaned: '2026-10-30'
