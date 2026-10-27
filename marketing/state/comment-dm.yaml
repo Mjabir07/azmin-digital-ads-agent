@@ -1,4 +1,10 @@
 done:
   '17954212917275900': 2026-10-27 asked-follow SKILL
+  '17984072118105936': 2026-10-27 asked-follow SKILL
   '18127893769893820': 2026-10-27 alerted SKILL
-waiting: {}
+waiting:
+  '1649033720005403':
+    after: 2026-10-27T08:06:09+0000
+    kw: SKILL
+    nudges: 0
+    since: '2026-10-27T08:06:09.737326+00:00'
