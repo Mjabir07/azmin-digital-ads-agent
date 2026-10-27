@@ -1,0 +1,23 @@
+# Ep 2 (Tue 27 Oct): "Our reels are made with code". Keyword CODE. Template v4, normal speed.
+# hook/end come from Yara's Flow clips (D02-H / D02-E); these hook/end lines are the fallback.
+# Honest: Yara herself is AI (Google Flow), said in the result line.
+id: ep02-code
+voice: af_heart
+speed: 1.1
+lines:
+  - id: hook
+    text: Every reel on this page is made with code. No camera, no editing app.
+  - id: why
+    text: We write each video like a little web page, and the computer turns it into a reel.
+  - id: s1
+    text: "Step one: I tell Claude Code what the reel is about, and it writes the scenes in Remotion."
+    say: "Step one: I tell Claude Code what the reel is about, and it writes the scenes in Re motion."
+  - id: s2
+    text: "Step two: my voice comes from Kokoro, a free text-to-speech model."
+    say: "Step two: my voice comes from Kokoro, a free text to speech model."
+  - id: s3
+    text: "Step three: one command renders it, with captions, music and sound effects."
+  - id: result
+    text: And me? I'm AI too, made with Google Flow. Everything else is code.
+  - id: end
+    text: Follow AZMIN Digital and comment CODE, and I'll send you the tools we use!

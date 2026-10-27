@@ -1,7 +1,7 @@
 import React from "react";
 import { AbsoluteFill, Audio, Easing, Img, OffthreadVideo, Sequence, interpolate, random, spring, staticFile, useCurrentFrame, useVideoConfig } from "remotion";
 import { C } from "./brand";
-import ep01 from "./data/ep01-find-skills-v4.json";
+export { C };
 
 /**
  * "AI Tools with Yara" episode template v4 (marketing/content/yara-ai-series.md): calm pacing, 45–59 s.
@@ -10,22 +10,35 @@ import ep01 from "./data/ep01-find-skills-v4.json";
  * Each episode gives: voice data (agent/voice/tts.py), a signature colour, hook words and one scene per section.
  */
 
-type Line = { id: string; text: string; src: string; duration: number; words: { word: string; start: number; end: number }[]; envelope: number[] };
+export type Line = { id: string; text: string; src: string; duration: number; words: { word: string; start: number; end: number }[]; envelope: number[] };
 /** keyword: the comment word for this episode (must exist in config/comment-dm.yaml). Every ending shows
  *  "Comment WORD" + "Follow @azmin_digital" (series rule, Jabir 27 Oct). */
 export type EpisodeProps = { hookClip?: string; endClip?: string; keyword?: string };
 const Keyword = React.createContext("SKILL");
-const FPS = 30;
+type Tone = "deep" | "bright" | "light";
+/** What each episode file gives (reels/src/episodes/EpNN.tsx). */
+export type EpisodeContent = {
+  num: number;
+  lines: Line[];                                   // voice data from agent/voice/tts.py
+  scenes: Record<string, { body: React.FC; tone: Tone }>;  // hook (fallback), why, s1, s2, s3, result; end optional
+  stepLabels: [string, string, string];
+  hookWords: string[]; hot: string;                // title over Yara's opening clip; `hot` gets the serif accent
+  guideImg: string;                                // guide preview shown in the ending
+  effects?: (at: (key: string) => number) => React.ReactNode;  // extra sound effects
+};
+const Ep = React.createContext<EpisodeContent>(null as unknown as EpisodeContent);
+const epNo = (n: number) => String(n).padStart(2, "0");
+export const FPS = 30;
 const CLIP = 240; // Flow clips are 8 s
 // Pacing (Jabir 27 Oct: v4 felt like 0.5x): voice 1.1, short holds, ~40-45 s per episode.
 const STING = 30;
 const CARD = 20;
 const HOLD = 12;
-const Y = C.cyan; // only accent (AZMIN Editorial: cream, ink, navy, brand blue + cyan)
-const PAPER = "#F4F1EA";
-const INK = "#0B0B0C";
-const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
-const smooth = Easing.bezier(0.22, 1, 0.36, 1);
+export const Y = C.cyan; // only accent (AZMIN Editorial: cream, ink, navy, brand blue + cyan)
+export const PAPER = "#F4F1EA";
+export const INK = "#0B0B0C";
+export const clamp = { extrapolateLeft: "clamp", extrapolateRight: "clamp" } as const;
+export const smooth = Easing.bezier(0.22, 1, 0.36, 1);
 
 const fonts = `
 @font-face { font-family: Inter Tight; font-weight: 100 900; src: url(${staticFile("InterTight.woff2")}); }
@@ -34,15 +47,15 @@ const fonts = `
 
 // ---------------- timeline ----------------
 type Part = { key: string; kind: "clip" | "sting" | "voice" | "card"; from: number; len: number; line?: Line & { vFrom: number }; clip?: string; step?: number };
-const lineOf = (id: string) => (ep01.lines as Line[]).find((l) => l.id === id)!;
+const lineOf = (c: EpisodeContent, id: string) => c.lines.find((l) => l.id === id)!;
 const frames = (s: number) => Math.ceil(s * FPS);
 
-export const buildTimeline = (p: EpisodeProps) => {
+export const buildTimeline = (p: EpisodeProps, c: EpisodeContent) => {
   const parts: Part[] = [];
   let t = 0;
   const push = (part: Omit<Part, "from">) => { parts.push({ ...part, from: t } as Part); t += part.len; };
   const voice = (key: string, id: string, pad: number, extra: Partial<Part> = {}) => {
-    const l = lineOf(id);
+    const l = lineOf(c, id);
     const lead = 6;
     push({ key, kind: "voice", len: lead + frames(l.duration) + pad, ...extra });
     parts[parts.length - 1].line = { ...l, vFrom: parts[parts.length - 1].from + lead };
@@ -60,7 +73,6 @@ export const buildTimeline = (p: EpisodeProps) => {
   else voice("end", "end", 30);
   return { parts, total: t };
 };
-export const episodeFrames = (p: EpisodeProps) => buildTimeline(p).total;
 
 const useParts = () => {
   const { durationInFrames } = useVideoConfig();
@@ -68,12 +80,12 @@ const useParts = () => {
 };
 
 // ---------------- shared pieces ----------------
-const useIn = (delay = 0, damping = 16) => {
+export const useIn = (delay = 0, damping = 16) => {
   const f = useCurrentFrame();
   return spring({ frame: f - delay, fps: FPS, config: { damping, mass: 0.7, stiffness: 120 } });
 };
 
-const Background: React.FC<{ tone: "deep" | "bright" | "light" }> = ({ tone }) => {
+const Background: React.FC<{ tone: Tone }> = ({ tone }) => {
   const f = useCurrentFrame();
   const bg = tone === "deep" ? `radial-gradient(1300px 1000px at 30% 10%, #12357F 0%, ${C.navy} 55%, #040D22 100%)`
     : tone === "bright" ? `linear-gradient(165deg, ${C.blue} 0%, #0050CC 60%, #003C9E 100%)`
@@ -87,15 +99,18 @@ const Background: React.FC<{ tone: "deep" | "bright" | "light" }> = ({ tone }) =
   );
 };
 
-const Tag: React.FC<{ dark?: boolean }> = ({ dark }) => (
+const Tag: React.FC<{ dark?: boolean }> = ({ dark }) => {
+  const ep = React.useContext(Ep);
+  return (
   <div style={{ position: "absolute", top: 270, left: 70, display: "flex", alignItems: "center", gap: 12, fontWeight: 800, fontSize: 26,
     color: dark ? INK : "#fff", background: dark ? "#fff" : "rgba(4,14,36,.55)", borderRadius: 999, padding: "8px 20px 8px 8px", boxShadow: dark ? "0 6px 20px rgba(0,0,0,.08)" : "none" }}>
     <div style={{ width: 40, height: 40, borderRadius: 20, background: "#fff", padding: 5 }}><Img src={staticFile("logo.png")} style={{ width: "100%", height: "100%", objectFit: "contain" }} /></div>
-    AI TOOLS WITH YARA · <span style={{ color: dark ? C.blue : Y }}>EP 01</span>
+    AI TOOLS WITH YARA · <span style={{ color: dark ? C.blue : Y }}>EP {epNo(ep.num)}</span>
   </div>
-);
+  );
+};
 
-const Sticker: React.FC<{ children: React.ReactNode; left: number; top: number; rot?: number; delay?: number; bg?: string; color?: string; size?: number }> = ({ children, left, top, rot = -2, delay = 0, bg = "#fff", color = INK, size = 50 }) => {
+export const Sticker: React.FC<{ children: React.ReactNode; left: number; top: number; rot?: number; delay?: number; bg?: string; color?: string; size?: number }> = ({ children, left, top, rot = -2, delay = 0, bg = "#fff", color = INK, size = 50 }) => {
   const s = useIn(delay, 11);
   return (
     <div style={{ position: "absolute", left, top, background: bg, color, fontWeight: 900, fontSize: size, padding: "14px 30px", borderRadius: 22,
@@ -103,7 +118,7 @@ const Sticker: React.FC<{ children: React.ReactNode; left: number; top: number; 
   );
 };
 
-const Title: React.FC<{ children: React.ReactNode; top: number; size?: number; color?: string; delay?: number; align?: "left" | "center" }> = ({ children, top, size = 88, color = "#fff", delay = 0, align = "left" }) => {
+export const Title: React.FC<{ children: React.ReactNode; top: number; size?: number; color?: string; delay?: number; align?: "left" | "center" }> = ({ children, top, size = 88, color = "#fff", delay = 0, align = "left" }) => {
   const s = useIn(delay);
   return (
     <div style={{ position: "absolute", left: 70, right: 70, top, fontSize: size, fontWeight: 900, letterSpacing: -3, lineHeight: 1.03, color, textAlign: align,
@@ -112,13 +127,13 @@ const Title: React.FC<{ children: React.ReactNode; top: number; size?: number; c
 };
 
 /** Instrument Serif italic accent on a brand-blue marker (AZMIN Editorial). */
-const Accent: React.FC<{ children: React.ReactNode; light?: boolean }> = ({ children }) => (
+export const Accent: React.FC<{ children: React.ReactNode; light?: boolean }> = ({ children }) => (
   <span style={{ fontFamily: "Serif", fontStyle: "italic", fontWeight: 400, letterSpacing: 0, color: "#fff", padding: "0 .12em",
     background: `linear-gradient(transparent 14%, ${C.blue} 14%, ${C.blue} 90%, transparent 90%)` }}>{children}</span>
 );
 
 /** Yara's voice badge (face in a ring pulsing with her voice + live waveform). */
-const Badge: React.FC<{ line?: Part["line"]; dark?: boolean; big?: boolean }> = ({ line, dark, big }) => {
+export const Badge: React.FC<{ line?: Part["line"]; dark?: boolean; big?: boolean }> = ({ line, dark, big }) => {
   const f = useCurrentFrame();
   const { from } = { from: 0 };
   const rel = line ? f - (line.vFrom - (line.vFrom - from)) : 0;
@@ -164,7 +179,7 @@ const Captions: React.FC<{ line: NonNullable<Part["line"]>; offset: number; dark
   );
 };
 
-const Phone: React.FC<{ src: string; left: number; top: number; width: number; scroll: [number, number, number, number]; tilt?: number; children?: React.ReactNode }> = ({ src, left, top, width, scroll, tilt = 0, children }) => {
+export const Phone: React.FC<{ src: string; left: number; top: number; width: number; scroll: [number, number, number, number]; tilt?: number; children?: React.ReactNode }> = ({ src, left, top, width, scroll, tilt = 0, children }) => {
   const f = useCurrentFrame();
   const s = useIn(0, 18);
   const y = interpolate(f, [scroll[0], scroll[1]], [scroll[2], scroll[3]], { ...clamp, easing: Easing.inOut(Easing.cubic) });
@@ -179,7 +194,7 @@ const Phone: React.FC<{ src: string; left: number; top: number; width: number; s
   );
 };
 
-const Terminal: React.FC<{ cmd: string; ok?: string; okAt?: number; top: number; typeFrom?: number; cps?: number }> = ({ cmd, ok, okAt = 999, top, typeFrom = 10, cps = 26 }) => {
+export const Terminal: React.FC<{ cmd: string; ok?: string; okAt?: number; top: number; typeFrom?: number; cps?: number }> = ({ cmd, ok, okAt = 999, top, typeFrom = 10, cps = 26 }) => {
   const f = useCurrentFrame();
   const s = useIn(0, 18);
   const n = Math.max(0, Math.floor(((f - typeFrom) / FPS) * cps));
@@ -196,7 +211,7 @@ const Terminal: React.FC<{ cmd: string; ok?: string; okAt?: number; top: number;
   );
 };
 
-const Confetti: React.FC<{ at: number; x: number; y: number }> = ({ at: t0, x, y }) => {
+export const Confetti: React.FC<{ at: number; x: number; y: number }> = ({ at: t0, x, y }) => {
   const f = useCurrentFrame() - t0;
   if (f < 0 || f > 80) return null;
   const cols = [C.cyan, C.blue, "#fff", C.navy];
@@ -209,11 +224,11 @@ const Confetti: React.FC<{ at: number; x: number; y: number }> = ({ at: t0, x, y
 };
 
 // ---------------- sections ----------------
-const HOOK_WORDS = ["The", "#1", "skill", "on", "skills.sh", "right", "now 🤯"];
 
 const ClipSection: React.FC<{ src: string; hook: boolean }> = ({ src, hook }) => {
   const f = useCurrentFrame();
   const keyword = React.useContext(Keyword);
+  const ep = React.useContext(Ep);
   const zoom = interpolate(f, [0, CLIP], [1.0, 1.06]);
   return (
     <AbsoluteFill>
@@ -221,9 +236,9 @@ const ClipSection: React.FC<{ src: string; hook: boolean }> = ({ src, hook }) =>
       <AbsoluteFill style={{ background: "linear-gradient(180deg, rgba(3,10,28,.45) 0%, rgba(3,10,28,0) 22%, rgba(3,10,28,0) 52%, rgba(3,10,28,.82) 80%, rgba(3,10,28,.9) 100%)" }} />
       {hook ? (
         <div style={{ position: "absolute", left: 70, right: 70, top: 1130, display: "flex", flexWrap: "wrap", gap: "0 22px" }}>
-          {HOOK_WORDS.map((w, i) => {
+          {ep.hookWords.map((w, i) => {
             const s = spring({ frame: f - 10 - i * 11, fps: FPS, config: { damping: 12 } });
-            const hot = w === "#1";
+            const hot = w === ep.hot;
             return <span key={i} style={{ fontSize: hot ? 150 : 96, fontWeight: hot ? 400 : 900, fontFamily: hot ? "Serif" : undefined, fontStyle: hot ? "italic" : undefined, letterSpacing: hot ? 0 : -3, color: "#fff", background: hot ? C.blue : "transparent", borderRadius: 6,
               padding: hot ? "0 18px" : 0, opacity: s, transform: `translateY(${(1 - s) * 40}px) scale(${0.8 + 0.2 * s})`, textShadow: hot ? "none" : "0 6px 24px rgba(0,0,0,.5)" }}>{w}</span>;
           })}
@@ -232,7 +247,7 @@ const ClipSection: React.FC<{ src: string; hook: boolean }> = ({ src, hook }) =>
         <>
           <Sticker left={70} top={1170} rot={-2} delay={20} size={76} bg="#fff" color={INK}>Comment <Accent light>{keyword}</Accent> 👇</Sticker>
           <div style={{ position: "absolute", right: 60, top: 340, width: 200, height: 283, borderRadius: 14, overflow: "hidden", border: "5px solid #fff", transform: `rotate(6deg) scale(${useIn(60, 13)})`, boxShadow: "0 30px 60px rgba(0,0,0,.4)" }}>
-            <Img src={staticFile("guide01.png")} style={{ width: "100%" }} />
+            <Img src={staticFile(ep.guideImg)} style={{ width: "100%" }} />
           </div>
           <Sticker left={70} top={1340} rot={1} delay={110} bg={C.blue} color="#fff" size={44}>+ Follow @azmin_digital for daily AI tips</Sticker>
         </>
@@ -243,6 +258,7 @@ const ClipSection: React.FC<{ src: string; hook: boolean }> = ({ src, hook }) =>
 
 const Sting: React.FC = () => {
   const f = useCurrentFrame();
+  const ep = React.useContext(Ep);
   const wipe = interpolate(f, [0, 14], [-1200, 0], { ...clamp, easing: smooth });
   const out = interpolate(f, [STING - 10, STING], [0, 1200], { ...clamp, easing: Easing.in(Easing.cubic) });
   const s = useIn(8, 10);
@@ -254,7 +270,7 @@ const Sting: React.FC = () => {
           <Img src={staticFile("logo.png")} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
         </div>
         <div style={{ marginTop: 30, fontSize: 96, fontWeight: 900, letterSpacing: -4, color: INK, lineHeight: 1 }}>AI TOOLS<br /><span style={{ fontFamily: "Serif", fontStyle: "italic", fontWeight: 400, letterSpacing: 0, color: "#fff", background: C.blue, padding: "0 16px" }}>with Yara</span></div>
-        <div style={{ marginTop: 26, fontSize: 34, fontWeight: 800, color: INK, opacity: 0.55, letterSpacing: 8 }}>EPISODE 01</div>
+        <div style={{ marginTop: 26, fontSize: 34, fontWeight: 800, color: INK, opacity: 0.55, letterSpacing: 8 }}>EPISODE {epNo(ep.num)}</div>
       </div>
     </AbsoluteFill>
   );
@@ -272,90 +288,6 @@ const StepCard: React.FC<{ n: number; label: string }> = ({ n, label }) => {
   );
 };
 
-// Ep 1 section contents (local frame 0 = section start; voice starts at frame 8)
-const Why: React.FC = () => {
-  const f = useCurrentFrame();
-  const hl = interpolate(f, [70, 82], [0, 1], clamp);
-  return (
-    <>
-      <Title top={360} size={96}>Meet <Accent>find-skills</Accent></Title>
-      <Phone src="ep01/skills-home.jpg" left={250} top={520} width={480} scroll={[20, 75, 0, 400]}>
-        <div style={{ position: "absolute", left: 8, right: 8, top: 1585 * (450 / 860) - 400 - 12, height: 74, borderRadius: 12, border: `6px solid ${Y}`, boxShadow: `0 0 30px ${Y}`, opacity: hl, transform: `scale(${0.9 + 0.1 * hl})` }} />
-      </Phone>
-      <Sticker left={600} top={1040} rot={4} delay={90} bg={C.blue} color="#fff" size={46}>4.1M installs</Sticker>
-    </>
-  );
-};
-const Step1: React.FC = () => (
-  <>
-    <Title top={350} size={84} color={INK}>Install it with <Accent light>one command</Accent></Title>
-    <Terminal cmd="npx skills add https://github.com/vercel-labs/skills --skill find-skills" ok="✓ find-skills installed" okAt={110} top={640} />
-    <Confetti at={110} x={540} y={980} />
-  </>
-);
-const Step2: React.FC = () => {
-  const f = useCurrentFrame();
-  const txt = "Find me a skill for Instagram reels";
-  const n = Math.floor(interpolate(f, [55, 55 + txt.length * 1.6], [0, txt.length], clamp));
-  return (
-    <>
-      <Title top={350} size={84}>Ask in <Accent>plain words</Accent></Title>
-      <div style={{ position: "absolute", left: 130, right: 60, top: 640, display: "flex", justifyContent: "flex-end", transform: `scale(${useIn(40, 14)})` }}>
-        <div style={{ background: "#fff", color: "#0B0B0C", borderRadius: "40px 40px 10px 40px", padding: "30px 40px", fontSize: 56, fontWeight: 800, boxShadow: "0 24px 60px rgba(0,0,0,.25)" }}>
-          <div style={{ fontSize: 28, color: C.blue, fontWeight: 800 }}>You → Claude</div>{txt.slice(0, n)}
-        </div>
-      </div>
-    </>
-  );
-};
-const RESULTS = [{ name: "remotion-best-practices", by: "remotion-dev", n: "684K" }, { name: "social", by: "coreyhaines31", n: "85K" }, { name: "social-content", by: "coreyhaines31", n: "67K" }];
-const Step3: React.FC = () => {
-  const f = useCurrentFrame();
-  return (
-    <>
-      <Title top={350} size={84}>Pick a <Accent>trusted</Accent> one</Title>
-      {RESULTS.map((r, i) => {
-        const k = spring({ frame: f - 30 - i * 22, fps: FPS, config: { damping: 16 } });
-        const pick = i === 0 && f > 120;
-        return (
-          <div key={r.name} style={{ position: "absolute", left: 60, right: 60, top: 590 + i * 190, borderRadius: 28, padding: "28px 34px", display: "flex", alignItems: "center",
-            background: "#fff", color: INK, outline: pick ? `6px solid ${C.cyan}` : "none", transform: `translateX(${(1 - k) * 700}px) scale(${pick ? 1.03 : 1})`, opacity: k, boxShadow: "0 20px 44px rgba(0,0,0,.22)" }}>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 42, fontWeight: 900, fontFamily: "ui-monospace, Menlo, monospace" }}>{r.name}</div>
-              <div style={{ fontSize: 28, opacity: 0.6 }}>by {r.by}</div>
-            </div>
-            <div style={{ fontSize: 42, fontWeight: 900, color: C.blue }}>⬇ {r.n}</div>
-          </div>
-        );
-      })}
-      <Sticker left={330} top={1180} rot={-3} delay={135} bg={C.blue} color="#fff" size={46}>✓ installed by Claude</Sticker>
-    </>
-  );
-};
-const Result: React.FC = () => {
-  const f = useCurrentFrame();
-  return (
-    <>
-      <Title top={350} size={84}>Every reel on <Accent>this page</Accent></Title>
-      {["ep01/work1.png", "ep01/work2.jpg", "ep01/work3.jpg"].map((src, i) => {
-        const s = spring({ frame: f - 20 - i * 14, fps: FPS, config: { damping: 15 } });
-        return (
-          <div key={src} style={{ position: "absolute", left: [60, 390, 720][i], top: 560 + [30, -10, 30][i] + Math.sin((f + i * 20) / 30) * 8, width: 300, height: 533, borderRadius: 26, overflow: "hidden",
-            border: "6px solid #fff", boxShadow: "0 30px 60px rgba(0,0,0,.4)", transform: `rotate(${[-6, 0, 6][i]}deg) scale(${s})` }}>
-            <Img src={staticFile(src)} style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top" }} />
-          </div>
-        );
-      })}
-    </>
-  );
-};
-const FallbackHook: React.FC = () => (
-  <>
-    <Title top={380} size={170} align="center"><Accent>#1</Accent></Title>
-    <Title top={600} size={86} align="center" delay={12}>skill on skills.sh 🤯</Title>
-    <div style={{ position: "absolute", left: 0, right: 0, top: 820, display: "flex", justifyContent: "center" }}><Badge big /></div>
-  </>
-);
 const FallbackEnd: React.FC = () => (
   <>
     <Sticker left={170} top={360} rot={-3} delay={10} size={76} bg="#fff" color={INK}>Comment <Accent light>{React.useContext(Keyword)}</Accent> 👇</Sticker>
@@ -363,17 +295,6 @@ const FallbackEnd: React.FC = () => (
     <Sticker left={170} top={1200} rot={3} delay={60} bg={C.blue} color="#fff" size={44}>+ Follow @azmin_digital for daily AI tips</Sticker>
   </>
 );
-
-const VOICE_SCENES: Record<string, { body: React.FC; tone: "deep" | "bright" | "light" }> = {
-  hook: { body: FallbackHook, tone: "deep" },
-  why: { body: Why, tone: "deep" },
-  s1: { body: Step1, tone: "light" },
-  s2: { body: Step2, tone: "bright" },
-  s3: { body: Step3, tone: "deep" },
-  result: { body: Result, tone: "bright" },
-  end: { body: FallbackEnd, tone: "bright" },
-};
-const STEP_LABELS = ["Install it", "Ask Claude", "Pick & install"];
 
 /** Section wrapper: smooth slide-up in, fade out. */
 const Section: React.FC<{ len: number; children: React.ReactNode }> = ({ len, children }) => {
@@ -383,13 +304,20 @@ const Section: React.FC<{ len: number; children: React.ReactNode }> = ({ len, ch
   return <AbsoluteFill style={{ opacity: Math.min(i, o), transform: `translateY(${(1 - i) * 60}px) scale(${0.98 + 0.02 * i})` }}>{children}</AbsoluteFill>;
 };
 
-const sfx = (src: string, from: number, volume = 0.45, dur = 40) => (
+export const sfx = (src: string, from: number, volume = 0.45, dur = 40) => (
   <Sequence key={`${src}${from}`} from={Math.max(0, from)} durationInFrames={dur}><Audio src={staticFile(`sfx/${src}`)} volume={volume} /></Sequence>
 );
 
-export const YaraEpisode: React.FC<EpisodeProps> = (props) => {
+/** Builds one episode: register `Component` as a Composition with `frames(props)` as its duration. */
+export const makeEpisode = (content: EpisodeContent) => ({
+  Component: ((props: EpisodeProps) => <Ep.Provider value={content}><EpisodeBody {...props} /></Ep.Provider>) as React.FC<EpisodeProps>,
+  frames: (p: EpisodeProps) => buildTimeline(p, content).total,
+});
+
+const EpisodeBody: React.FC<EpisodeProps> = (props) => {
   const total = useParts();
-  const { parts } = buildTimeline(props);
+  const ep = React.useContext(Ep);
+  const { parts } = buildTimeline(props, ep);
   const at = (k: string) => parts.find((p) => p.key === k)!.from;
   const voiced = parts.filter((p) => p.kind === "voice");
   return (
@@ -404,18 +332,12 @@ export const YaraEpisode: React.FC<EpisodeProps> = (props) => {
       {sfx("sparkle.wav", at("sting") + 4, 0.5)}
       {sfx("boom.wav", at("sting") + 8, 0.45, 50)}
       {[1, 2, 3].map((n) => sfx("swoosh.wav", at(`card${n}`), 0.5, 15))}
-      {Array.from({ length: 30 }).map((_, k) => sfx("type.wav", at("s1") + 10 + k * 2, 0.22, 4))}
-      {sfx("ding.wav", at("s1") + 110, 0.4)}
-      {sfx("pop.wav", at("s3") + 30, 0.45, 10)}
-      {sfx("pop.wav", at("s3") + 52, 0.45, 10)}
-      {sfx("pop.wav", at("s3") + 74, 0.45, 10)}
-      {sfx("ding.wav", at("s3") + 135, 0.35)}
-      {sfx("shutter.wav", at("result") + 20, 0.4)}
+      {ep.effects?.(at)}
       {parts.map((p) => {
         if (p.kind === "clip") return <Sequence key={p.key} from={p.from} durationInFrames={p.len}><Section len={p.len}><ClipSection src={p.clip!} hook={p.key === "hook"} /><Tag /></Section></Sequence>;
         if (p.kind === "sting") return <Sequence key={p.key} from={p.from} durationInFrames={p.len}><Sting /></Sequence>;
-        if (p.kind === "card") return <Sequence key={p.key} from={p.from} durationInFrames={p.len}><StepCard n={p.step!} label={STEP_LABELS[p.step! - 1]} /></Sequence>;
-        const sc = VOICE_SCENES[p.key];
+        if (p.kind === "card") return <Sequence key={p.key} from={p.from} durationInFrames={p.len}><StepCard n={p.step!} label={ep.stepLabels[p.step! - 1]} /></Sequence>;
+        const sc = p.key === "end" && !ep.scenes.end ? { body: FallbackEnd, tone: "bright" as Tone } : ep.scenes[p.key];
         const dark = sc.tone === "light";
         const Body = sc.body;
         return (

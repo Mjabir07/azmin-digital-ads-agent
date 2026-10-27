@@ -8,7 +8,9 @@ import { ExplainerReel, EXPLAINER_REEL_FRAMES } from "./ExplainerReel";
 import { YaraTutorial, YARA_TUTORIAL_FRAMES } from "./YaraTutorial";
 import { YaraTutorialV2, YARA_V2_FRAMES } from "./YaraTutorialV2";
 import { YaraTutorialV3, YARA_V3_FRAMES } from "./YaraTutorialV3";
-import { YaraEpisode, episodeFrames, type EpisodeProps } from "./YaraEpisode";
+import { type EpisodeProps } from "./YaraEpisode";
+import { Ep01 } from "./episodes/Ep01";
+import { Ep02 } from "./episodes/Ep02";
 import { YaraThumb, type ThumbProps } from "./YaraThumb";
 
 export const Root: React.FC = () => (
@@ -24,8 +26,10 @@ export const Root: React.FC = () => (
     <Composition id="YaraTutorialEp01" component={YaraTutorial} durationInFrames={YARA_TUTORIAL_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="YaraTutorialEp01V2" component={YaraTutorialV2} durationInFrames={YARA_V2_FRAMES} fps={30} width={1080} height={1920} />
     <Composition id="YaraTutorialEp01V3" component={YaraTutorialV3} defaultProps={{}} durationInFrames={YARA_V3_FRAMES} fps={30} width={1080} height={1920} />
-    <Composition id="YaraEp01" component={YaraEpisode} defaultProps={{} as EpisodeProps} durationInFrames={episodeFrames({})} fps={30} width={1080} height={1920}
-      calculateMetadata={({ props }) => ({ durationInFrames: episodeFrames(props) })} />
+    {([["YaraEp01", Ep01], ["YaraEp02", Ep02]] as const).map(([id, ep]) => (
+      <Composition key={id} id={id} component={ep.Component} defaultProps={{} as EpisodeProps} durationInFrames={ep.frames({})} fps={30} width={1080} height={1920}
+        calculateMetadata={({ props }) => ({ durationInFrames: ep.frames(props) })} />
+    ))}
     <Still id="YaraThumb" component={YaraThumb} width={1080} height={1920}
       defaultProps={{ ep: 1, kicker: "CLAUDE SKILLS", title: "Teach Claude new skills in seconds", accent: "new skills", image: "yara.jpg" } as ThumbProps} />
     <Composition id="ExplainerReel" component={ExplainerReel} durationInFrames={EXPLAINER_REEL_FRAMES} fps={30} width={1080} height={1920} />
