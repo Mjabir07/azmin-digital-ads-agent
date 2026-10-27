@@ -53,8 +53,9 @@ The clips arrive via the Telegram bot; the agent cuts them into the motion edit 
 Days without clips still post: full motion + Yara's voice. The old weekly Flow shot list (W03) is no longer used.
 
 
-## Episode template v4 (from Ep 1, 26 Oct) — calmer, clearer, up to 59 s
-Jabir 26 Oct: v3 felt too fast to follow. Aim for **45–59 s**, one idea per screen.
+## Episode template v4 (from Ep 1, 26 Oct) — normal speed, about 40–47 s
+Jabir 26 Oct: v3 felt too fast to follow. Jabir 27 Oct: Ep 1 (54 s, voice 0.95) felt like 0.5x speed.
+Now: **voice speed 1.1**, short holds, **about 40–47 s**, still one idea per screen.
 
 | Time | Part | What's on screen |
 | --- | --- | --- |
@@ -65,8 +66,8 @@ Jabir 26 Oct: v3 felt too fast to follow. Aim for **45–59 s**, one idea per sc
 | 45–51 s | **Result / proof** | what you get, our real work |
 | 51–59 s | **Yara ending (Flow clip -E)** | Yara's CTA + big "Comment WORD 👇" sticker + guide preview |
 
-**Pacing rules:** voice speed 0.95 · each screen ≥ 2.5 s · new elements appear one at a time (≥ 0.6 s apart) ·
-key text stays 1.5 s after it's spoken · smooth 0.5 s slide/zoom transitions (no constant flashes) ·
+**Pacing rules:** voice speed 1.1 · 0.4 s pause after each line · STEP card 0.7 s · sting 1 s · new elements appear
+one at a time (≥ 0.4 s apart) · smooth 0.5 s slide/zoom transitions (no constant flashes) ·
 max 2 stickers on screen · captions: 3 words, big, high contrast · music lower under the voice.
 **Look (Jabir 26 Oct: premium, natural, on-brand, no stray colours):** AZMIN Editorial only: paper cream `#F4F1EA`,
 ink, navy, brand blue `#0062F5`, cyan `#00D2E2` as the single accent; Inter Tight + *Instrument Serif italic* accent
