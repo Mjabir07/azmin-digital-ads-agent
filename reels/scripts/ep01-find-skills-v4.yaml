@@ -1,8 +1,8 @@
 # Ep 1 v4 (template v4): hook/end come from Yara's Flow clips (D01-H / D01-E); the Kokoro hook/end lines are the
-# fallback when a clip is missing. The middle is narrated by Yara's voice at a calmer speed.
+# fallback when a clip is missing. The middle is narrated by Yara's voice at normal speed (1.1, Jabir 27 Oct).
 id: ep01-find-skills-v4
 voice: af_heart
-speed: 0.95
+speed: 1.1
 lines:
   - id: hook
     text: This is the number one skill on skills.sh right now. Over four million installs!

@@ -17,9 +17,10 @@ export type EpisodeProps = { hookClip?: string; endClip?: string; keyword?: stri
 const Keyword = React.createContext("SKILL");
 const FPS = 30;
 const CLIP = 240; // Flow clips are 8 s
-const STING = 48;
-const CARD = 30;
-const HOLD = 30;
+// Pacing (Jabir 27 Oct: v4 felt like 0.5x): voice 1.1, short holds, ~40-45 s per episode.
+const STING = 30;
+const CARD = 20;
+const HOLD = 12;
 const Y = C.cyan; // only accent (AZMIN Editorial: cream, ink, navy, brand blue + cyan)
 const PAPER = "#F4F1EA";
 const INK = "#0B0B0C";
@@ -42,21 +43,21 @@ export const buildTimeline = (p: EpisodeProps) => {
   const push = (part: Omit<Part, "from">) => { parts.push({ ...part, from: t } as Part); t += part.len; };
   const voice = (key: string, id: string, pad: number, extra: Partial<Part> = {}) => {
     const l = lineOf(id);
-    const lead = 8;
+    const lead = 6;
     push({ key, kind: "voice", len: lead + frames(l.duration) + pad, ...extra });
     parts[parts.length - 1].line = { ...l, vFrom: parts[parts.length - 1].from + lead };
   };
   if (p.hookClip) push({ key: "hook", kind: "clip", len: CLIP, clip: p.hookClip });
-  else voice("hook", "hook", 20);
+  else voice("hook", "hook", 12);
   push({ key: "sting", kind: "sting", len: STING });
   voice("why", "why", HOLD);
   ["s1", "s2", "s3"].forEach((id, i) => {
     push({ key: `card${i + 1}`, kind: "card", len: CARD, step: i + 1 });
     voice(id, id, HOLD, { step: i + 1 });
   });
-  voice("result", "result", 24);
-  if (p.endClip) push({ key: "end", kind: "clip", len: CLIP + 20, clip: p.endClip });
-  else voice("end", "end", 45);
+  voice("result", "result", HOLD);
+  if (p.endClip) push({ key: "end", kind: "clip", len: CLIP + 10, clip: p.endClip });
+  else voice("end", "end", 30);
   return { parts, total: t };
 };
 export const episodeFrames = (p: EpisodeProps) => buildTimeline(p).total;
@@ -424,11 +425,11 @@ export const YaraEpisode: React.FC<EpisodeProps> = (props) => {
               <Body />
               <Tag dark={dark} />
               {p.key !== "hook" && p.key !== "end" && (
-                <div style={{ position: "absolute", left: 0, right: 0, top: 1245, display: "flex", justifyContent: "center" }}><BadgeAt line={p.line!} offset={8} dark={dark} /></div>
+                <div style={{ position: "absolute", left: 0, right: 0, top: 1245, display: "flex", justifyContent: "center" }}><BadgeAt line={p.line!} offset={6} dark={dark} /></div>
               )}
-              <Captions line={p.line!} offset={8} dark={dark} />
+              <Captions line={p.line!} offset={6} dark={dark} />
             </Section>
-            <Sequence from={8}><Audio src={staticFile(p.line!.src)} /></Sequence>
+            <Sequence from={6}><Audio src={staticFile(p.line!.src)} /></Sequence>
           </Sequence>
         );
       })}
