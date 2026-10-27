@@ -68,11 +68,14 @@ def new_comments(meta: Meta, ig_id: str, own: str, since: datetime, done: dict) 
             continue
         after = None
         for _ in range(10):  # up to 500 comments per post per run
-            params = {"fields": "id,text,username,timestamp", "limit": 50} | ({"after": after} if after else {})
+            params = {"fields": "id,text,username,timestamp,replies{id,text,username,timestamp}", "limit": 50} | (
+                {"after": after} if after else {})
             page = meta.call("GET", f"{m['id']}/comments", **params)
-            for c in page.get("data", []):
-                if c["id"] not in done and c.get("username", "").lower() != own.lower():
-                    out.append(c | {"permalink": m.get("permalink", "")})
+            for top in page.get("data", []):
+                # people also answer under a comment (incl. our "check your DMs" reply), so read those too
+                for c in [top, *top.get("replies", {}).get("data", [])]:
+                    if c["id"] not in done and c.get("username", "").lower() != own.lower():
+                        out.append({k: v for k, v in c.items() if k != "replies"} | {"permalink": m.get("permalink", "")})
             after = page.get("paging", {}).get("cursors", {}).get("after") if page.get("paging", {}).get("next") else None
             if not after:
                 break

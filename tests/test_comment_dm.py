@@ -179,3 +179,12 @@ def test_follow_gate_ignores_their_comment_and_window_errors(cfg):
     meta.replies = [_reply("2026-10-27T19:00:00+0000")]
     lines = comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
     assert "u1" in state["waiting"] and not any("Couldn't answer" in x for x in lines)
+
+
+def test_reads_keyword_in_replies_under_comments(cfg):
+    cfg |= {"mode": "auto", "follow_gate": False}
+    top = _c("c1", "nice reel") | {"replies": {"data": [_c("c2", "SKILL please"),
+                                                       _c("c3", "Sent! Check your DMs", user="azmin_digital")]}}
+    meta, state = FakeMeta([top]), {"done": {}}
+    comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
+    assert '"comment_id": "c2"' in meta.posts[0][2]["recipient"] and "c3" not in state["done"]
