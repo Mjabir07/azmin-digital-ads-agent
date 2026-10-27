@@ -75,6 +75,14 @@ words on a blue marker; faint grid lines; series sting on cream paper. Template:
 (different outfit, place, expression every episode) + "EP 0X" + topic title with a serif accent + series mark; text
 inside the centre 1080x1350 for the grid crop. Queue key `cover:` sets the Instagram reel cover.
 
+## Follow + Comment in every episode (Jabir 27 Oct, no exceptions)
+Every reel asks for **both** a follow and a keyword comment, in three places:
+1. **Yara says it** in the ending clip (-E): "Follow AZMIN Digital and comment WORD, and I'll send you …".
+2. **On screen** in the ending: the "Comment WORD 👇" sticker and the "+ Follow @azmin_digital for daily AI tips" sticker.
+3. **In the caption**: a "💬 Comment WORD …" line and a "➕ Follow @azmin_digital …" line.
+Every episode gets a keyword and a guide, news and recap days included (Ep 4 NEWS = the 3 links, Ep 7 TIPS = the
+5 tips in one PDF). `tests/test_series_cta.py` blocks a Yara queue item whose caption misses either ask.
+
 ## Rules (on top of `azmin-brand`)
 - Say "Claude", "ChatGPT" etc. in words only: no logos, no implied partnership, no competitor bashing.
 - Every AI update/news item comes from a real, dated source, checked the day it is posted.
@@ -97,10 +105,10 @@ Format A/B/C as above. **WORD** = comment keyword (each has a guide).
 | Mon 2 | **Ep 1: find-skills, teach Claude new skills in seconds** | motion + voice | SKILL | |
 | Tue 3 | We made our reels with code: behind the scenes (Remotion) | C | CODE | UAE Flag Day post 12:30 |
 | Wed 4 | Make Claude write in *your* brand voice | B | BRAND | |
-| Thu 5 | AI news of the week (3 real updates) | C | — | News carousel |
+| Thu 5 | AI news of the week (3 real updates) | C | NEWS | News carousel |
 | Fri 6 | 3 jobs to hand to AI in a small business this week | A | AUTO | |
 | Sat 7 | One video → five posts: let AI do the boring part | B | REUSE | |
-| Sun 8 | Weekly recap: 5 AI tips from this week | C | — | Recap carousel; AED 999 offer story |
+| Sun 8 | Weekly recap: 5 AI tips from this week | C | TIPS | Recap carousel; AED 999 offer story |
 
 ### Week 2 (9–15 Nov)
 | Day | Reel | Format | Comment |
