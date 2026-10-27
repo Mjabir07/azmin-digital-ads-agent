@@ -145,6 +145,9 @@ def follow_ups(meta: Meta, cfg: dict, accounts: dict, state: dict, now: datetime
                 w["nudges"] += 1
                 continue
         except RuntimeError as e:
+            if "(#10)" in str(e):  # outside the messaging window: not a real reply yet, keep waiting
+                print(f"Not a reply yet ({e}); still waiting.")
+                continue
             lines.append(f"⚠️ Couldn't answer a {w['kw']} DM reply ({e}): please check Instagram DMs.")
             del waiting[uid]
             continue
@@ -184,8 +187,10 @@ def run(meta: Meta, cfg: dict, accounts: dict, state: dict, now: datetime, live:
                 uid = send_dm(meta, ig, page, cfg["gate_text"].format(title=k["title"]) if gate else dm, comment_id=c["id"])
                 state["done"][c["id"]] = f"{today} {'asked-follow' if gate else 'sent'} {kw}"
                 if gate and uid:
+                    # count only messages after our DM: the thread also shows their comment as a message from them
                     state.setdefault("waiting", {})[uid] = {"kw": kw, "since": now.isoformat(),
-                                                            "after": c.get("timestamp", ""), "nudges": 0}
+                                                            "after": now.strftime("%Y-%m-%dT%H:%M:%S+0000"),
+                                                            "nudges": 0}
                     asked.append(kw)
                 else:
                     sent.append(kw)
