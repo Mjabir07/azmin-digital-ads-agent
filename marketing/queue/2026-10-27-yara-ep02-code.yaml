@@ -29,7 +29,7 @@ caption: 'Every reel on this page is made with code. No camera, no editing app �
   Claude Code · Remotion · AI video
 
   #ClaudeAI #ClaudeCode #Remotion #AITools #AIForBusiness #ContentCreation #DigitalAgencyDubai #DubaiBusiness'
-status: approved
+status: posted
 cleanup:
 - reels/public/vo/ep02-code
 - reels/public/ep02/D02-H.mp4
@@ -37,3 +37,6 @@ cleanup:
 - media/inbox/D02-H.mp4
 - media/inbox/D02-E.mp4
 telegram_message_id: 238
+posted:
+  instagram: https://www.instagram.com/reel/DfAL1zfkvP4/
+  facebook: https://www.facebook.com/1289218264267511/videos/940634488873544
