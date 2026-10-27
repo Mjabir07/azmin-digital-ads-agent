@@ -113,7 +113,7 @@ def _reply(at="2026-10-27T19:00:00+0000", mid="r1"):
 
 
 def test_follow_gate_asks_first_then_sends_guide_to_follower(cfg):
-    cfg["mode"] = "auto"
+    cfg |= {"mode": "auto", "follow_gate": True}
     meta, state = FakeMeta([_c("c1", "SKILL")]), {"done": {}}
     lines = comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
     assert "Follow @azmin_digital" in _dms(meta)[0] and "find-skills.pdf" not in _dms(meta)[0]
@@ -130,7 +130,7 @@ def test_follow_gate_asks_first_then_sends_guide_to_follower(cfg):
 
 
 def test_follow_gate_nudges_non_followers_then_hands_over(cfg):
-    cfg["mode"] = "auto"
+    cfg |= {"mode": "auto", "follow_gate": True}
     meta, state = FakeMeta([_c("c1", "SKILL")], follows=False), {"done": {}}
     comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
     for n in range(3):
@@ -143,7 +143,7 @@ def test_follow_gate_nudges_non_followers_then_hands_over(cfg):
 
 
 def test_follow_gate_sends_guide_when_meta_wont_say(cfg):
-    cfg["mode"] = "auto"
+    cfg |= {"mode": "auto", "follow_gate": True}
     meta, state = FakeMeta([_c("c1", "SKILL")], follows=None), {"done": {}}
     comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
     meta.posts.clear()
@@ -166,7 +166,7 @@ def test_dm_falls_back_to_instagram_route(cfg):
 
 
 def test_follow_gate_ignores_their_comment_and_window_errors(cfg):
-    cfg["mode"] = "auto"
+    cfg |= {"mode": "auto", "follow_gate": True}
     meta, state = FakeMeta([_c("c1", "SKILL")]), {"done": {}}
     comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
     # the thread shows their comment as a message from them, before our DM: not a reply
