@@ -84,9 +84,16 @@ def send_dm(meta: Meta, ig_id: str, page_id: str, text: str, comment_id: str | N
     """DM via the Page token. comment_id = private reply to a comment (one per comment, Meta's rule);
     user_id = a normal reply to someone who has messaged us. Returns the person's Instagram-scoped ID."""
     recipient = {"comment_id": comment_id} if comment_id else {"id": user_id}
-    resp = meta.call("POST", f"{ig_id}/messages", token=meta._page_token(page_id),
-                     recipient=json.dumps(recipient), message=json.dumps({"text": text}))
-    return resp.get("recipient_id", user_id or "")
+    params = {"recipient": json.dumps(recipient), "message": json.dumps({"text": text})}
+    # Messenger Platform route (Page token on the Page) first; the Instagram-account route with the
+    # system-user token as a fallback. Meta answered (#200) to the IG route with a Page token.
+    errors = []
+    for path, token in ((f"{page_id}/messages", meta._page_token(page_id)), (f"{ig_id}/messages", None)):
+        try:
+            return meta.call("POST", path, token=token, **params).get("recipient_id", user_id or "")
+        except RuntimeError as e:
+            errors.append(str(e))
+    raise RuntimeError(" | ".join(errors))
 
 
 def follows_us(meta: Meta, page_id: str, user_id: str) -> bool | None:

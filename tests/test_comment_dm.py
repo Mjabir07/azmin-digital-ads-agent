@@ -39,7 +39,7 @@ class FakeMeta:
                 raise RuntimeError("profile not available")
             return {"is_user_follow_business": self.follows}
         if method == "POST":
-            if path == "ig/messages" and self.dm_error:
+            if path.endswith("/messages") and self.dm_error:
                 raise RuntimeError(self.dm_error)
             self.posts.append((path, token, params))
             return {"id": "x", "recipient_id": "u1"}
@@ -62,7 +62,7 @@ def test_auto_sends_one_dm_and_public_reply(cfg):
     cfg |= {"mode": "auto", "follow_gate": False}
     meta, state = FakeMeta([_c("c1", "SKILL"), _c("c2", "love it")]), {"done": {}}
     lines = comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
-    dm = [p for p in meta.posts if p[0] == "ig/messages"]
+    dm = [p for p in meta.posts if p[0] == "page/messages"]
     assert len(dm) == 1 and dm[0][1] == "page-token"
     assert '"comment_id": "c1"' in dm[0][2]["recipient"]
     assert "find-skills.pdf" in dm[0][2]["message"]
@@ -105,7 +105,7 @@ def test_cap_leaves_rest_for_next_run(cfg):
 
 
 def _dms(meta):
-    return [json.loads(p[2]["message"])["text"] for p in meta.posts if p[0] == "ig/messages"]
+    return [json.loads(p[2]["message"])["text"] for p in meta.posts if p[0] == "page/messages"]
 
 
 def _reply(at="2026-10-27T10:00:00+0000", mid="r1"):
@@ -150,3 +150,16 @@ def test_follow_gate_sends_guide_when_meta_wont_say(cfg):
     meta.replies = [_reply()]
     comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
     assert "find-skills.pdf" in _dms(meta)[0]
+
+
+def test_dm_falls_back_to_instagram_route(cfg):
+    class PageRouteFails(FakeMeta):
+        def call(self, method, path, token=None, **params):
+            if path == "page/messages":
+                raise RuntimeError("(#200) page route refused")
+            return super().call(method, path, token=token, **params)
+
+    cfg |= {"mode": "auto", "follow_gate": False}
+    meta, state = PageRouteFails([_c("c1", "SKILL")]), {"done": {}}
+    comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
+    assert [p[0] for p in meta.posts][:1] == ["ig/messages"] and "sent" in state["done"]["c1"]
