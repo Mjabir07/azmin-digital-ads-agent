@@ -108,7 +108,7 @@ def _dms(meta):
     return [json.loads(p[2]["message"])["text"] for p in meta.posts if p[0] == "page/messages"]
 
 
-def _reply(at="2026-10-27T10:00:00+0000", mid="r1"):
+def _reply(at="2026-10-27T19:00:00+0000", mid="r1"):
     return {"id": mid, "created_time": at, "from": {"id": "u1"}}
 
 
@@ -135,7 +135,7 @@ def test_follow_gate_nudges_non_followers_then_hands_over(cfg):
     comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
     for n in range(3):
         meta.posts.clear()
-        meta.replies = [_reply(f"2026-10-27T1{n}:00:00+0000", f"r{n}")]
+        meta.replies = [_reply(f"2026-10-27T2{n}:00:00+0000", f"r{n}")]
         lines = comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
         if n < 2:
             assert "can't see your follow" in _dms(meta)[0]
@@ -163,3 +163,19 @@ def test_dm_falls_back_to_instagram_route(cfg):
     meta, state = PageRouteFails([_c("c1", "SKILL")]), {"done": {}}
     comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
     assert [p[0] for p in meta.posts][:1] == ["ig/messages"] and "sent" in state["done"]["c1"]
+
+
+def test_follow_gate_ignores_their_comment_and_window_errors(cfg):
+    cfg["mode"] = "auto"
+    meta, state = FakeMeta([_c("c1", "SKILL")]), {"done": {}}
+    comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
+    # the thread shows their comment as a message from them, before our DM: not a reply
+    meta.posts.clear()
+    meta.replies = [_reply("2026-10-26T18:01:00+0000")]
+    comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
+    assert meta.posts == [] and "u1" in state["waiting"]
+    # Meta says the window is closed: keep waiting, no alert
+    meta.dm_error = "(#10) This message is sent outside of allowed window."
+    meta.replies = [_reply("2026-10-27T19:00:00+0000")]
+    lines = comment_dm.run(meta, cfg, ACCOUNTS, state, NOW, live=True)
+    assert "u1" in state["waiting"] and not any("Couldn't answer" in x for x in lines)

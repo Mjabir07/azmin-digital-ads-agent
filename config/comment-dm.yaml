@@ -32,9 +32,9 @@ dm_text: |-
   Need a website or an AI assistant for your business? Just reply here. – AZMIN DIGITAL
 
 public_replies:          # one is picked per comment, only after the first DM was sent
-  - "Sent! Check your DMs 📩"
-  - "Done ✅ It's in your inbox"
-  - "On its way to your DMs 📩"
+  - "Sent! Check your DMs 📩 (or Message requests)"
+  - "Done ✅ Check your DMs (or Message requests) 📩"
+  - "On its way 📩 Check your DMs or Message requests"
 
 keywords:
   SKILL:
