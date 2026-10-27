@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Reels with code guide · AZMIN DIGITAL</title>
+<style>
+@font-face{font-family:'Inter Tight';font-weight:100 900;src:url(../../brand/fonts/InterTight.woff2)}
+@font-face{font-family:Serif;font-style:italic;src:url(../../brand/fonts/InstrumentSerif-400i.woff2)}
+@page{size:A4;margin:0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter Tight',sans-serif;color:#0B0B0C;background:#F4F1EA;font-size:11.5pt;line-height:1.5}
+.page{width:210mm;min-height:297mm;padding:16mm 16mm 14mm;position:relative;page-break-after:always;
+  background-image:linear-gradient(rgba(11,11,12,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(11,11,12,.05) 1px,transparent 1px);background-size:12mm 12mm}
+.page:last-child{page-break-after:auto}
+.head{display:flex;align-items:center;gap:8px;font-weight:700;font-size:11pt}
+.head img{width:22px;height:22px;background:#fff;border-radius:50%;padding:3px}
+.head .r{margin-left:auto;font-family:Serif;font-style:italic;font-weight:400;color:#6B6A66;font-size:13pt}
+h1{font-size:32pt;line-height:1.02;letter-spacing:-1.5px;font-weight:800;margin-top:8mm}
+em{font-family:Serif;font-style:italic;font-weight:400;color:#fff;background:linear-gradient(transparent 15%,#0062F5 15%,#0062F5 90%,transparent 90%);padding:0 3px}
+.sub{color:#6B6A66;font-size:13pt;margin-top:4mm}
+h2{font-size:15pt;font-weight:800;margin:5mm 0 1.5mm;display:flex;gap:8px;align-items:baseline}
+h2 .n{font-family:Serif;font-style:italic;font-weight:400;color:#0062F5;font-size:22pt}
+p,li{margin:1.5mm 0}
+ul{padding-left:5mm}
+code,.cmd{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:9.5pt}
+.cmd{display:block;background:#0B1220;color:#E6EEFF;border-radius:8px;padding:10px 12px;margin:2.5mm 0;white-space:pre-wrap;word-break:break-all}
+.cmd b{color:#00D2E2;font-weight:400}
+.box{background:#fff;border-radius:10px;padding:10px 14px;margin-top:4mm;box-shadow:0 2px 10px rgba(0,0,0,.06)}
+table{width:100%;border-collapse:collapse;margin-top:2mm;font-size:10pt}
+th,td{text-align:left;padding:5px 6px;border-bottom:1px solid rgba(11,11,12,.1)}
+th{font-weight:800}
+.cta{position:absolute;left:16mm;right:16mm;bottom:14mm;background:#071A3D;color:#F4F1EA;border-radius:12px;padding:12px 16px}
+.cta b{color:#00D2E2}
+.wa{display:inline-block;background:#25D366;color:#fff;border-radius:99px;padding:4px 12px;font-weight:800;margin-top:6px}
+.muted{color:#6B6A66;font-size:9.5pt}
+</style></head><body>
+<div class="page">
+  <div class="head"><img src="../../brand/logo.png" alt="">azmindigital<span class="r">free guide · 02</span></div>
+  <h1>Make reels with <em>code</em></h1>
+  <div class="sub">The exact free tools behind every "AI Tools with Yara" episode.</div>
+
+  <h2>The stack</h2>
+  <table>
+    <tr><th>Tool</th><th>What it does</th><th>Cost</th></tr>
+    <tr><td><b>Claude Code</b></td><td>Writes and edits the video scenes from a plain-English brief</td><td>Claude plan</td></tr>
+    <tr><td><b>Remotion</b></td><td>Turns React code into an MP4 (titles, captions, transitions)</td><td>Free for individuals and teams up to 3 (check the licence)</td></tr>
+    <tr><td><b>Kokoro-82M</b></td><td>Natural AI voice-over, runs on your own computer</td><td>Free, open source (Apache-2.0)</td></tr>
+    <tr><td><b>Google Flow</b></td><td>The short clips of Yara, our AI presenter</td><td>Daily credits</td></tr>
+    <tr><td><b>ffmpeg</b></td><td>Loudness, cutting and converting media</td><td>Free</td></tr>
+  </table>
+
+  <h2><span class="n">1</span> Start a Remotion project</h2>
+  <span class="cmd"><b>$</b> npx create-video@latest</span>
+  <p>Then give Claude the official Remotion know-how:</p>
+  <span class="cmd"><b>$</b> npx skills add remotion-dev/skills</span>
+
+  <h2><span class="n">2</span> Ask Claude for the reel</h2>
+  <p>Open Claude Code in the project and describe it like a brief:</p>
+  <span class="cmd" style="word-break:normal">Make a 45-second vertical reel (1080x1920): a hook title, 3 steps with a big STEP card each,
+word-by-word captions, our brand colours, and a "Comment WORD" ending.</span>
+
+  <div class="cta"><b>Want this for your business?</b> AZMIN DIGITAL builds websites, AI chatbots and content automation in Dubai.<br>
+    <span class="wa">WhatsApp +971 56 724 7597</span> &nbsp; azmindigital.com</div>
+</div>
+
+<div class="page">
+  <div class="head"><img src="../../brand/logo.png" alt="">azmindigital<span class="r">free guide · 02</span></div>
+  <h2 style="margin-top:10mm"><span class="n">3</span> Add a free voice</h2>
+  <span class="cmd"><b>$</b> pip install kokoro-onnx soundfile</span>
+  <p>Write one line per scene, generate a WAV per line, and let Claude time the captions to the words.</p>
+
+  <h2><span class="n">4</span> Render</h2>
+  <span class="cmd"><b>$</b> npx remotion render src/index.ts MyReel out/reel.mp4</span>
+  <p class="muted">Captions, music and sound effects are all in the code, so one command makes the finished MP4.</p>
+
+  <h2>Why code instead of an editor?</h2>
+  <ul>
+    <li><b>Reuse:</b> one template, a new episode every day. Change the words, keep the look.</li>
+    <li><b>On brand every time:</b> colours, fonts and logo live in one file.</li>
+    <li><b>Fast changes:</b> "make it slower", "new colour" or "bigger captions" is one sentence to Claude.</li>
+  </ul>
+
+  <h2>Tips from our own reels</h2>
+  <ul>
+    <li>Keep it 40–50 seconds, one idea per screen, voice at normal speed.</li>
+    <li>Captions: 3 words at a time, big, the spoken word highlighted.</li>
+    <li>Music low under the voice; small sound effects on each new screen.</li>
+    <li>Make your own sound effects with code, or use a licensed library: no copyright strikes.</li>
+  </ul>
+
+  <h2>Be honest about AI</h2>
+  <p>Yara is an AI presenter and we say so. Label AI people and voices clearly, and never present them as real customers.</p>
+
+  <div class="box"><b>Next:</b> comment <b>SKILL</b> on our Ep 1 reel for the find-skills guide: it helps Claude find skills like Remotion's.</div>
+
+  <div class="cta"><b>Follow @azmin_digital</b> for a new AI tip every day.<br>
+    Need a website, chatbot or automation? <span class="wa">WhatsApp +971 56 724 7597</span> &nbsp; azmindigital.com</div>
+</div>
+</body></html>

@@ -43,3 +43,7 @@ keywords:
     match: [skill, skills]
     title: "find-skills, step by step"
     guide: marketing/guides/find-skills.pdf
+  CODE:
+    match: [code]
+    title: "make reels with code (our exact tools)"
+    guide: marketing/guides/reels-with-code.pdf
