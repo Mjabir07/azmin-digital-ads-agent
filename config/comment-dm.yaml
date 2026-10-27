@@ -10,6 +10,19 @@ mode: auto
 max_per_run: 25          # safety cap so a viral post can't trigger a burst Meta might flag as spam
 lookback_days: 7         # Meta allows private replies up to 7 days after the comment
 
+# Follow gate (Jabir 27 Oct: only followers get the guide, to grow the page). The first DM asks them to follow
+# and reply DONE; when they reply, the agent checks the follow with Instagram, then sends dm_text (the guide),
+# or not_following_text (max max_nudges times; after that Jabir gets a Telegram note).
+follow_gate: true
+max_nudges: 2
+gate_text: |-
+  Hi! 👋 Your free guide "{title}" is ready.
+
+  1️⃣ Follow @azmin_digital (a new AI tip every day)
+  2️⃣ Reply DONE here and I'll send it straight away 📄
+not_following_text: |-
+  I can't see your follow yet 🙂 Please follow @azmin_digital, then reply DONE again and the guide is yours.
+
 dm_text: |-
   Hi! 👋 Here's your free guide from AI Tools with Yara: {title}
 
@@ -18,7 +31,7 @@ dm_text: |-
   Follow @azmin_digital for a new AI tip every day.
   Need a website or an AI assistant for your business? Just reply here. – AZMIN DIGITAL
 
-public_replies:          # one is picked per comment, only after the DM was sent
+public_replies:          # one is picked per comment, only after the first DM was sent
   - "Sent! Check your DMs 📩"
   - "Done ✅ It's in your inbox"
   - "On its way to your DMs 📩"
