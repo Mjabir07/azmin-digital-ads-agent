@@ -11,7 +11,10 @@ import ep01 from "./data/ep01-find-skills-v4.json";
  */
 
 type Line = { id: string; text: string; src: string; duration: number; words: { word: string; start: number; end: number }[]; envelope: number[] };
-export type EpisodeProps = { hookClip?: string; endClip?: string };
+/** keyword: the comment word for this episode (must exist in config/comment-dm.yaml). Every ending shows
+ *  "Comment WORD" + "Follow @azmin_digital" (series rule, Jabir 27 Oct). */
+export type EpisodeProps = { hookClip?: string; endClip?: string; keyword?: string };
+const Keyword = React.createContext("SKILL");
 const FPS = 30;
 const CLIP = 240; // Flow clips are 8 s
 const STING = 48;
@@ -209,6 +212,7 @@ const HOOK_WORDS = ["The", "#1", "skill", "on", "skills.sh", "right", "now 🤯"
 
 const ClipSection: React.FC<{ src: string; hook: boolean }> = ({ src, hook }) => {
   const f = useCurrentFrame();
+  const keyword = React.useContext(Keyword);
   const zoom = interpolate(f, [0, CLIP], [1.0, 1.06]);
   return (
     <AbsoluteFill>
@@ -225,11 +229,11 @@ const ClipSection: React.FC<{ src: string; hook: boolean }> = ({ src, hook }) =>
         </div>
       ) : (
         <>
-          <Sticker left={70} top={1170} rot={-2} delay={20} size={76} bg="#fff" color={INK}>Comment <Accent light>SKILL</Accent> 👇</Sticker>
+          <Sticker left={70} top={1170} rot={-2} delay={20} size={76} bg="#fff" color={INK}>Comment <Accent light>{keyword}</Accent> 👇</Sticker>
           <div style={{ position: "absolute", right: 60, top: 340, width: 200, height: 283, borderRadius: 14, overflow: "hidden", border: "5px solid #fff", transform: `rotate(6deg) scale(${useIn(60, 13)})`, boxShadow: "0 30px 60px rgba(0,0,0,.4)" }}>
             <Img src={staticFile("guide01.png")} style={{ width: "100%" }} />
           </div>
-          <Sticker left={70} top={1340} rot={1} delay={110} bg={C.blue} color="#fff" size={44}>+ Follow for daily AI tips</Sticker>
+          <Sticker left={70} top={1340} rot={1} delay={110} bg={C.blue} color="#fff" size={44}>+ Follow @azmin_digital for daily AI tips</Sticker>
         </>
       )}
     </AbsoluteFill>
@@ -353,9 +357,9 @@ const FallbackHook: React.FC = () => (
 );
 const FallbackEnd: React.FC = () => (
   <>
-    <Sticker left={170} top={360} rot={-3} delay={10} size={76} bg="#fff" color={INK}>Comment <Accent light>SKILL</Accent> 👇</Sticker>
+    <Sticker left={170} top={360} rot={-3} delay={10} size={76} bg="#fff" color={INK}>Comment <Accent light>{React.useContext(Keyword)}</Accent> 👇</Sticker>
     <div style={{ position: "absolute", left: 0, right: 0, top: 640, display: "flex", justifyContent: "center" }}><Badge big /></div>
-    <Sticker left={170} top={1200} rot={3} delay={60} bg={C.blue} color="#fff" size={44}>+ Follow for daily AI tips</Sticker>
+    <Sticker left={170} top={1200} rot={3} delay={60} bg={C.blue} color="#fff" size={44}>+ Follow @azmin_digital for daily AI tips</Sticker>
   </>
 );
 
@@ -388,6 +392,7 @@ export const YaraEpisode: React.FC<EpisodeProps> = (props) => {
   const at = (k: string) => parts.find((p) => p.key === k)!.from;
   const voiced = parts.filter((p) => p.kind === "voice");
   return (
+    <Keyword.Provider value={props.keyword ?? "SKILL"}>
     <AbsoluteFill style={{ fontFamily: "Inter Tight, sans-serif", background: C.navy }}>
       <style>{fonts}</style>
       {/* music sits low; quieter under Yara's clips */}
@@ -430,6 +435,7 @@ export const YaraEpisode: React.FC<EpisodeProps> = (props) => {
       <ProgressBar total={total} />
       {voiced.length === 0 && null}
     </AbsoluteFill>
+    </Keyword.Provider>
   );
 };
 
