@@ -5,8 +5,10 @@ Code: `agent/social/comment_dm.py`, settings in `config/comment-dm.yaml`; it run
 **Today (`mode: alert`)**: when someone comments a keyword (e.g. SKILL), you get a Telegram message with their
 username, a link to the post, and the DM text to copy. On Instagram: open the comment → **Reply privately** → paste.
 
-**Automatic (`mode: auto`)**: the agent sends the same fixed DM itself and replies under the comment
-"Sent! Check your DMs 📩". Setting it up takes about 10 minutes, once:
+**Automatic (`mode: auto`, on since 27 Oct)**: the agent DMs the person itself and replies under the comment
+"Sent! Check your DMs 📩". With `follow_gate: true` the first DM asks them to follow @azmin_digital and reply DONE;
+when they reply, the agent checks the follow and sends the guide (or asks again, at most twice).
+Setting it up takes about 10 minutes, once:
 
 ## 1. Instagram app (phone)
 Profile → ☰ → **Settings and activity** → **Messages and story replies** → **Message controls** →
