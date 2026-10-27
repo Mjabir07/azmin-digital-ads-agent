@@ -6,7 +6,7 @@
 #                  rule) and answers the comment publicly. If Meta refuses, it falls back to the Telegram alert.
 # Auto needs the system-user token to have instagram_manage_messages (docs/SETUP-COMMENT-DM.md).
 # Only the fixed text below is ever sent: no AI-written DMs, no prices.
-mode: alert
+mode: auto
 max_per_run: 25          # safety cap so a viral post can't trigger a burst Meta might flag as spam
 lookback_days: 7         # Meta allows private replies up to 7 days after the comment
 
