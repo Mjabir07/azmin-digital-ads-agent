@@ -13,7 +13,9 @@ lookback_days: 7         # Meta allows private replies up to 7 days after the co
 # Follow gate (Jabir 27 Oct: only followers get the guide, to grow the page). The first DM asks them to follow
 # and reply DONE; when they reply, the agent checks the follow with Instagram, then sends dm_text (the guide),
 # or not_following_text (max max_nudges times; after that Jabir gets a Telegram note).
-follow_gate: true
+# 27 Oct: OFF. Live test showed Meta blocks the follow-up DM ((#10) outside window, (#230) consent) while the
+# app is in development mode, so the guide goes in the first DM with a follow ask. Turn on after App Review.
+follow_gate: false
 max_nudges: 2
 gate_text: |-
   Hi! 👋 Your free guide "{title}" is ready.
@@ -28,7 +30,7 @@ dm_text: |-
 
   📄 {link}
 
-  Follow @azmin_digital for a new AI tip every day.
+  ➕ Follow @azmin_digital so you don't miss tomorrow's AI tip (a new one every day).
   Need a website or an AI assistant for your business? Just reply here. – AZMIN DIGITAL
 
 public_replies:          # one is picked per comment, only after the first DM was sent

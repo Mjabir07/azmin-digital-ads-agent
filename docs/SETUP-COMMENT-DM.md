@@ -6,8 +6,9 @@ Code: `agent/social/comment_dm.py`, settings in `config/comment-dm.yaml`; it run
 username, a link to the post, and the DM text to copy. On Instagram: open the comment → **Reply privately** → paste.
 
 **Automatic (`mode: auto`, on since 27 Oct)**: the agent DMs the person itself and replies under the comment
-"Sent! Check your DMs 📩". With `follow_gate: true` the first DM asks them to follow @azmin_digital and reply DONE;
-when they reply, the agent checks the follow and sends the guide (or asks again, at most twice).
+"Sent! Check your DMs 📩". The first DM carries the guide link and asks them to follow @azmin_digital.
+`follow_gate: true` (guide only after they follow and reply DONE) is off: while our Meta app is in development mode
+Meta blocks the follow-up DM ((#10) outside window, (#230) consent). Turn it on after App Review.
 Setting it up takes about 10 minutes, once:
 
 ## 1. Instagram app (phone)
