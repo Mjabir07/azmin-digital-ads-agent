@@ -47,9 +47,8 @@ jobs:
         run: uv run python -m agent.social.approvals
       - name: Publish approved posts that are due
         run: uv run python -m agent.social.publish
-      - name: Comment keyword -> guide by DM (config/comment-dm.yaml)
-        run: uv run python -m agent.social.comment_dm
-        continue-on-error: true
+      # Comment keyword -> DM moved to Mjabir07/azmin-instagram-growth on 29 Oct 2026 (cutover), so a comment is
+      # never answered twice. Instagram content (posts, reels, DMs) now lives there; this repo keeps the ads.
       - name: Ads reports (09:00 daily, 14:00 + 20:00 pulse, Dubai time)
         run: uv run python -m agent.ads.scheduler
         env:
