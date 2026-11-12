@@ -49,7 +49,9 @@ jobs:
         run: uv run python -m agent.social.publish
       # Comment keyword -> DM moved to Mjabir07/azmin-instagram-growth on 29 Oct 2026 (cutover), so a comment is
       # never answered twice. Instagram content (posts, reels, DMs) now lives there; this repo keeps the ads.
+      # Paused 12 Nov 2026 (Jabir: no automatic ads reports in Telegram for now). To restart, delete the `if: false` line.
       - name: Ads reports (09:00 daily, 14:00 + 20:00 pulse, Dubai time)
+        if: false
         run: uv run python -m agent.ads.scheduler
         env:
           TIMEZONE: Asia/Dubai
